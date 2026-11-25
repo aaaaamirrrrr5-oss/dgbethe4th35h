@@ -1,0 +1,16 @@
+PASS: apkAnalyzerDecodesBinaryManifestAndReportsRiskSignals
+PASS: apkAnalyzerRejectsZipSlipAndMissingManifest
+PASS: astTaintFindsSourceToQuerySink
+PASS: automationRejectsStoredWordPressCredentials
+PASS: cisaFeedParserRejectsDeclaredCountMismatch
+PASS: cisaFeedParserValidatesCveAndDate
+PASS: cloudAnalyzerFindsMultilineWildcardIamAllow
+PASS: cloudAnalyzerFindsPublicIngressAndPrivilegedContainer
+PASS: comparativeReportsSeparateNewResolvedAndChanged
+PASS: localReasoningPrioritizesCriticalEvidence
+PASS: miniJsonRejectsDuplicateKeysAndParsesEscapes
+PASS: osvRejectsUnsupportedEcosystemBeforeNetwork
+PASS: patchApplyAndRollbackAreHashGuarded
+PASS: webAnalyzerRejectsPrivateTargetsByDefault
+PASS: wordPressRejectsPlainHttpBeforeNetwork
+TOTAL: 15/15 advanced JUnit-source methods executed through a local JUnit-API compatibility harness

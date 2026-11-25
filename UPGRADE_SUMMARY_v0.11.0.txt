@@ -1,0 +1,10 @@
+SiteGuard Android v0.11.0 — ارتقا از v0.10.0
+
+1) TlsSessionInfoV1 + TlsSessionEvaluatorV1: جزئیات نشست TLS و گواهی برگ پس از handshake موفق، با یافته‌های PROBABLE/INFORMATIONAL.
+2) fetchPinned/fetchPassive اطلاعات TLS را برمی‌گردانند؛ PassiveHygieneChecksV1 آن را ارزیابی و در گزارش می‌گذارد.
+3) JSON schema 5 با بخش passive_hygiene (مالکیت، robots، sitemap، رویدادها، محدودیت‌ها، tls_session).
+4) پنل UI خلاصهٔ TLS را نشان می‌دهد و گزارش را برای export نگه می‌دارد.
+5) نسخه 0.11.0 / versionCode 12 و بروزرسانی release gate.
+
+اجرا نشده: کامپایل، JUnit، Gradle، دستگاه. Gradle Wrapper و DNS record check هنوز باقی‌اند.
+تغییرات دقیق: UPGRADE_DIFF_v0.10.0_to_v0.11.0.patch

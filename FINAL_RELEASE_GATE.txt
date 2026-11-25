@@ -1,0 +1,23 @@
+PASS — Android manifest is well-formed XML
+PASS — No known hosted AI inference endpoint configured in runtime source
+PASS — All specifications 00–23 and execution-order README are packaged
+PASS — Original dark/red UI and bottom navigation markers are retained
+PASS — Runtime 00–23 coverage registry, implementation matrix and execution log are present
+PASS — v0.9.0 five-stage execution log is present
+PASS — v0.8.0 specialist, schema-analysis, crawler and forensic modules are present
+PASS — v0.9.0 UX, unified findings/reporting and 40-domain prompt matrix are present
+PASS — Focused v0.8.0 regression tests and results are present
+PASS — v0.10.0 authorization, evidence-redaction and crawler-deadline regression tests are present
+PASS — App version metadata is v0.13.0 / versionCode 14
+PASS — v0.11.0 TLS session evaluation, hygiene JSON export and release documents are present
+PASS — v0.12.0 security.txt/HSTS evaluation, JSON export and release documents are present
+PASS — v0.13.0 DNS posture, encrypted assessment archive, persisted queue, evidence scoring and PDF export are wired
+PASS — WorkManager background scheduling, network constraints, retry/cancellation and R8 worker retention are wired
+PASS — v0.10.0 authorization, timeout/cancellation and evidence-redaction hardening is present
+PASS — CI, threat model, test plan, SBOM and release documentation are present
+PASS — Step 5 hardening: no cleartext, network security config, resources/icon, R8 present
+WARN — Gradle wrapper jar/gradlew missing: run tools/bootstrap-wrapper.sh and commit the result
+PASS — v0.13.0 release documents and focused regression test sources are present
+
+LOCAL RELEASE GATE: 19 PASS, 1 WARN
+Source preflight only. It does not replace Android Gradle build, lint, install, signing or device tests.

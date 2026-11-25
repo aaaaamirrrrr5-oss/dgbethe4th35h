@@ -1,0 +1,7 @@
+SiteGuard Android — steps 2–7 verification status
+
+NOT RUN: Kotlin compile, JUnit (CrawlerRobustnessTest, AddressPolicyTest, OwnershipProofTest, PassiveHygieneChecksTest),
+         Gradle build/lint/assemble, device tests. No Kotlin compiler or Android SDK in the authoring environment.
+RAN:     tools/final-release-gate.sh -> 10 PASS, 1 WARN (Gradle wrapper jar missing; use tools/bootstrap-wrapper.sh)
+RAN:     Python replica of AddressPolicy IPv4/IPv6 tables against the AddressPolicyTest vectors -> 0 mismatches (logic only, not the Kotlin code)
+RAN:     XML well-formedness of manifest/res files; YAML parse of CI workflow; bracket-balance comparison of edited Kotlin files vs originals.

@@ -1,0 +1,19 @@
+SiteGuard Android v0.4.0 — گزارش اعتبارسنجی
+
+موفق (در محیط آماده‌سازی):
+- کامپایل هسته Kotlin مستقل با kotlinc.
+- کامپایل همه فایل‌های core شامل بخش‌های Android-bound در برابر stubهای محلی Android و org.json؛ این نتیجه جایگزین Android Gradle Build نیست.
+- اجرای دستی ۱۰ متد تست با harness ساده assertion/annotation؛ این اجرا Gradle/JUnit runner نیست.
+- ZIP smoke test: دو فایل شناسایی شد، یک رکورد وابستگی استخراج شد و سه یافته heuristic تولید شد.
+- محدودیت decompression: ورودی باینری ۶۰۰ KiB از سقف هر-entry عبور کرد و پردازش به‌درستی متوقف شد.
+- Evidence sanitizer: الگوهای رایج رمز عبور/API key و Authorization Bearer/Basic پالایش شدند.
+- HTTP محلی: با مجوز صریح شبکه خصوصی، پاسخ HTTP 200 و پنج یافته هدر دریافت شد.
+- اعتبارسنجی JSON فایل SBOM: موفق.
+
+اجرا نشده / تأییدنشده:
+- Android Gradle Build و تولید APK: اجرا نشده؛ Gradle و Android SDK در محیط آماده‌سازی نصب نبودند.
+- تست task رسمی Gradle/JUnit: اجرا نشده.
+- نصب روی دستگاه یا Emulator و بررسی بصری/رفتاری UI: اجرا نشده.
+- تست کامل دستگاه کم‌رم، چرخه حرارتی، IPv6 و گواهی TLS روی Android واقعی: اجرا نشده.
+
+نکته: موفقیت تست‌های هسته به معنی تأیید Build کامل APK نیست. پیش از انتشار، workflow گیت‌هاب باید بدون خطا اجرا و APK روی دستگاه واقعی آزمایش شود.

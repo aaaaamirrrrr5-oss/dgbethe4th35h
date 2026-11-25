@@ -1,0 +1,22 @@
+SiteGuard Android v0.13.0 — وضعیت آزمون و تحویل
+
+RAN:
+- bash tools/final-release-gate.sh: 19 PASS، 1 WARN.
+- بررسی صحت XML برای AndroidManifest از طریق release gate.
+- بررسی وجود منابع 00–23، فایل‌های نسخه، گره‌های ماژول جدید و اتصال UI از طریق release gate.
+- اجرای harness مستقل Kotlin/JVM با stubهای وابستگی برای منطق DNS policy، امتیاز کیفیت شواهد، بازیابی صف اتوماسیون و مقایسه asset drift: هر چهار smoke test موفق شدند؛ این نتیجه جایگزین کامپایل کامل اندروید/JUnit نیست.
+- فایل `AssessmentQueueWorkerV1.kt` با `kotlinc`، کتابخانه coroutine محلی و stubهای API‌شکل Android/WorkManager از نظر نوعی کامپایل شد؛ این بررسی، لینک‌شدن با artifact واقعی WorkManager یا اجرای worker روی Android را ثابت نمی‌کند.
+- اجرای Kotlin compiler به‌عنوان بررسی parser-level روی فایل‌های اصلی و ماژول‌های جدید؛ خروجی به علت نبود Android/AndroidX/JSON/Coroutine dependencyها شامل unresolved reference بود و کامپایل موفق محسوب نمی‌شود. در خروجی parser خطای syntax از نوع expecting/unexpected tokens مشاهده نشد.
+- بسته ZIP اولیه دست‌نخورده در `/mnt/data/SiteGuard-Android-v0.12.0.zip` باقی ماند؛ این پروژه خروجی مستقل 0.13.0 است.
+
+NOT RUN (محیط فاقد Gradle، Android SDK و dependency cache است):
+- Gradle :app:testDebugUnitTest؛ بنابراین تست‌های جدید JUnit و اجرای واقعی WorkManager در محیط اندروید اجرا نشده‌اند.
+- :app:lintDebug، :app:assembleDebug، :app:assembleRelease.
+- امضای APK/AAB، نصب روی گوشی، upgrade از نسخه قبلی و آزمون واقعی رابط/شبکه/DNS.
+- تست رفتار واقعی DNS-over-HTTPS روی شبکه کاربر و صحت خروجی PDF روی دستگاه.
+
+WARN:
+- Gradle Wrapper scripts/JAR هنوز در ZIP نیستند؛ GitHub Actions مسیر fallback نصب Gradle را دارد.
+- GitHub Actions هنوز به SHA کامل pin نشده‌اند.
+
+نکته: Release gate فقط preflight ساختاری منبع است، نه اثبات ساخت APK یا عملکرد کامل. برای پذیرش انتشار، workflow را اجرا و تمام مراحل Gradle، lint، tests، assemble، signing و نصب را تأیید کنید.

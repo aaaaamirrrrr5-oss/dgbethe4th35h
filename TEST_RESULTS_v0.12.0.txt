@@ -1,0 +1,6 @@
+SiteGuard Android v0.12.0 — وضعیت آزمون
+
+NOT RUN: کامپایل Kotlin، JUnit (HygieneParsersTest و همهٔ تست‌های قبلی)، Gradle build/lint/assemble، تست دستگاه.
+RAN: tools/final-release-gate.sh (نتیجه در FINAL_RELEASE_GATE_v0.12.0.txt)؛ بررسی تعادل پرانتز/آکولاد؛ تطبیق نام پارامترها با تعریف‌های موجود.
+
+توصیه: ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug را اجرا و خطاهای کامپایل را رفع کنید.

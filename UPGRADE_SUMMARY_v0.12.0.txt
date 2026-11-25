@@ -1,0 +1,7 @@
+SiteGuard Android v0.12.0 — ارتقا از v0.11.0
+
+1) security.txt (RFC 9116): پارس و ارزیابی Contact/Expires.
+2) ارزیابی هدر HSTS موجود (max-age، preload).
+3) JSON schema 6، بودجه hygiene = ۴ درخواست، تست HygieneParsersTest.
+4) نسخه 0.12.0 / versionCode 13 و release gate به‌روز.
+اجرا نشده: کامپایل، JUnit، Gradle، دستگاه. تغییرات: UPGRADE_DIFF_v0.11.0_to_v0.12.0.patch

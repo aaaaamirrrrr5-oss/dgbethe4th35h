@@ -1,0 +1,15 @@
+SiteGuard Android v0.9.0 — UPGRADE SUMMARY
+
+Base: uploaded SiteGuard Android v0.8.0 source archive.
+App version: versionName 0.9.0; versionCode 10.
+Visual system: black/red preserved; branded gradient hero, activity/status pill, consistent outlined cards and improved typography/spacing.
+Navigation: existing four destinations retained; selected/unselected colors and accessible icon labels refined.
+Results: web, source-code and ZIP-project findings are deduplicated, sorted by severity, searchable/filterable, shown once in a unified evidence list, and included in JSON top-level findings.
+UX: Website Security Specialist detailed controls/evidence/architecture/test plans are collapsible; headline coverage indicators remain visible.
+Reporting: JSON schema_version 3; product version 0.9.0; HTML report metadata updated.
+AI/API: no AI API, API key, hosted inference, mandatory backend or cloud account added.
+Safety: no production mutation or autonomous patch execution added; reviewable remediation remains preview-only.
+
+Truthful validation status:
+- Source release gate: 12 PASS / 1 WARN. ZIP archive integrity is checked before delivery; details are in TEST_RESULTS_v0.9.0.txt.
+- Android SDK/Gradle Compose build, Gradle JUnit, lint, APK assembly/signing and device tests are not claimed unless executed in CI/device environment.

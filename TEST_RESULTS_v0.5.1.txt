@@ -1,0 +1,38 @@
+SiteGuard Android v0.5.1 — Verification report
+Date: 2026-11-22
+
+PASS — ordered specification run
+- Specifications 00 through 10 were processed in numeric order and mapped to code, tests, and explicit limitations.
+- 24 unique assertion-based test methods passed in the ordered local harness.
+- One of the 24 test methods is a combined ZIP integration test that invoked mobile, network, cloud and OpenAPI JSON analyzers from one archive and emitted domain coverage.
+- SQLite/FTS4 DDL and parameterized full-text query were smoke-tested with the host SQLite 3.46.1 FTS4 engine; this is SQL-level validation, not Android SQLite runtime testing.
+- Android theme color constants Bg/Panel/Red/Muted/White match the v0.4.0 source exactly.
+- Jetpack Compose and the existing bottom navigation labels/structure remain present; the original screen was extended using matching cards/controls rather than redesigned.
+
+PASS — Kotlin core verification
+- All core Kotlin files (including LocalSecurityKnowledgeStore) compiled with kotlinc 1.9.0 against local Android/SQLite/JSON stubs and the local coroutine library.
+- API schema tests: missing operation security, global security inheritance and explicit empty operation security fixtures.
+- Local knowledge store: Android SQLiteOpenHelper source compiled against API stubs; SQL schema, FTS4 creation, join and MATCH search syntax were smoke-tested separately using host SQLite.
+- Authorization tests: exact host/port/path, expiry, missing authorization, URL normalization, traversal rejection and request budget.
+- Archive tests: traversal/absolute path rejection, normal path acceptance and expanded-size cap for ignored binary entries.
+- Mobile tests: insecure Manifest/WebView positive fixture and secure Manifest negative fixture.
+- Network tests: SSH/TLS/DNS/MFA/OAuth configuration signals and exact authorized loopback TCP probe with host/port/budget denial.
+- Cloud tests: Docker/Kubernetes/Terraform/CI indicators and secret-value redaction.
+- WordPress/dependency tests: REST permission review, component inventory and declared npm/Composer dependency inventory.
+- Defensive tests: ATT&CK public references, safe simulation fields, observed-asset-only graph, authorization/lab gates and knowledge-pack SHA-256 integrity behavior.
+- Evidence sanitizer: API key/password/Bearer samples redacted from excerpts.
+
+NOT VERIFIED
+- Android Gradle :app:testDebugUnitTest and :app:assembleDebug were not run: Android SDK and Gradle executable are not installed in this preparation environment.
+- APK installation, emulator/device runtime, visual screenshot regression, API 26/35 behavior, low-memory and thermal testing were not run.
+- The local harness uses minimal platform/JUnit/SQLite-compatible stubs; it is not the official Android Gradle/JUnit/Android SQLite runtime environment.
+- Live cloud/IAM/AD/Entra, Kubernetes API, DNS inventory, broad network discovery, service/version fingerprinting and firewall/segmentation assessment were not run.
+- WordPress/WooCommerce live runtime, customer/order/payment data, plugin activation state and authenticated read-only inspection were not run.
+- OpenAPI JSON review is static. GraphQL, SOAP, OpenAPI YAML, API DAST, authorization/tenant isolation and business-logic tests are not implemented.
+- Knowledge DB Android runtime initialization, FTS4 behavior on actual target devices, upgrade migration, backup/restore and signed feed workflow are not device-tested.
+- Binary APK/AAB parsing, MobSF, mobile runtime storage/IPC/Keystore/TLS tests are not implemented.
+
+Interpretation
+- These results demonstrate core compilation and the listed local fixture behavior only; they do not prove APK build success, complete vulnerability coverage or that a target is secure.
+- Findings from static configuration/source rules are review leads unless the evidence contract identifies a directly confirmed observation.
+- No hosted AI API, AI key, mandatory server or cloud inference was introduced.

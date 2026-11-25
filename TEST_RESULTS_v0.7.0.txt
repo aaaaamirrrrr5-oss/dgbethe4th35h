@@ -1,0 +1,14 @@
+SiteGuard Android v0.8.0 — Test Results
+
+PASS
+- Specialist core Kotlin compilation against compatibility contracts.
+- 23-assertion specialist smoke runner.
+- 11 specialist test methods executed in local compatibility runner.
+- Website Specialist Android facade source compile against Android Context compatibility stubs.
+- ReportingQualityEngine Kotlin compilation.
+- HTML report export: 3 assertions.
+- No hosted AI endpoint source guard.
+- Source release gate: 6 PASS / 0 WARN.
+
+LIMITATION
+Android SDK/Gradle/Compose toolchain was unavailable for this run. No APK artifact was assembled or installed. Full Gradle JUnit, lint and debug/release build remain to be executed via the included GitHub Actions workflow. Hardware, live-site and runtime integration acceptance tests are not claimed.

@@ -1,0 +1,24 @@
+SiteGuard Android v0.10.0 — ارتقای مجدد پروژه
+
+پایه: سورس v0.9.0
+نسخه برنامه: 0.10.0
+versionCode: 11
+JSON report schema: 4
+
+تغییرات اجرایی:
+1) سخت‌گیری fail-closed روی AuthorizationManifest شامل شناسه/owner declaration، بازه زمانی، budget، پورت، روش فقط PASSIVE_HTTP_GET، اندازه فهرست‌ها، host و مسیرها.
+2) رد traversal و encoding مبهم در URL path (encoded dot/slash/backslash/NUL/CR/LF و %25)، مرزبندی segment در prefix matching، canonicalization نام IDN و رد IPv4 عددی مبهم.
+3) redaction برای credentialهای JSON و assignment، Authorization Bearer/Basic، PEM private key، GitHub/AWS token، JWT و URL دارای username/password.
+4) پاک‌سازی report شامل فیلدهای finding و remediation، از جمله root cause و proposed patch diff.
+5) deadline در ScanEngine و WebsiteDiscoveryEngine، انتشار درست CancellationException و تفکیک timeout در UI.
+6) regression test source برای authorization scope، evidence redaction و crawler deadline.
+7) گزارش‌های نسخه 0.10، ماتریس delta حوزه‌ها و release gate به‌روزشده.
+
+نتیجه آزمون:
+- 27 policy/redaction smoke assertions PASS.
+- Kotlin/JVM compile برای policy، scan core و crawler core با stubs محدود PASS.
+- source release gate: 14 PASS، 1 WARN (نبود Gradle Wrapper).
+- Android Gradle/JUnit/lint/APK/sign/device tests اجرا نشده‌اند؛ Android SDK و Gradle در محیط نبودند.
+
+محدودیت مهم:
+نسخه 0.10.0 اجرای کامل 100,000 ردیف یا همه 2,000 معیار پذیرش نیست. پوشش کلی 40 حوزه همچنان 38 Partial، 1 Unsupported و 1 Blocked است. این خروجی سورس است، نه APK.

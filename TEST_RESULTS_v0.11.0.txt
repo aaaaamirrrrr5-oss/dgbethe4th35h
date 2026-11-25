@@ -1,0 +1,12 @@
+SiteGuard Android v0.11.0 — وضعیت آزمون
+
+NOT RUN (محیط نویسنده ابزار نداشت):
+- کامپایل Kotlin، JUnit (از جمله TlsSessionEvaluatorTest و تست‌های اضافه‌شده در گام‌های ۲ تا ۷)، Gradle build/lint/assemble، تست دستگاه.
+- رفتار واقعی SSLSession.peerCertificates روی Android Conscrypt و نمونه‌های TLS زنده.
+
+RAN:
+- tools/final-release-gate.sh (نتیجهٔ دقیق در FINAL_RELEASE_GATE_v0.11.0.txt)
+- بررسی تعادل پرانتز/آکولاد و تکراری‌نبودن نام‌ها روی فایل‌های ویرایش‌شده نسبت به نسخهٔ قبل
+- تطابق نام پارامترهای Finding، TlsFailure و WebsiteDiscoveryEventV1 با تعریف‌های موجود در سورس (خواندنی)
+
+توصیه: قبل از انتشار، ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug را اجرا و خطاهای کامپایل را رفع کنید.

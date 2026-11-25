@@ -1,0 +1,26 @@
+SiteGuard Android v0.8.0 — Local test results
+
+PASS: all files 00–23 and README_EXECUTION_ORDER are present under docs/specifications.
+PASS: all 40 Kotlin core source files compile together with local kotlinc and compatibility stubs for Android/JSON APIs.
+PASS: 10 focused v0.8.0 integration checks passed:
+  1. GraphQL sensitive resolver field remains unverified/manual-review without visible access directive.
+  2. WSDL XML parsing disables DTD/external entity access and detects HTTP SOAP address.
+  3. OpenAPI YAML static analysis detects no visible security declaration without claiming runtime authorization.
+  4. Numeric CIDR parser accepts a permitted IPv4 range and rejects out-of-range, hostname and invalid IPv4 networks.
+  5. Persistent chain-of-custody ledger verifies a valid chain and detects appended tampering.
+  6. Passive crawler pins the socket to the approved resolved IP, respects excluded paths, does not follow external links and does not retain Set-Cookie.
+  7. WordPress static checks identify AJAX nonce, unsafe deserialization and WooCommerce ownership review signals while redacting secret values.
+  8. Runtime specification registry includes ordered documents 00–23 and does not mark a full document tested.
+  9. Crawler blocks a query-string URL before issuing any network request.
+  10. Failed network attempts still consume the bounded request budget.
+PASS: no hosted AI endpoint pattern found in runtime app source.
+PASS: AndroidManifest.xml parses as XML.
+PASS: original dark/red palette and bottom NavigationBar markers remain in MainActivity source.
+PASS: APK ZIP packaging integrity / source archive test completed (see final packaging record).
+
+NOT RUN / NOT CLAIMED:
+- Android Gradle build, Compose/Android UI compilation against the Android SDK, Gradle JUnit, lint, assembleDebug/Release.
+- APK signing, install, upgrade, restore, Android API/ABI matrix and hardware resource/thermal tests.
+- Live target testing, live WordPress/WooCommerce, cloud/AD providers, authenticated API DAST, MobSF, PDF, Linux worker or isolated Docker/VM lab.
+
+The local core compile and ten focused runner checks are not a substitute for Android Gradle/JUnit/device validation. The whole 00–23 prompt pack remains PARTIALLY_SUPPORTED as a product; no whole document is marked TESTED.

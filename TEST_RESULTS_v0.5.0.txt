@@ -1,0 +1,25 @@
+SiteGuard Android v0.5.0 — Verification report
+
+PASS (local preparation environment)
+- All Kotlin core files compiled with kotlinc 1.9.0 against local Android/org.json stubs and coroutine jar.
+- 20 assertion-based test methods executed successfully through a local runner using JUnit-compatible stubs. This included existing v0.4.0 scope/archive/website/evidence tests plus new mobile, network, cloud, workflow, ATT&CK/graph and ZIP integration tests.
+- ZIP integration test: one archive exercised Android Manifest, SSH config, Dockerfile and Kubernetes YAML analyzers; domain coverage and evidence graph were populated.
+- Existing ZIP smoke: WordPress detection, PHP finding, dependency inventory.
+- ZIP expansion-cap smoke: oversized entry stopped at resource limit.
+- Local HTTP smoke: authorized loopback HTTP GET returned status 200 with baseline findings.
+- Sanitizer smoke: common API key/password/Authorization values redacted.
+- TCP probe fixture: explicit authorized loopback IP/port accepted; hostname, invalid IP, unapproved port and exhausted budget rejected.
+- Knowledge pack hash fixture: SHA-256 integrity verification passed; knowledge status correctly reports no live feed.
+
+NOT VERIFIED
+- Android Gradle `assembleDebug` or `testDebugUnitTest`; Gradle executable and Android SDK are not installed in the preparation environment.
+- APK installation, Android emulator/device runtime, visual UI regression or behavior on Android 26+ devices.
+- Android DocumentBuilderFactory behavior across OEM/API levels.
+- TLS positive certificate handshake against a real or local test CA; code uses platform trust and standard HTTPS endpoint identity validation, but this path needs emulator/device acceptance testing.
+- Live cloud, AD/Entra, Kubernetes API, firewall, DNS query, WordPress runtime or full API assessment.
+- Performance/thermal behavior on low-memory devices and full cancellation/recovery.
+
+Interpretation
+- Core compiler/test success does not prove Android APK build or full product compliance.
+- New specialist analyzers are deterministic static heuristics; findings are leads requiring owner validation, not proof of exploitation.
+- No AI API, hosted inference or mandatory server was introduced.

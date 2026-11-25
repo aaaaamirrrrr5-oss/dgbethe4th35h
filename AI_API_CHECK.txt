@@ -1,0 +1,1 @@
+PASS: no configured hosted AI inference endpoint found in app/src/main.

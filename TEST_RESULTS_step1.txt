@@ -1,0 +1,17 @@
+SiteGuard Android v0.8.0 + Step 1 (TLS failure findings) — local test results
+
+Runner: Kotlin 2.0.21 compiler + JDK 21, core source set compiled together with compile-only stubs for org.json.
+        JUnit replaced by a tiny reflection runner. This is NOT the Android Gradle/JUnit task.
+
+PASS  13/13  TlsFailureClassifierTest (new)
+PASS  31/31  AuthorizationScopeTest, EvidenceSanitizerTest, WebsiteSpecialistV2Test, ExtendedModulesV080Test,
+             WebsiteAnalysisTest, ArchivePathPolicyTest (pre-existing, no regression)
+N/A   1      SpecialistArchiveIntegrationTest — needs real org.json; fails identically on untouched v0.8.0 in this runner.
+
+Real TLS servers on loopback (generated CA + leaf certs, JSSE default trust manager with the lab CA as the only anchor):
+  valid certificate    -> HTTP 200, normal header findings, NO SG-TLS-VALIDATION-* finding
+  expired certificate  -> SG-TLS-VALIDATION-EXPIRED          [PROBABLE/HIGH]
+  SAN mismatch         -> SG-TLS-VALIDATION-HOSTNAME         [PROBABLE/HIGH]
+  unknown CA           -> SG-TLS-VALIDATION-UNTRUSTED-CHAIN  [PROBABLE/HIGH]
+
+NOT RUN: Android Gradle build/lint/assemble, device tests, Conscrypt-specific exception text on a real device.

@@ -1,0 +1,556 @@
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/RELEASE_NOTES_v0.11.0.md v11/RELEASE_NOTES_v0.11.0.md
+--- v10/SiteGuard-Android-v0.10.0/RELEASE_NOTES_v0.11.0.md	1970-01-01 00:00:00.000000000 +0000
++++ v11/RELEASE_NOTES_v0.11.0.md	2026-11-23 05:26:54.784874699 +0000
+@@ -0,0 +1,23 @@
++# SiteGuard Android v0.11.0
++
++پایه: سورس v0.10.0 (شامل گام‌های ۲ تا ۹ همان خط کار). نسخه برنامه `0.11.0`، versionCode `12`، schema گزارش JSON `5`.
++
++## جدید
++
++- **مشاهدهٔ نشست TLS پس از handshake موفق** (`TlsSessionInfoV1`): پروتکل و cipher مذاکره‌شده، موضوع/صادرکننده، بازهٔ اعتبار، الگوریتم امضا، نوع و طول کلید، تعداد SAN از نوع DNS و طول زنجیرهٔ ارائه‌شده. این داده در `fetchPinned` بعد از `startHandshake()` خوانده می‌شود.
++- **ارزیابی نشست TLS** (`TlsSessionEvaluatorV1`): یافته‌های `SG-TLS-LEGACY-PROTOCOL`، `SG-TLS-WEAK-CIPHER`، `SG-TLS-WEAK-KEY`، `SG-TLS-WEAK-SIGNATURE`، `SG-TLS-CERT-EXPIRING` (≤ ۳۰ روز) و `SG-TLS-OBSERVED` (اطلاعاتی). هیچ‌کدام `CONFIRMED` نیستند، چون فقط یک نشست از همین دستگاه دیده شده است.
++- **گزارش JSON schema 5:** بخش `passive_hygiene` شامل وضعیت اثبات مالکیت، robots/sitemap، رویدادها، محدودیت‌ها و `tls_session`. فقط وقتی export می‌شود که هدف گزارش با میزبان بررسی hygiene یکی باشد؛ در غیر این صورت `null` است تا داده‌ی میزبان دیگر وارد گزارش نشود.
++- پنل مالکیت/hygiene خلاصهٔ TLS را نشان می‌دهد و گزارش کامل را به `MainActivity` می‌دهد.
++
++## حفظ‌شده
++
++- رفتار passive-only، pinning DNS، عدم دنبال‌کردن redirect، تم تیره/قرمز و local-first بدون AI API یا backend.
++
++## محدودیت‌ها (صادقانه)
++
++- هیچ‌کدام از کد جدید در این محیط کامپایل یا با JUnit اجرا نشده است: کامپایلر Kotlin، Gradle و Android SDK در دسترس نبودند. فقط بررسی‌های متنی/ساختاری و release gate اجرا شد.
++- **Enumeration نسخه‌ها و cipherهای پشتیبانی‌شده انجام نمی‌شود.** فقط پارامترهای یک handshake دیده می‌شود؛ سرور ممکن است نسخه‌ها یا cipherهای ضعیف‌تری هم بپذیرد که این دستگاه هرگز مذاکره نمی‌کند.
++- زنجیرهٔ میانی، OCSP و Certificate Transparency بررسی نمی‌شوند.
++- رکوردهای DNS (SPF/DMARC/CAA) و اثبات مالکیت با DNS TXT هنوز پیاده‌سازی نشده‌اند (نیازمند DoH یا کتابخانهٔ resolver).
++- Gradle Wrapper (`gradlew` و jar) هنوز در بسته نیست؛ `tools/bootstrap-wrapper.sh` را اجرا و خروجی را commit کنید.
++- pin کردن actionهای GitHub با SHA هنوز TODO است.
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/SPECIFICATION_GAPS.md v11/SPECIFICATION_GAPS.md
+--- v10/SiteGuard-Android-v0.10.0/SPECIFICATION_GAPS.md	2026-11-23 05:17:48.000000000 +0000
++++ v11/SPECIFICATION_GAPS.md	2026-11-23 05:26:54.801062771 +0000
+@@ -57,6 +57,12 @@
+ See `STEP_LOG.md` and `TEST_RESULTS_steps2_7.txt`. All code from these steps is uncompiled and untested in a real Gradle/JUnit run.
+ Still missing: DNS record checks, DNS TXT ownership proof, UI for ownership/hygiene results, committed Gradle wrapper, action SHA pinning.
+ 
++## v0.11.0 update
++
++- Added: TLS session/leaf-certificate observation after a successful handshake, JSON schema 5 `passive_hygiene` section.
++- Still missing: supported protocol/cipher enumeration, intermediate chain/OCSP/CT checks, DNS records (SPF/DMARC/CAA) and DNS TXT ownership proof,
++  committed Gradle wrapper, action SHA pinning, and any real compile/JUnit/device run of steps 2–9 and v0.11.0 code.
++
+ ## Honest status semantics
+ 
+ `Implemented` means a feature exists in source. `Tested` means the exact named test was executed and passed. A smoke test does not certify a full specification. Empty findings are not a PASS, unsupported controls are not silently treated as secure, and no AI API or mandatory hosted backend is used.
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/SPEC_EXECUTION_LOG_v0.11.0.md v11/SPEC_EXECUTION_LOG_v0.11.0.md
+--- v10/SiteGuard-Android-v0.10.0/SPEC_EXECUTION_LOG_v0.11.0.md	1970-01-01 00:00:00.000000000 +0000
++++ v11/SPEC_EXECUTION_LOG_v0.11.0.md	2026-11-23 05:26:54.787568336 +0000
+@@ -0,0 +1,11 @@
++# Execution log — v0.11.0
++
++| مرحله | کار | وضعیت |
++|---|---|---|
++| 1 | بررسی ساختار v0.10.0 و سازگاری با گام‌های ۲ تا ۹ | انجام شد (خواندن سورس) |
++| 2 | ثبت اطلاعات نشست TLS در fetchPinned | نوشته شد، کامپایل نشده |
++| 3 | ارزیابی نشست و یافته‌ها + تست JUnit | نوشته شد، اجرا نشده |
++| 4 | export بخش passive_hygiene، schema 5 | نوشته شد، کامپایل نشده |
++| 5 | نسخه، release gate، مستندات | انجام شد؛ gate اجرا شد |
++
++هیچ حوزه‌ای در ماتریس ۴۰ حوزه‌ای به‌خاطر این نسخه Complete یا Tested اعلام نشده است.
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/TEST_RESULTS_v0.11.0.txt v11/TEST_RESULTS_v0.11.0.txt
+--- v10/SiteGuard-Android-v0.10.0/TEST_RESULTS_v0.11.0.txt	1970-01-01 00:00:00.000000000 +0000
++++ v11/TEST_RESULTS_v0.11.0.txt	2026-11-23 05:26:54.785862966 +0000
+@@ -0,0 +1,12 @@
++SiteGuard Android v0.11.0 — وضعیت آزمون
++
++NOT RUN (محیط نویسنده ابزار نداشت):
++- کامپایل Kotlin، JUnit (از جمله TlsSessionEvaluatorTest و تست‌های اضافه‌شده در گام‌های ۲ تا ۷)، Gradle build/lint/assemble، تست دستگاه.
++- رفتار واقعی SSLSession.peerCertificates روی Android Conscrypt و نمونه‌های TLS زنده.
++
++RAN:
++- tools/final-release-gate.sh (نتیجهٔ دقیق در FINAL_RELEASE_GATE_v0.11.0.txt)
++- بررسی تعادل پرانتز/آکولاد و تکراری‌نبودن نام‌ها روی فایل‌های ویرایش‌شده نسبت به نسخهٔ قبل
++- تطابق نام پارامترهای Finding، TlsFailure و WebsiteDiscoveryEventV1 با تعریف‌های موجود در سورس (خواندنی)
++
++توصیه: قبل از انتشار، ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug را اجرا و خطاهای کامپایل را رفع کنید.
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/UPGRADE_SUMMARY_v0.11.0.txt v11/UPGRADE_SUMMARY_v0.11.0.txt
+--- v10/SiteGuard-Android-v0.10.0/UPGRADE_SUMMARY_v0.11.0.txt	1970-01-01 00:00:00.000000000 +0000
++++ v11/UPGRADE_SUMMARY_v0.11.0.txt	2026-11-23 05:26:54.786745972 +0000
+@@ -0,0 +1,10 @@
++SiteGuard Android v0.11.0 — ارتقا از v0.10.0
++
++1) TlsSessionInfoV1 + TlsSessionEvaluatorV1: جزئیات نشست TLS و گواهی برگ پس از handshake موفق، با یافته‌های PROBABLE/INFORMATIONAL.
++2) fetchPinned/fetchPassive اطلاعات TLS را برمی‌گردانند؛ PassiveHygieneChecksV1 آن را ارزیابی و در گزارش می‌گذارد.
++3) JSON schema 5 با بخش passive_hygiene (مالکیت، robots، sitemap، رویدادها، محدودیت‌ها، tls_session).
++4) پنل UI خلاصهٔ TLS را نشان می‌دهد و گزارش را برای export نگه می‌دارد.
++5) نسخه 0.11.0 / versionCode 12 و بروزرسانی release gate.
++
++اجرا نشده: کامپایل، JUnit، Gradle، دستگاه. Gradle Wrapper و DNS record check هنوز باقی‌اند.
++تغییرات دقیق: UPGRADE_DIFF_v0.10.0_to_v0.11.0.patch
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/build.gradle.kts v11/app/build.gradle.kts
+--- v10/SiteGuard-Android-v0.10.0/app/build.gradle.kts	2026-11-23 05:12:03.000000000 +0000
++++ v11/app/build.gradle.kts	2026-11-23 05:26:27.101555070 +0000
+@@ -10,8 +10,8 @@
+         applicationId = "com.siteguard.app"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 11
+-        versionName = "0.10.0"
++        versionCode = 12
++        versionName = "0.11.0"
+     }
+     // Signing is optional and user-controlled: set all four SITEGUARD_* variables (environment or gradle.properties)
+     // to produce a signed release APK. Without them, :app:assembleRelease yields an unsigned APK (CI signs it separately).
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/MainActivity.kt v11/app/src/main/java/com/siteguard/app/MainActivity.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/MainActivity.kt	2026-11-23 05:13:15.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/MainActivity.kt	2026-11-23 05:25:58.956841096 +0000
+@@ -79,6 +79,8 @@
+     var discoveryPages by remember { mutableStateOf<List<com.siteguard.app.core.WebsiteDiscoveredPageV1>>(emptyList()) }
+     var discoveryResult by remember { mutableStateOf<com.siteguard.app.core.WebsiteDiscoveryResultV1?>(null) }
+     var scanning by remember { mutableStateOf(false) }
++    var hygieneReport by remember { mutableStateOf<com.siteguard.app.core.PassiveHygieneReportV1?>(null) }
++    var ownershipProof by remember { mutableStateOf<com.siteguard.app.core.OwnershipProofResultV1?>(null) }
+     var activeScanJob by remember { mutableStateOf<Job?>(null) }
+     var status by remember { mutableStateOf("آماده برای بررسی") }
+     var findings by remember { mutableStateOf<List<Finding>>(emptyList()) }
+@@ -255,6 +257,9 @@
+             put("authorization_id", authorizationId)
+             put("connected_address", connectedAddress)
+             put("scope", "authorized passive HTTP GET; DNS answer pinned; redirects not followed")
++            put("passive_hygiene", hygieneReport
++                ?.takeIf { it.host.isNotBlank() && it.host.equals(scannedHost, ignoreCase = true) }
++                ?.let { com.siteguard.app.core.PassiveHygieneJsonV1.toJson(it, ownershipProof) } ?: JSONObject.NULL)
+             put("specification_coverage", JSONObject().apply {
+                 put("expected_documents", specificationCoverage.expectedDocuments)
+                 put("present_documents", specificationCoverage.presentDocuments)
+@@ -631,7 +636,12 @@
+                                     Text("${page.statusCode} • ${page.title.ifBlank { page.url }} • ${page.connectedIp} • ${page.bodySha256.take(12)}…", color = Muted, fontSize = 9.sp)
+                                 }
+                             }
+-                            OwnershipAndHygienePanel(url = url, authorized = authorized, onFindings = { added -> findings = (findings + added).distinctBy { it.id } })
++                            OwnershipAndHygienePanel(
++                                url = url,
++                                authorized = authorized,
++                                onFindings = { added -> findings = (findings + added).distinctBy { it.id } },
++                                onReport = { report, proof -> hygieneReport = report; ownershipProof = proof }
++                            )
+                             if (passiveWebsiteCoverage.isNotEmpty()) {
+                                 Text("پوشش متخصص وب برای این اسکن", color = White, fontWeight = FontWeight.SemiBold, fontSize = 11.sp)
+                                 passiveWebsiteCoverage.take(6).forEach { control ->
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/OwnershipHygienePanel.kt v11/app/src/main/java/com/siteguard/app/OwnershipHygienePanel.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/OwnershipHygienePanel.kt	2026-11-22 22:37:08.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/OwnershipHygienePanel.kt	2026-11-23 05:25:58.955872904 +0000
+@@ -69,7 +69,12 @@
+ 
+ /** Technical ownership proof (well-known token) and passive hygiene checks (HTTP->HTTPS, robots.txt, sitemap). */
+ @Composable
+-internal fun OwnershipAndHygienePanel(url: String, authorized: Boolean, onFindings: (List<Finding>) -> Unit = {}) {
++internal fun OwnershipAndHygienePanel(
++    url: String,
++    authorized: Boolean,
++    onFindings: (List<Finding>) -> Unit = {},
++    onReport: (PassiveHygieneReportV1, OwnershipProofResultV1?) -> Unit = { _, _ -> }
++) {
+     val scope = rememberCoroutineScope()
+     val host = remember(url) {
+         normalizeUrl(url)?.let { runCatching { java.net.URI(it).host }.getOrNull() }?.let { canonicalHost(it) }
+@@ -140,6 +145,7 @@
+                                 val result = PassiveHygieneChecksV1.run(host, panelManifest(host, proof))
+                                 report = result
+                                 onFindings(result.findings)
++                                onReport(result, proof)
+                             } catch (e: CancellationException) {
+                                 throw e
+                             } catch (e: Exception) {
+@@ -158,6 +164,9 @@
+                         "${r.findings.size} یافته • ${r.requestsUsed} درخواست • sitemap: ${r.sitemapUrlCount} آدرس هم‌میزبان",
+                         fontSize = 10.sp, color = PanelText
+                     )
++                    r.tls?.let { t ->
++                        Text("TLS: ${t.protocol} • ${t.cipherSuite} • ${t.keyAlgorithm}/${t.keyBits}", fontSize = 9.sp, color = PanelMuted)
++                    }
+                     r.findings.forEach { f ->
+                         Text("${f.severity.name} • ${f.title}", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = PanelText)
+                         Text(f.evidence, fontSize = 9.sp, color = PanelMuted)
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/PassiveHygieneChecksV1.kt v11/app/src/main/java/com/siteguard/app/core/PassiveHygieneChecksV1.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/PassiveHygieneChecksV1.kt	2026-11-22 22:33:18.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/core/PassiveHygieneChecksV1.kt	2026-11-23 05:25:58.955445221 +0000
+@@ -130,7 +130,9 @@
+     val robots: RobotsInfoV1?,
+     val sitemapUrlCount: Int,
+     val requestsUsed: Int,
+-    val limitations: List<String>
++    val limitations: List<String>,
++    val tls: TlsSessionInfoV1? = null,
++    val host: String = ""
+ )
+ 
+ /** robots.txt, sitemap and HTTP->HTTPS checks. Each request is re-authorized and counted against the manifest budget. */
+@@ -148,6 +150,7 @@
+         var lastAt = 0L
+         var robots: RobotsInfoV1? = null
+         var sitemapCount = 0
++        var tlsInfo: TlsSessionInfoV1? = null
+         val canonical = canonicalHost(host) ?: return@withContext PassiveHygieneReportV1(emptyList(), emptyList(), null, 0, 0, LIMITATIONS)
+ 
+         suspend fun fetch(url: String): WebsiteDiscoveryEngineV1.PassiveFetchV1? {
+@@ -164,6 +167,7 @@
+             return try {
+                 WebsiteDiscoveryEngineV1.fetchPassive(decision.normalizedUrl, manifest).also {
+                     events += WebsiteDiscoveryEventV1(decision.normalizedUrl, "FETCHED", "HTTP ${it.status}; body=${it.body.length} chars.")
++                    if (tlsInfo == null) tlsInfo = it.tls
+                 }
+             } catch (e: Exception) {
+                 val tls = if (url.startsWith("https://", true)) TlsFailureClassifier.classify(e) else null
+@@ -208,6 +212,7 @@
+             events += WebsiteDiscoveryEventV1(sitemapUrl, "SITEMAP_PARSED", (if (SitemapV1.isIndex(sitemapResponse.body)) "sitemap index" else "urlset") + "; same-host URLs=$sitemapCount")
+         }
+ 
+-        PassiveHygieneReportV1(findings, events, robots, sitemapCount, requests, LIMITATIONS)
++        tlsInfo?.let { findings += TlsSessionEvaluatorV1.evaluate(canonical, it) }
++        PassiveHygieneReportV1(findings, events, robots, sitemapCount, requests, LIMITATIONS, tlsInfo, canonical)
+     }
+ }
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/PassiveHygieneJsonV1.kt v11/app/src/main/java/com/siteguard/app/core/PassiveHygieneJsonV1.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/PassiveHygieneJsonV1.kt	1970-01-01 00:00:00.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/core/PassiveHygieneJsonV1.kt	2026-11-23 05:25:58.955590737 +0000
+@@ -0,0 +1,58 @@
++package com.siteguard.app.core
++
++import org.json.JSONArray
++import org.json.JSONObject
++
++/** JSON section for the report: ownership-proof status, passive hygiene observations and the TLS session this device saw. */
++object PassiveHygieneJsonV1 {
++    fun toJson(report: PassiveHygieneReportV1, proof: OwnershipProofResultV1?): JSONObject = JSONObject().apply {
++        put("host", report.host)
++        put("ownership_proof", proof?.let { p ->
++            JSONObject().apply {
++                put("status", p.status.name)
++                put("host", p.host)
++                put("url", EvidenceSanitizer.sanitize(p.url))
++                put("reason", EvidenceSanitizer.sanitize(p.reason))
++                put("checked_at_epoch_ms", p.checkedAtEpochMs)
++                put("connected_ip", p.connectedIp)
++            }
++        } ?: JSONObject.NULL)
++        put("requests_used", report.requestsUsed)
++        put("finding_ids", JSONArray(report.findings.map { it.id }))
++        put("robots", report.robots?.let { r ->
++            JSONObject().apply {
++                put("disallow_count", r.disallowPaths.size)
++                put("sensitive_path_hints", JSONArray(r.sensitivePathHints))
++                put("sitemap_urls_same_host", JSONArray(r.sitemapUrls))
++                put("external_sitemap_count", r.externalSitemapCount)
++                put("crawl_delay_seconds", r.crawlDelaySeconds ?: JSONObject.NULL)
++            }
++        } ?: JSONObject.NULL)
++        put("sitemap_same_host_url_count", report.sitemapUrlCount)
++        put("tls_session", report.tls?.let { t ->
++            JSONObject().apply {
++                put("protocol", t.protocol)
++                put("cipher_suite", t.cipherSuite)
++                put("subject", EvidenceSanitizer.sanitize(t.subject))
++                put("issuer", EvidenceSanitizer.sanitize(t.issuer))
++                put("not_before_epoch_ms", t.notBeforeEpochMs)
++                put("not_after_epoch_ms", t.notAfterEpochMs)
++                put("signature_algorithm", t.signatureAlgorithm)
++                put("key_algorithm", t.keyAlgorithm)
++                put("key_bits", t.keyBits)
++                put("san_dns_count", t.sanDnsCount)
++                put("chain_length_presented", t.chainLength)
++            }
++        } ?: JSONObject.NULL)
++        put("events", JSONArray().apply {
++            report.events.take(50).forEach { e ->
++                put(JSONObject().apply {
++                    put("url", EvidenceSanitizer.sanitize(e.url).take(300))
++                    put("status", e.status)
++                    put("reason", EvidenceSanitizer.sanitize(e.reason).take(300))
++                })
++            }
++        })
++        put("limitations", JSONArray(report.limitations))
++    }
++}
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt v11/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt	2026-11-23 05:12:03.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt	2026-11-23 05:26:27.101361502 +0000
+@@ -2,8 +2,8 @@
+ 
+ /** Single source of truth for user-agent and report provenance metadata. */
+ object SiteGuardBuildInfo {
+-    const val VERSION_NAME = "0.10.0"
+-    const val VERSION_CODE = 11
+-    const val REPORT_SCHEMA_VERSION = 4
++    const val VERSION_NAME = "0.11.0"
++    const val VERSION_CODE = 12
++    const val REPORT_SCHEMA_VERSION = 5
+     const val USER_AGENT = "SiteGuard-Android/$VERSION_NAME (authorized-passive-audit)"
+ }
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/TlsSessionInfoV1.kt v11/app/src/main/java/com/siteguard/app/core/TlsSessionInfoV1.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/TlsSessionInfoV1.kt	1970-01-01 00:00:00.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/core/TlsSessionInfoV1.kt	2026-11-23 05:25:58.953933226 +0000
+@@ -0,0 +1,123 @@
++package com.siteguard.app.core
++
++import java.security.interfaces.ECPublicKey
++import java.security.interfaces.RSAPublicKey
++import java.security.cert.X509Certificate
++import javax.net.ssl.SSLSession
++
++/** What this device observed after a SUCCESSFUL TLS handshake with one endpoint (one negotiated session, leaf certificate). */
++data class TlsSessionInfoV1(
++    val protocol: String,
++    val cipherSuite: String,
++    val subject: String,
++    val issuer: String,
++    val notBeforeEpochMs: Long,
++    val notAfterEpochMs: Long,
++    val signatureAlgorithm: String,
++    val keyAlgorithm: String,
++    val keyBits: Int,
++    val sanDnsCount: Int,
++    val chainLength: Int
++) {
++    companion object {
++        /** Returns null if the session carries no X.509 peer certificate or anything fails to parse. */
++        fun fromSession(session: SSLSession): TlsSessionInfoV1? = runCatching {
++            val chain = session.peerCertificates
++            val leaf = chain.firstOrNull() as? X509Certificate ?: return@runCatching null
++            val key = leaf.publicKey
++            val bits = when (key) {
++                is RSAPublicKey -> key.modulus.bitLength()
++                is ECPublicKey -> key.params.order.bitLength()
++                else -> 0
++            }
++            TlsSessionInfoV1(
++                protocol = session.protocol.orEmpty(),
++                cipherSuite = session.cipherSuite.orEmpty(),
++                subject = leaf.subjectX500Principal.name.take(300),
++                issuer = leaf.issuerX500Principal.name.take(300),
++                notBeforeEpochMs = leaf.notBefore.time,
++                notAfterEpochMs = leaf.notAfter.time,
++                signatureAlgorithm = leaf.sigAlgName.orEmpty(),
++                keyAlgorithm = key.algorithm.orEmpty(),
++                keyBits = bits,
++                sanDnsCount = leaf.subjectAlternativeNames?.count { (it.firstOrNull() as? Int) == 2 } ?: 0,
++                chainLength = chain.size
++            )
++        }.getOrNull()
++    }
++}
++
++/**
++ * Turns one observed TLS session into findings. Everything here comes from a single handshake on this device:
++ * it cannot enumerate other protocol versions or cipher suites the server may also accept, and it does not inspect
++ * intermediates, OCSP or Certificate Transparency. Findings are therefore PROBABLE/INFORMATIONAL, never CONFIRMED.
++ */
++object TlsSessionEvaluatorV1 {
++    private const val DAY_MS = 86_400_000L
++    private val LEGACY_PROTOCOLS = setOf("SSLv3", "TLSv1", "TLSv1.1")
++    private val WEAK_CIPHER_MARKERS = listOf("RC4", "3DES", "_NULL_", "EXPORT", "_anon_", "DES_CBC")
++
++    private fun day(epochMs: Long): String = java.time.Instant.ofEpochMilli(epochMs).toString().take(10)
++
++    fun evaluate(host: String, info: TlsSessionInfoV1, nowMs: Long = System.currentTimeMillis()): List<Finding> {
++        val out = mutableListOf<Finding>()
++        val subject = EvidenceSanitizer.sanitize(info.subject).take(160)
++        val issuer = EvidenceSanitizer.sanitize(info.issuer).take(160)
++        val daysLeft = (info.notAfterEpochMs - nowMs) / DAY_MS
++        val asset = "$host:443"
++        val location = "TLS session and leaf certificate"
++        val method = "One successful handshake; negotiated parameters and leaf certificate read from the session"
++        val notTested = "نسخه‌ها و cipherهای دیگری که سرور ممکن است بپذیرد، زنجیرهٔ میانی، OCSP و Certificate Transparency بررسی نشد."
++
++        fun add(id: String, title: String, severity: Severity, status: FindingStatus, description: String, fix: String, evidence: String, cwe: String) {
++            out += Finding(
++                id = id, title = title, severity = severity, description = description, remediation = fix, confidence = "Medium",
++                evidence = evidence, cwe = cwe, status = status, affectedAsset = asset, exactLocation = location,
++                detectionMethod = method, notTested = notTested,
++                residualRisk = "فقط یک نشست TLS از همین دستگاه دیده شد؛ ساعت دستگاه، پروکسی یا VPN می‌تواند مقادیر را تغییر دهد."
++            )
++        }
++
++        if (info.protocol in LEGACY_PROTOCOLS) {
++            add("SG-TLS-LEGACY-PROTOCOL", "سرور پروتکل قدیمی ${info.protocol} را مذاکره کرد", Severity.MEDIUM, FindingStatus.PROBABLE,
++                "نشست TLS با پروتکل منسوخ ${info.protocol} برقرار شد.",
++                "TLS 1.2 و TLS 1.3 را فعال و نسخه‌های ۱.۱ و پایین‌تر را غیرفعال کنید.",
++                "protocol=${info.protocol}; cipher=${info.cipherSuite}", "CWE-327")
++        }
++        if (WEAK_CIPHER_MARKERS.any { info.cipherSuite.contains(it, ignoreCase = true) }) {
++            add("SG-TLS-WEAK-CIPHER", "cipher suite ضعیف مذاکره شد", Severity.MEDIUM, FindingStatus.PROBABLE,
++                "cipher suite مذاکره‌شده شامل الگوریتم منسوخ یا بدون رمزنگاری قوی است.",
++                "فقط cipherهای AEAD با forward secrecy (ECDHE + AES-GCM/ChaCha20) را فعال کنید.",
++                "cipher=${info.cipherSuite}", "CWE-327")
++        }
++        val weakKey = (info.keyAlgorithm.equals("RSA", true) && info.keyBits in 1..2047) ||
++            (info.keyAlgorithm.equals("EC", true) && info.keyBits in 1..223)
++        if (weakKey) {
++            add("SG-TLS-WEAK-KEY", "کلید عمومی گواهی کوتاه است", Severity.MEDIUM, FindingStatus.PROBABLE,
++                "گواهی برگ از کلید ${info.keyAlgorithm} با ${info.keyBits} بیت استفاده می‌کند.",
++                "گواهی جدید با RSA حداقل ۲۰۴۸ بیت یا ECDSA حداقل P-256 صادر کنید.",
++                "key=${info.keyAlgorithm}/${info.keyBits}; subject=$subject", "CWE-326")
++        }
++        val sigUpper = info.signatureAlgorithm.uppercase()
++        if (sigUpper.contains("MD5") || sigUpper.contains("SHA1")) {
++            add("SG-TLS-WEAK-SIGNATURE", "گواهی برگ با الگوریتم امضای ضعیف امضا شده است", Severity.MEDIUM, FindingStatus.PROBABLE,
++                "الگوریتم امضای گواهی برگ ${info.signatureAlgorithm} است.",
++                "گواهی را با SHA-256 یا قوی‌تر مجدداً صادر کنید.",
++                "signature=${info.signatureAlgorithm}; issuer=$issuer", "CWE-328")
++        }
++        if (daysLeft in 0..30) {
++            add("SG-TLS-CERT-EXPIRING", "گواهی TLS ظرف ${daysLeft} روز منقضی می‌شود",
++                if (daysLeft <= 14) Severity.MEDIUM else Severity.LOW, FindingStatus.PROBABLE,
++                "تاریخ پایان گواهی برگ نزدیک است؛ انقضا باعث خطای مرورگر و قطع سرویس می‌شود.",
++                "تمدید خودکار (مثلاً ACME) را فعال کنید و هشدار انقضا تنظیم کنید.",
++                "notAfter=${day(info.notAfterEpochMs)}; daysLeft=$daysLeft; issuer=$issuer", "CWE-298")
++        }
++        add("SG-TLS-OBSERVED", "جزئیات نشست TLS مشاهده‌شده", Severity.INFO, FindingStatus.INFORMATIONAL,
++            "خلاصهٔ پارامترهای مذاکره‌شده و گواهی برگ در یک handshake موفق؛ برای ثبت در گزارش و مقایسهٔ آینده.",
++            "اقدامی لازم نیست؛ اگر مقادیر غیرمنتظره‌اند با مدیر سرور بررسی کنید.",
++            "protocol=${info.protocol}; cipher=${info.cipherSuite}; key=${info.keyAlgorithm}/${info.keyBits}; sig=${info.signatureAlgorithm}; " +
++                "validity=${day(info.notBeforeEpochMs)}..${day(info.notAfterEpochMs)}; SAN-DNS=${info.sanDnsCount}; chain=${info.chainLength}; issuer=$issuer",
++            "CWE-295")
++        return out
++    }
++}
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt v11/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt	2026-11-23 05:12:41.000000000 +0000
++++ v11/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt	2026-11-23 05:25:58.954785481 +0000
+@@ -68,7 +68,8 @@
+     val status: Int,
+     val headers: Map<String, String>,
+     val body: ByteArray,
+-    val ip: String
++    val ip: String,
++    val tls: TlsSessionInfoV1? = null
+ )
+ 
+ object WebsiteDiscoveryEngineV1 {
+@@ -190,13 +191,13 @@
+     }
+ 
+     /** Result of one pinned passive GET (headers limited to the engine's allowlist plus location/content-type). */
+-    internal data class PassiveFetchV1(val status: Int, val headers: Map<String, String>, val body: String, val ip: String)
++    internal data class PassiveFetchV1(val status: Int, val headers: Map<String, String>, val body: String, val ip: String, val tls: TlsSessionInfoV1? = null)
+ 
+     /** One pinned GET with the same DNS/IP/TLS gates as the crawler; redirects are never followed. */
+     internal fun fetchPassive(urlText: String, manifest: WebsiteEngagementManifestV2, maxBodyBytes: Int = 64 * 1024): PassiveFetchV1 {
+         val options = WebsiteDiscoveryOptionsV1(maxPages = 1, maxDepth = 0, maxBodyBytes = maxBodyBytes.coerceIn(8 * 1024, 256 * 1024))
+         val r = fetchPinned(urlText, manifest, options)
+-        return PassiveFetchV1(r.status, r.headers, r.body.toString(Charsets.UTF_8), r.ip)
++        return PassiveFetchV1(r.status, r.headers, r.body.toString(Charsets.UTF_8), r.ip, r.tls)
+     }
+ 
+     private fun fetchPinned(urlText: String, manifest: WebsiteEngagementManifestV2, options: WebsiteDiscoveryOptionsV1): PinnedHttpResponseV1 {
+@@ -231,6 +232,7 @@
+         var managed: Socket = raw
+         try {
+             raw.soTimeout = options.readTimeoutMs
++            var tlsInfo: TlsSessionInfoV1? = null
+             val socket = if (uri.scheme.equals("https", true)) {
+                 val ssl = (SSLSocketFactory.getDefault() as SSLSocketFactory).createSocket(raw, bareHost(host), port, true) as SSLSocket
+                 managed = ssl
+@@ -240,6 +242,7 @@
+                 ssl.sslParameters = params
+                 ssl.soTimeout = options.readTimeoutMs
+                 ssl.startHandshake()
++                tlsInfo = TlsSessionInfoV1.fromSession(ssl.session)
+                 ssl
+             } else raw
+             socket.use {
+@@ -272,7 +275,7 @@
+                 }
+                 val body = if (isChunked(headers["transfer-encoding"])) readChunkedBody(input, options.maxBodyBytes)
+                 else readBoundedBody(input, options.maxBodyBytes)
+-                return PinnedHttpResponseV1(status, headers, body, chosen.hostAddress.orEmpty())
++                return PinnedHttpResponseV1(status, headers, body, chosen.hostAddress.orEmpty(), tlsInfo)
+             }
+         } catch (t: Throwable) {
+             runCatching { managed.close() }; runCatching { raw.close() }
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/app/src/test/java/com/siteguard/app/core/TlsSessionEvaluatorTest.kt v11/app/src/test/java/com/siteguard/app/core/TlsSessionEvaluatorTest.kt
+--- v10/SiteGuard-Android-v0.10.0/app/src/test/java/com/siteguard/app/core/TlsSessionEvaluatorTest.kt	1970-01-01 00:00:00.000000000 +0000
++++ v11/app/src/test/java/com/siteguard/app/core/TlsSessionEvaluatorTest.kt	2026-11-23 05:26:27.081476208 +0000
+@@ -0,0 +1,63 @@
++package com.siteguard.app.core
++
++import org.junit.Assert.assertEquals
++import org.junit.Assert.assertFalse
++import org.junit.Assert.assertTrue
++import org.junit.Test
++
++class TlsSessionEvaluatorTest {
++    private val now = 1_800_000_000_000L
++    private val day = 86_400_000L
++    private fun info(
++        protocol: String = "TLSv1.3",
++        cipher: String = "TLS_AES_128_GCM_SHA256",
++        keyAlg: String = "EC", bits: Int = 256, sig: String = "SHA256withECDSA",
++        daysLeft: Long = 90
++    ) = TlsSessionInfoV1(
++        protocol, cipher, "CN=example.com", "CN=Example CA,O=Example", now - 30 * day, now + daysLeft * day,
++        sig, keyAlg, bits, sanDnsCount = 2, chainLength = 3
++    )
++    private fun ids(i: TlsSessionInfoV1) = TlsSessionEvaluatorV1.evaluate("example.com", i, now).map { it.id }
++
++    @Test fun healthyModernSessionOnlyProducesObservation() {
++        assertEquals(listOf("SG-TLS-OBSERVED"), ids(info()))
++    }
++
++    @Test fun legacyProtocolIsFlagged() {
++        assertTrue("SG-TLS-LEGACY-PROTOCOL" in ids(info(protocol = "TLSv1")))
++        assertTrue("SG-TLS-LEGACY-PROTOCOL" in ids(info(protocol = "TLSv1.1")))
++        assertFalse("SG-TLS-LEGACY-PROTOCOL" in ids(info(protocol = "TLSv1.2")))
++    }
++
++    @Test fun weakCipherMarkersAreFlaggedButGcmIsNot() {
++        assertTrue("SG-TLS-WEAK-CIPHER" in ids(info(cipher = "TLS_RSA_WITH_3DES_EDE_CBC_SHA")))
++        assertTrue("SG-TLS-WEAK-CIPHER" in ids(info(cipher = "TLS_RSA_WITH_RC4_128_SHA")))
++        assertFalse("SG-TLS-WEAK-CIPHER" in ids(info(cipher = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")))
++    }
++
++    @Test fun shortKeysAndWeakSignaturesAreFlagged() {
++        assertTrue("SG-TLS-WEAK-KEY" in ids(info(keyAlg = "RSA", bits = 1024)))
++        assertFalse("SG-TLS-WEAK-KEY" in ids(info(keyAlg = "RSA", bits = 2048)))
++        assertFalse("SG-TLS-WEAK-KEY" in ids(info(keyAlg = "EC", bits = 256)))
++        assertFalse("SG-TLS-WEAK-KEY" in ids(info(keyAlg = "RSA", bits = 0))) // unknown size is not claimed weak
++        assertTrue("SG-TLS-WEAK-SIGNATURE" in ids(info(sig = "SHA1withRSA")))
++        assertTrue("SG-TLS-WEAK-SIGNATURE" in ids(info(sig = "MD5withRSA")))
++        assertFalse("SG-TLS-WEAK-SIGNATURE" in ids(info(sig = "SHA256withRSA")))
++    }
++
++    @Test fun expiryWindowSeverityAndBoundaries() {
++        val soon = TlsSessionEvaluatorV1.evaluate("example.com", info(daysLeft = 10), now).first { it.id == "SG-TLS-CERT-EXPIRING" }
++        val later = TlsSessionEvaluatorV1.evaluate("example.com", info(daysLeft = 25), now).first { it.id == "SG-TLS-CERT-EXPIRING" }
++        assertEquals(Severity.MEDIUM, soon.severity)
++        assertEquals(Severity.LOW, later.severity)
++        assertFalse("SG-TLS-CERT-EXPIRING" in ids(info(daysLeft = 45)))
++        assertFalse("SG-TLS-CERT-EXPIRING" in ids(info(daysLeft = -3))) // already expired is a validation failure, reported elsewhere
++    }
++
++    @Test fun nothingIsEverReportedAsConfirmed() {
++        val all = TlsSessionEvaluatorV1.evaluate("example.com", info(protocol = "TLSv1", cipher = "TLS_RSA_WITH_RC4_128_SHA", keyAlg = "RSA", bits = 1024, sig = "SHA1withRSA", daysLeft = 5), now)
++        assertTrue(all.size >= 5)
++        assertTrue(all.none { it.status == FindingStatus.CONFIRMED })
++        assertTrue(all.all { it.notTested.isNotBlank() && it.affectedAsset == "example.com:443" })
++    }
++}
+diff -ruN -x FINAL_RELEASE_GATE_v0.11.0.txt -x '*.patch' v10/SiteGuard-Android-v0.10.0/tools/final-release-gate.sh v11/tools/final-release-gate.sh
+--- v10/SiteGuard-Android-v0.10.0/tools/final-release-gate.sh	2026-11-23 05:19:02.000000000 +0000
++++ v11/tools/final-release-gate.sh	2026-11-23 05:26:27.101752233 +0000
+@@ -66,8 +66,13 @@
+ 
+ VERSION_CODE=$(grep -E 'versionCode\s*=' "$ROOT/app/build.gradle.kts" | grep -oE '[0-9]+' | head -1)
+ VERSION_NAME=$(grep -E 'versionName\s*=' "$ROOT/app/build.gradle.kts" | sed -E 's/.*"([^"]+)".*/\1/')
+-[[ "$VERSION_CODE" == '11' && "$VERSION_NAME" == '0.10.0' ]] || fail "Unexpected app version ($VERSION_NAME / $VERSION_CODE)"
+-pass 'App version metadata is v0.10.0 / versionCode 11'
++[[ "$VERSION_CODE" == '12' && "$VERSION_NAME" == '0.11.0' ]] || fail "Unexpected app version ($VERSION_NAME / $VERSION_CODE)"
++pass 'App version metadata is v0.11.0 / versionCode 12'
++[[ -f "$ROOT/app/src/main/java/com/siteguard/app/core/TlsSessionInfoV1.kt" && -f "$ROOT/app/src/test/java/com/siteguard/app/core/TlsSessionEvaluatorTest.kt" ]] || fail 'v0.11.0 TLS session evaluator or its tests are missing'
++grep -q 'REPORT_SCHEMA_VERSION = 5' "$ROOT/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt" || fail 'Report schema must be 5 for v0.11.0'
++grep -q 'passive_hygiene' "$ROOT/app/src/main/java/com/siteguard/app/MainActivity.kt" || fail 'passive_hygiene JSON section is not exported'
++[[ -f "$ROOT/RELEASE_NOTES_v0.11.0.md" && -f "$ROOT/TEST_RESULTS_v0.11.0.txt" ]] || fail 'v0.11.0 release notes or test report are missing'
++pass 'v0.11.0 TLS session evaluation, hygiene JSON export and release documents are present'
+ [[ -f "$ROOT/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt" ]] || fail 'Central build metadata is missing'
+ grep -q 'maxDurationMs: Long = 60_000L' "$ROOT/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt" || fail 'Crawler global time budget is missing'
+ grep -q 'catch (cancelled: CancellationException)' "$ROOT/app/src/main/java/com/siteguard/app/core/ScanEngine.kt" || fail 'Scan cancellation propagation is missing'

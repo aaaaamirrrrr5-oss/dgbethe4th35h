@@ -1,0 +1,1193 @@
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/BUILD_APK_GUIDE_FA.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/BUILD_APK_GUIDE_FA.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/BUILD_APK_GUIDE_FA.md	2026-11-22 22:52:22.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/BUILD_APK_GUIDE_FA.md	2026-11-23 05:16:23.019047899 +0000
+@@ -1,9 +1,9 @@
+-# راهنمای ساخت APK — SiteGuard Android v0.9.0
++# راهنمای ساخت APK — SiteGuard Android v0.10.0
+ 
+ ## روش پیشنهادی: GitHub Actions
+ 
+ 1. ZIP را استخراج کنید.
+-2. کل پوشه `SiteGuard-Android-v0.9.0` را به یک repository جدید GitHub آپلود کنید (همه فایل‌های مخفی مثل `.github` و `.gitignore` را نیز حفظ کنید؛ پوشه `.git` را برای upload لازم نیست).
++2. کل پوشه `SiteGuard-Android-v0.10.0` را به یک repository جدید GitHub آپلود کنید (همه فایل‌های مخفی مثل `.github` و `.gitignore` را نیز حفظ کنید؛ پوشه `.git` را برای upload لازم نیست).
+ 3. وارد تب **Actions** شوید.
+ 4. workflow با نام **Android CI** را از فایل `.github/workflows/android-ci.yml` اجرا کنید.
+ 5. بعد از سبز شدن تمام مراحل، وارد همان run شوید و artifact زیر را بگیرید:
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/FINAL_RELEASE_GATE_v0.10.0.txt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/FINAL_RELEASE_GATE_v0.10.0.txt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/FINAL_RELEASE_GATE_v0.10.0.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/FINAL_RELEASE_GATE_v0.10.0.txt	2026-11-23 05:19:57.395658693 +0000
+@@ -0,0 +1,18 @@
++PASS — Android manifest is well-formed XML
++PASS — No known hosted AI inference endpoint configured in runtime source
++PASS — All specifications 00–23 and execution-order README are packaged
++PASS — Original dark/red UI and bottom navigation markers are retained
++PASS — Runtime 00–23 coverage registry, implementation matrix and execution log are present
++PASS — v0.9.0 five-stage execution log is present
++PASS — v0.8.0 specialist, schema-analysis, crawler and forensic modules are present
++PASS — v0.9.0 UX, unified findings/reporting and 40-domain prompt matrix are present
++PASS — Focused v0.8.0 regression tests and results are present
++PASS — v0.10.0 authorization, evidence-redaction and crawler-deadline regression tests are present
++PASS — App version metadata is v0.10.0 / versionCode 11
++PASS — v0.10.0 authorization, timeout/cancellation and evidence-redaction hardening is present
++PASS — CI, threat model, test plan, SBOM and release documentation are present
++PASS — Step 5 hardening: no cleartext, network security config, resources/icon, R8 present
++WARN — Gradle wrapper jar/gradlew missing: run tools/bootstrap-wrapper.sh and commit the result
++
++LOCAL RELEASE GATE: 14 PASS, 1 WARN
++Source preflight only. It does not replace Android Gradle build, lint, install, signing or device tests.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/README.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/README.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/README.md	2026-11-22 22:50:59.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/README.md	2026-11-23 05:16:23.018375592 +0000
+@@ -1,15 +1,19 @@
+-# SiteGuard Android v0.9.0
++# SiteGuard Android v0.10.0
+ 
+-نسخه ۰٫۹٫۰ بر پایه بسته v0.8.0 است. تم مشکی/قرمز و چهار مقصد ناوبری حفظ شده‌اند، اما هدر، کارت‌ها، وضعیت اجرای عملیات، خوانایی و نمایش نتایج بازطراحی و یکپارچه شده‌اند. این محصول همچنان local-first و rule-based است و همه محدودیت‌های پوشش در ماتریس ۴۰ حوزه مستند شده‌اند.
++نسخه ۰٫۱۰٫۰ ارتقای امنیت scope، پاک‌سازی شواهد و پایداری عملیات شبکه روی نسخه ۰٫۹ است. تم مشکی/قرمز، چهار مقصد ناوبری و جریان local-first حفظ شده‌اند. این نسخه سورس است و APK در محیط فعلی ساخته نشده است.
++
++## افزوده‌های v0.10.0
+ 
++- fail-closed validation سخت‌گیرانه‌تر برای host/path/port/validity/budget و جلوگیری از path traversal و encoding مبهم.
++- redaction گسترده‌تر در evidence و remediation report؛ شامل JSON credential، token، PEM و credential URL.
++- deadline و cancellation propagation برای scan و crawler؛ پیام timeout جدا در UI.
++- نسخه برنامه ۰٫۱۰٫۰، versionCode 11 و JSON schema 4.
++- regression tests و coverage delta جدید؛ وضعیت ۴۰ حوزه همچنان ۳۸ Partial، یک Unsupported و یک Blocked است.
+ 
+-## افزوده‌های v0.9.0
++# SiteGuard Android v0.10.0
++
++نسخه ۰٫۹٫۰ بر پایه بسته v0.8.0 است. تم مشکی/قرمز و چهار مقصد ناوبری حفظ شده‌اند، اما هدر، کارت‌ها، وضعیت اجرای عملیات، خوانایی و نمایش نتایج بازطراحی و یکپارچه شده‌اند. این محصول همچنان local-first و rule-based است و همه محدودیت‌های پوشش در ماتریس ۴۰ حوزه مستند شده‌اند.
+ 
+-- ارتقای UX با هدر برند، نمایش وضعیت فعالیت، کارت‌های آماری با کنتراست بهتر و ناوبری پایین واضح‌تر.
+-- یکپارچه‌سازی یافته‌های وب، سورس و ZIP؛ رفع تکرار، مرتب‌سازی بر اساس شدت و اصلاح آمار داشبورد.
+-- جمع‌شدن جزئیات فنی پرتراکم متخصص وب تا زمان درخواست کاربر، بدون حذف اطلاعات.
+-- خروجی JSON schema v3 با فهرست یکپارچه یافته‌ها؛ برنامه نسخه ۰٫۹٫۰ / versionCode 10.
+-- ماتریس اجرای ۴۰ حوزه پرامت ۱۰۰٬۰۰۰ ردیفی در `docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md`.
+ 
+ ## اصول ثابت
+ 
+@@ -96,8 +100,8 @@
+ - `docs/specifications/` — اسناد 00 تا 23 و README ترتیب اجرا.
+ - `DOMAIN_MODULES_v0.8.0.md` — نقشه تاریخی ماژول‌ها و وضعیت نسخه ۰٫۸٫۰.
+ - `IMPLEMENTATION_MATRIX_00_23.md` — وضعیت تک‌تک ۲۴ سند و شکاف‌های باقی‌مانده.
+-- `docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md` — نگاشت ۴۰ حوزه پرامت به کد، تست و محدودیت واقعی.
+-- `SPEC_EXECUTION_LOG_v0.9.0.md` — ثبت اجرای پنج مرحله ارتقا بر اساس پرامت؛ `SPEC_EXECUTION_LOG_v0.8.0.md` تاریخچه اجرای قبلی 00 تا 23 است.
++- `docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md` (و نسخه تاریخی v0.9.0) — نگاشت ۴۰ حوزه پرامت به کد، تست و محدودیت واقعی.
++- `SPEC_EXECUTION_LOG_v0.10.0.md` و `SPEC_EXECUTION_LOG_v0.9.0.md` — ثبت اجرای پنج مرحله ارتقا بر اساس پرامت؛ `SPEC_EXECUTION_LOG_v0.8.0.md` تاریخچه اجرای قبلی 00 تا 23 است.
+ - `SPECIFICATION_GAPS.md` — unsupported/partial و blockers.
+ - `TEST_PLAN.md`, `TEST_RESULTS_v0.8.0.txt`, `TEST_RESULTS_v0.9.0.txt`, `FINAL_EXECUTION_RESULT.md` — QA و نتیجه تست.
+ - `THREAT_MODEL.md`, `SBOM_STATUS.md`, `THIRD_PARTY_NOTICES.md` — امنیت و زنجیره تأمین.
+@@ -106,3 +110,8 @@
+ ## تغییرات v0.9.0
+ 
+ خلاصه تغییرات UX و گزارش در `RELEASE_NOTES_v0.9.0.md` آمده است. وضعیت واقعی build و source gate در `TEST_RESULTS_v0.9.0.txt` ثبت می‌شود.
++
++
++## وضعیت اعتبارسنجی v0.10.0
++
++تست‌های مستقل Kotlin/JVM، policy smoke، source release gate و بررسی صحت ZIP در `TEST_RESULTS_v0.10.0.txt` گزارش شده‌اند. این‌ها معادل Gradle build، JUnit task، APK یا تست دستگاه نیستند.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/RELEASE_NOTES.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/RELEASE_NOTES.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/RELEASE_NOTES.md	2026-11-22 22:12:34.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/RELEASE_NOTES.md	2026-11-23 05:16:23.018523956 +0000
+@@ -1,3 +1,16 @@
++# Release Notes — SiteGuard Android v0.10.0
++
++این release notes نسخه فعلی را خلاصه می‌کند؛ history نسخه‌های قبلی پایین‌تر حفظ شده است. جزئیات: `RELEASE_NOTES_v0.10.0.md`.
++
++- Authorization scope validation: reject ambiguous encoding/path traversal, invalid manifests, malformed IPv4 and IDN normalization errors; segment-safe path prefix matching.
++- Evidence redaction: JSON credentials, provider tokens, PEM, JWT, Authorization headers and credential URLs.
++- Report redaction now also covers remediation root-cause hypothesis and proposed patch diff.
++- Bounded scan/crawler coroutine deadlines and explicit cancellation propagation; UI timeout message. Native DNS resolver may remain blocking.
++- App `0.10.0`, versionCode `11`, report schema `4`; no AI API/backend added.
++- Regression tests added; full Android/Gradle/APK/device tests remain unexecuted in this environment.
++
++---
++
+ # Release Notes — SiteGuard Android v0.8.0
+ 
+ ## Added
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/RELEASE_NOTES_v0.10.0.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/RELEASE_NOTES_v0.10.0.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/RELEASE_NOTES_v0.10.0.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/RELEASE_NOTES_v0.10.0.md	2026-11-23 05:17:48.288768330 +0000
+@@ -0,0 +1,42 @@
++# SiteGuard Android v0.10.0
++
++## امنیت مجوز و Scope
++
++- اعتبارسنجی path در `Authorization.kt` اکنون مسیرهای absolute و محدود را می‌پذیرد و کنترل‌کاراکترها، backslash، dot-segment، percent escape ناقص، encoded dot/slash/backslash/NUL/CR/LF و double-encoding `%25` را رد می‌کند.
++- manifestهای نامعتبر به‌صورت fail-closed رد می‌شوند: شناسه/اظهار مالکیت خالی، زمان شروع/پایان نامعتبر، بازه منقضی یا معکوس، بودجه درخواست خارج از محدوده، port نامعتبر، host نامعتبر، method غیر از passive GET و فهرست‌های بیش‌ازحد بزرگ رد می‌شوند.
++- تطبیق path بر اساس مرز segment انجام می‌شود؛ `/admin` مجوز `/administrator` ایجاد نمی‌کند. excluded path نیز روی زیرمسیرهای همان segment اعمال می‌شود.
++- canonicalization میزبان شامل IDN و IPv4 سخت‌گیرانه است؛ شکل‌های مبهم مانند `127.1` و octetهای دارای leading zero رد می‌شوند.
++- normalize URL طول ورودی، scheme، userinfo، fragment، port، whitespace/control و path را اعتبارسنجی می‌کند.
++
++## پایداری اسکن و خزش
++
++- `ScanEngine` دارای deadline coroutine برابر ۲۶ ثانیه شده است؛ cancellation جداگانه منتشر می‌شود و به‌عنوان خطای معمول شبکه/اسکن ثبت نمی‌شود.
++- `WebsiteDiscoveryEngineV1` گزینه `maxDurationMs` با بازه ۵٬۰۰۰ تا ۱۸۰٬۰۰۰ میلی‌ثانیه دارد (پیش‌فرض ۶۰ ثانیه)، در loop و اطراف fetch نقاط بررسی cancellation دارد و لغو را به‌عنوان `REQUEST_FAILED` ثبت نمی‌کند.
++- `MainActivity` پیام timeout را از لغو عادی جدا می‌کند.
++- محدودیت فنی resolver سیستم باقی است: `InetAddress.getAllByName` ممکن است در لایه native blocking باشد؛ deadline تضمین interrupt فوری DNS در تمام دستگاه‌ها نیست.
++
++## پاک‌سازی شواهد و گزارش
++
++- redaction برای JSON key/value، assignmentهای quoted/unquoted، Authorization Bearer/Basic، PEM private key، توکن‌های GitHub، AWS access key، JWT و URL دارای username/password اضافه/تقویت شد.
++- فیلدهای یافته، evidence و remediation plan قبل از خروجی JSON پاک‌سازی می‌شوند؛ از جمله root-cause hypothesis و proposed patch diff.
++- نسخه برنامه و schema در `SiteGuardBuildInfo.kt` متمرکز شده‌اند: app `0.10.0`, versionCode `11`, JSON report schema `4`.
++
++## آزمون و مستندات
++
++- regression testهای JUnit برای scope و redaction اضافه شدند.
++- release gate بررسی وجود تست‌ها، deadline/cancellation و scrub شدن patch report را انجام می‌دهد.
++- ماتریس ۴۰ حوزه با delta نسخه ۰٫۱۰ تکمیل شد، بدون اینکه حوزه‌ای نادرست Complete/ Tested اعلام شود.
++
++## رفتارهای حفظ‌شده
++
++- تم مشکی/قرمز، داشبورد و چهار مقصد نوار پایین حفظ شده‌اند.
++- پروژه همچنان local-first است و هیچ AI API، hosted inference یا backend اجباری اضافه نشده است.
++- اسکن شبکه همچنان passive و محدود به مجوز میزبان/درگاه/مسیر است؛ redirect خودکار دنبال نمی‌شود.
++- اصلاحات حساس فقط plan/preview هستند؛ هیچ تغییر خودکاری روی production، سفارش، پرداخت، مشتری یا موجودی انجام نمی‌شود.
++
++## اعتبارسنجی و محدودیت‌ها
++
++- Kotlin/JVM compilation برای policy، scan/crawler core با stubs محدود، و policy smoke testها اجرا می‌شوند و نتیجه دقیق در `TEST_RESULTS_v0.10.0.txt` ثبت شده است.
++- این بررسی‌ها جایگزین Gradle/Android/Compose build یا اجرای JUnit در Gradle نیستند.
++- APK، signing، install، lint، Android device, UI/RTL/TalkBack و lifecycle در این محیط اجرا نشده‌اند.
++- ۴۰ حوزه همچنان: ۳۸ Partial، یک Unsupported، یک Blocked؛ تمام ۲٬۰۰۰ معیار پذیرش تکمیل نشده‌اند.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/SPECIFICATION_GAPS.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/SPECIFICATION_GAPS.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/SPECIFICATION_GAPS.md	2026-11-22 22:47:56.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/SPECIFICATION_GAPS.md	2026-11-23 05:17:48.289065400 +0000
+@@ -70,3 +70,12 @@
+ - Version advanced to 0.9.0 / versionCode 10. JSON report schema advanced to version 3.
+ - `docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md` maps all 40 domains from the uploaded 100,000-line prompt to real source paths, tests and remaining limitations. No complete domain is certified as fully implemented or fully tested.
+ - These Compose/UI changes are source-edited but require a real Android Gradle/SDK build and device review. This environment does not contain Gradle, Android SDK, adb or a committed Gradle wrapper JAR; Android UI compilation and APK creation remain unverified.
++
++
++## v0.10.0 — Authorization, evidence and cancellation hardening
++
++- Authorization manifest validation now fails closed for malformed host/path/port/time/budget data; URL path validation rejects dot segments, encoded separators/dots, controls, malformed escapes and double-decoding `%25`. Path-prefix checks are segment-aware. Numeric IPv4 values must use four unambiguous octets; IDN names are canonicalized.
++- Evidence redaction now covers JSON quoted secrets, ordinary credential assignments, Authorization Bearer/Basic, PEM private keys, GitHub/AWS tokens, JWT and credential-bearing URLs. JSON finding/remediation report fields including root-cause hypothesis and proposed patch diff are scrubbed before export.
++- Scan and discovery workflows have coroutine deadlines and propagate cancellation rather than classifying it as a network failure. The platform DNS call `InetAddress.getAllByName` remains a blocking native resolver operation and may not be interruptible immediately on all devices.
++- New JUnit test source files exist for authorization-scope and evidence-redaction regression. They have not been run via Gradle in this environment.
++- These changes improve but do not complete domains 01/04/05/06/08/10/28/40. Aggregate coverage remains 38 Partial, 1 Unsupported and 1 Blocked; no whole domain is certified complete.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/SPEC_EXECUTION_LOG_v0.10.0.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/SPEC_EXECUTION_LOG_v0.10.0.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/SPEC_EXECUTION_LOG_v0.10.0.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/SPEC_EXECUTION_LOG_v0.10.0.md	2026-11-23 05:16:23.018248950 +0000
+@@ -0,0 +1,40 @@
++# SiteGuard Android v0.10.0 — ثبت اجرای پنج مرحله
++
++## Stage 1/5 — ممیزی و استخراج قرارداد
++
++- نسخه واقعی پایه: `SiteGuard-Android-v0.9.0`؛ فایل‌ها و ماژول‌های موجود قبل از تغییر بررسی شدند.
++- تغییرات در لایه core و گزارش‌دهی انجام شد؛ داشبورد و تم نسخه ۰٫۹ حفظ شدند.
++- نقاط ریسک مورد هدف: اعتبارسنجی URL و authorization manifest، redaction شواهد، لغو و deadline عملیات شبکه، و صحت فراداده release.
++- ماتریس کامل ۴۰ حوزه و حدود پذیرش حفظ شده؛ هیچ claim از تکمیل تمام ۲٬۰۰۰ معیار صادر نشده است.
++
++## Stage 2/5 — طراحی و پیاده‌سازی
++
++- `Authorization.kt`: path/host/port/time/budget canonicalization و fail-closed validation سخت‌گیرانه‌تر شد.
++- `EvidenceSanitizer.kt`: پوشش credentialهای JSON، header، provider token، PEM، JWT و URL credential گسترش یافت.
++- `PlatformContracts.kt`: فیلدهای remediation و متن‌های حساس گزارش نیز sanitize می‌شوند.
++- `ScanEngine.kt` و `WebsiteDiscoveryEngineV1.kt`: timeout/deadline و cancellation propagation افزوده شد؛ cancellation خطای معمول درخواست محسوب نمی‌شود.
++- `MainActivity.kt`: پیام timeout مجزا شد.
++- `SiteGuardBuildInfo.kt`: metadata مرکزی نسخه/schema اضافه شد؛ app نسخه `0.10.0`, versionCode `11`, schema `4`.
++- JUnit regression source برای scope و evidence redaction اضافه شد.
++
++## Stage 3/5 — اتصال و یکپارچه‌سازی
++
++- release gate بررسی می‌کند metadata نسخه، تست‌های جدید، scope hardening، redaction در patch report و deadline/cancellation وجود داشته باشند.
++- گزارش JSON از metadata مرکزی نسخه/schema استفاده می‌کند.
++- theme مشکی/قرمز، چهار destination موجود، سیاست بدون AI API، حالت local-first و preview-only remediation حفظ شدند.
++
++## Stage 4/5 — اعتبارسنجی
++
++- بررسی Kotlin/JVM برای `Authorization.kt`, `EvidenceSanitizer.kt`, `SiteGuardBuildInfo.kt` با kotlinc اجرا شد.
++- policy smoke testها برای path، URL، host canonicalization، validity، port/budget و redaction اجرا شدند.
++- مجموعه scan/crawler core با coroutine library و stubs محدود APIهای Android/Compose/manifest کامپایل شد؛ این تست فقط syntax/type checking بخش مورد نظر است، نه Android build.
++- `bash -n` برای shell scriptها، parser XML برای AndroidManifest و source release gate اجرا شد.
++- Gradle/JUnit/Android SDK/Compose/Lint/APK/device tests در این محیط اجرا نشدند؛ Gradle/SDK/Wrapper موجود نیستند.
++
++## Stage 5/5 — تحویل
++
++- نسخه تحویلی: `SiteGuard-Android-v0.10.0.zip`.
++- گزارش آزمون: `TEST_RESULTS_v0.10.0.txt`.
++- coverage delta: `docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md`.
++- ریسک باقیمانده: native DNS resolver blocking، تست Gradle و Android build/device، و قابلیت‌های Partial/Unsupported در ماتریس ۴۰ حوزه.
++- وضعیت نهایی: ارتقای سورس انجام شده؛ APK آماده نصب یا اجرای کامل تمام پرامت ادعا نمی‌شود.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/TEST_RESULTS_v0.10.0.txt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/TEST_RESULTS_v0.10.0.txt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/TEST_RESULTS_v0.10.0.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/TEST_RESULTS_v0.10.0.txt	2026-11-23 05:19:58.267178459 +0000
+@@ -0,0 +1,49 @@
++SiteGuard Android v0.10.0 — گزارش آزمون و تحویل
++تاریخ ثبت: 2026-11-23
++
++خلاصه
++- نسخه برنامه: 0.10.0
++- versionCode: 11
++- schema گزارش JSON: 4
++- نوع خروجی: بسته سورس Android؛ APK در این محیط ساخته نشده است.
++- وضعیت: کنترل منبع و تست‌های مستقل Kotlin/JVM موفق؛ Android Gradle/APK/device tests اجرا نشده‌اند.
++
++1) تغییرات کلیدی
++- اعتبارسنجی fail-closed مجوز، میزبان، پورت، زمان، budget، روش مجاز و path.
++- رد traversal و encoding مبهم/double-encoding و تطبیق path بر مبنای مرز segment.
++- canonicalization نام‌های IDN و رد IPv4های عددی مبهم.
++- redaction credentialهای JSON، header، assignment، PEM، GitHub/AWS token، JWT و credential URL.
++- پاک‌سازی فیلدهای finding و remediation؛ از جمله root-cause hypothesis و proposed patch diff.
++- deadline و cancellation propagation در scan/crawler؛ پیام timeout مجزا در UI.
++
++2) آزمون‌هایی که در این محیط واقعاً اجرا شدند
++- PASS: Kotlin/JVM compile برای `SiteGuardBuildInfo.kt`, `Authorization.kt`, `EvidenceSanitizer.kt`. هشدارهای compiler محدود به constructor قدیمی `java.net.URL` بود.
++- PASS: 27 policy/redaction smoke assertions؛ خروجی runner: `POLICY_SMOKE_TESTS_OK=27`.
++- PASS: Kotlin/JVM compile برای `ScanEngine.kt` و `TlsFailureClassifier.kt` با `kotlinx-coroutines-core` و stub موقت برای قرارداد policy مشترک. این فقط بررسی نوع/نحو کد core مربوطه است، نه build کامل برنامه.
++- PASS: Kotlin/JVM compile برای `WebsiteDiscoveryEngineV1.kt` و `WebsiteDiscoveryOptionsV1` با stubs محدود APIهای manifest و coroutine انجام شد؛ این stubs جایگزین ماژول‌های واقعی Android/manifest نیستند و رفتار runtime شبکه را تست نمی‌کنند.
++- PASS: `bash -n` برای `tools/final-release-gate.sh`, `tools/check-no-hosted-ai.sh`, `tools/bootstrap-wrapper.sh`.
++- PASS: AndroidManifest.xml با XML parser بررسی شد.
++- PASS: `tools/final-release-gate.sh` — 14 PASS و 1 WARN.
++- PASS: آزمون نهایی آرشیو ZIP با `unzip -t` بدون خطا انجام شد؛ SHA-256 نیز جداگانه محاسبه و در فایل همراه ثبت شد.
++
++3) نتیجه release gate
++- 14 PASS، 1 WARN.
++- تنها هشدار: Gradle Wrapper script/JAR در ورودی پروژه موجود نیست؛ این هشدار به معنی خطای سورس نیست، ولی اجرای build را در محیط فعلی مسدود می‌کند.
++- خروجی کامل در `FINAL_RELEASE_GATE_v0.10.0.txt` ذخیره شده است.
++- release gate فقط preflight منبع است و build Android را جایگزین نمی‌کند.
++
++4) مواردی که اجرا نشده‌اند
++- Gradle Wrapper script/JAR در پروژه موجود نیست؛ `gradle` در PATH نصب نشده است.
++- Android SDK در `ANDROID_HOME` و `ANDROID_SDK_ROOT` تعریف نشده و `adb` نیز در دسترس نیست.
++- Gradle `:app:testDebugUnitTest` اجرا نشده است؛ JUnit test source جدید اضافه شده، اما اجرا نشده است.
++- Android/Compose full compilation، lint، `assembleDebug`, `assembleRelease`، APK signing، نصب/upgrade، UI/RTL/TalkBack و تست دستگاه اجرا نشده‌اند.
++- آزمون end-to-end شبکه/DNS و اندازه‌گیری عملکرد/مصرف battery اجرا نشده است.
++
++5) محدودیت‌های فنی و ریسک باقی‌مانده
++- `InetAddress.getAllByName` از resolver بومی سیستم استفاده می‌کند و در بعضی محیط‌ها ممکن است blocking باشد؛ coroutine timeout در checkpointها و لایه socket اعمال می‌شود، اما قطع فوری resolver در همه دستگاه‌ها تضمین نمی‌شود.
++- سه فایل regression test شامل authorization scope، evidence redaction و discovery deadline اضافه شده‌اند؛ به دلیل نبود Gradle و JUnit runner آن‌ها در این محیط اجرا نشده‌اند.
++- ۴۰ حوزه همچنان: ۳۸ Partial، یک Unsupported، یک Blocked. هیچ حوزه‌ای کامل یا Tested اعلام نشده و ۲٬۰۰۰ معیار پذیرش پرامت ۱۰۰٬۰۰۰ ردیفی همگی اجرا نشده‌اند.
++- تحلیل AST/taint، DAST احرازشده، shared egress gate جامع، صف پایدار، cloud/AD live integration و چند حوزه تخصصی همچنان طبق ماتریس جزئی/پشتیبانی‌نشده‌اند.
++
++نتیجه
++نسخه سورس SiteGuard Android v0.10.0 با سخت‌گیری بیشتر در scope، پاک‌سازی شواهد و مدیریت timeout/cancellation آماده بسته‌بندی است. این خروجی APK نیست و آماده انتشار/نصب تأییدشده تلقی نمی‌شود تا GitHub Actions یا Android Studio build، JUnit، lint و تست دستگاه با موفقیت انجام شوند.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/UPGRADE_SUMMARY_v0.10.0.txt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/UPGRADE_SUMMARY_v0.10.0.txt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/UPGRADE_SUMMARY_v0.10.0.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/UPGRADE_SUMMARY_v0.10.0.txt	2026-11-23 05:19:57.394158171 +0000
+@@ -0,0 +1,24 @@
++SiteGuard Android v0.10.0 — ارتقای مجدد پروژه
++
++پایه: سورس v0.9.0
++نسخه برنامه: 0.10.0
++versionCode: 11
++JSON report schema: 4
++
++تغییرات اجرایی:
++1) سخت‌گیری fail-closed روی AuthorizationManifest شامل شناسه/owner declaration، بازه زمانی، budget، پورت، روش فقط PASSIVE_HTTP_GET، اندازه فهرست‌ها، host و مسیرها.
++2) رد traversal و encoding مبهم در URL path (encoded dot/slash/backslash/NUL/CR/LF و %25)، مرزبندی segment در prefix matching، canonicalization نام IDN و رد IPv4 عددی مبهم.
++3) redaction برای credentialهای JSON و assignment، Authorization Bearer/Basic، PEM private key، GitHub/AWS token، JWT و URL دارای username/password.
++4) پاک‌سازی report شامل فیلدهای finding و remediation، از جمله root cause و proposed patch diff.
++5) deadline در ScanEngine و WebsiteDiscoveryEngine، انتشار درست CancellationException و تفکیک timeout در UI.
++6) regression test source برای authorization scope، evidence redaction و crawler deadline.
++7) گزارش‌های نسخه 0.10، ماتریس delta حوزه‌ها و release gate به‌روزشده.
++
++نتیجه آزمون:
++- 27 policy/redaction smoke assertions PASS.
++- Kotlin/JVM compile برای policy، scan core و crawler core با stubs محدود PASS.
++- source release gate: 14 PASS، 1 WARN (نبود Gradle Wrapper).
++- Android Gradle/JUnit/lint/APK/sign/device tests اجرا نشده‌اند؛ Android SDK و Gradle در محیط نبودند.
++
++محدودیت مهم:
++نسخه 0.10.0 اجرای کامل 100,000 ردیف یا همه 2,000 معیار پذیرش نیست. پوشش کلی 40 حوزه همچنان 38 Partial، 1 Unsupported و 1 Blocked است. این خروجی سورس است، نه APK.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/build.gradle.kts /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/build.gradle.kts
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/build.gradle.kts	2026-11-22 22:46:22.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/build.gradle.kts	2026-11-23 05:12:03.403720686 +0000
+@@ -10,8 +10,8 @@
+         applicationId = "com.siteguard.app"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 10
+-        versionName = "0.9.0"
++        versionCode = 11
++        versionName = "0.10.0"
+     }
+     // Signing is optional and user-controlled: set all four SITEGUARD_* variables (environment or gradle.properties)
+     // to produce a signed release APK. Without them, :app:assembleRelease yields an unsigned APK (CI signs it separately).
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/MainActivity.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/MainActivity.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/MainActivity.kt	2026-11-22 22:52:22.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/MainActivity.kt	2026-11-23 05:13:15.555064805 +0000
+@@ -245,9 +245,9 @@
+ 
+     fun exportReport() {
+         val report = JSONObject().apply {
+-            put("schema_version", 3)
++            put("schema_version", com.siteguard.app.core.SiteGuardBuildInfo.REPORT_SCHEMA_VERSION)
+             put("product", "SiteGuard Android")
+-            put("version", "0.9.0")
++            put("version", com.siteguard.app.core.SiteGuardBuildInfo.VERSION_NAME)
+             put("target", scannedHost)
+             put("http_status", httpStatus ?: JSONObject.NULL)
+             put("scanned_at_epoch_ms", scannedAt)
+@@ -371,7 +371,7 @@
+             "تحلیل ایستای ZIP در حافظه انجام شد؛ فایل‌ها روی دیسک استخراج نشدند."
+         )
+         val report = com.siteguard.app.core.SecurityReportV1(
+-            product = "SiteGuard Android", version = "0.9.0", generatedAtEpochMs = System.currentTimeMillis(),
++            product = "SiteGuard Android", version = com.siteguard.app.core.SiteGuardBuildInfo.VERSION_NAME, generatedAtEpochMs = System.currentTimeMillis(),
+             scopeDescription = scannedHost.ifBlank { "فقط فایل/پروژه محلی انتخاب‌شده؛ ارزیابی شبکه‌ای ثبت نشده است." },
+             authorizationId = authorizationId.ifBlank { "برای این گزارش، مجوز شبکه‌ای اعمال نشده / فقط تحلیل محلی" },
+             methodology = "قواعد deterministic و تحلیل ایستا؛ هیچ AI API، سرویس inference میزبانی‌شده، brute force، exploit یا تغییر production انجام نشده است.",
+@@ -485,7 +485,7 @@
+                                     Spacer(Modifier.width(12.dp))
+                                     Column(Modifier.weight(1f)) {
+                                         Text("SITEGUARD", fontSize = 23.sp, fontWeight = FontWeight.Black, color = White, letterSpacing = 2.2.sp)
+-                                        Text("SECURITY INTELLIGENCE  •  v0.9.0", fontSize = 10.sp, color = Muted, letterSpacing = 1.sp)
++                                        Text("SECURITY INTELLIGENCE  •  v0.10.0", fontSize = 10.sp, color = Muted, letterSpacing = 1.sp)
+                                     }
+                                     StatusPill("LOCAL-FIRST", Color(0xFF65D6A0))
+                                 }
+@@ -602,8 +602,10 @@
+                                                 val summary = "${result.host.ifBlank { url }} • ${result.findings.size} یافته • ${SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault()).format(Date(result.scannedAt))}"
+                                                 val saveResult = runCatching { localHistory.add(result, manifest) }
+                                                 previousSummary = if (saveResult.isSuccess) summary else "$summary • ذخیره محلی انجام نشد"
++                                            } catch (_: kotlinx.coroutines.TimeoutCancellationException) {
++                                                status = "حداکثر زمان مجاز عملیات به پایان رسید؛ اسکن متوقف شد و نتیجه ناقص به‌عنوان موفق ثبت نمی‌شود."
+                                             } catch (_: CancellationException) {
+-                                                status = "درخواست لغو شد؛ اتصال پس از پایان عملیات مسدودشده یا timeout بسته می‌شود."
++                                                status = "درخواست لغو شد؛ عملیات شبکه در اولین نقطه امن متوقف می‌شود."
+                                             } catch (e: Exception) {
+                                                 status = "اسکن ناموفق بود: ${e.message ?: e.javaClass.simpleName}"
+                                             } finally {
+@@ -1114,7 +1116,7 @@
+                     }
+                 }
+                 item {
+-                    Text("پوشش نسخه 0.9.0", color = Muted, fontSize = 10.sp)
++                    Text("پوشش نسخه 0.10.0", color = Muted, fontSize = 10.sp)
+                     Text("اسکن passive وب، اتصال TCP محدود با مجوز IP/port، تحلیل ZIP چندفایلی، WordPress/WooCommerce، Android source/Manifest متنی، تنظیمات شبکه/SSH/DNS/TLS، Docker/Kubernetes/Terraform/CI، پایگاه دانش محلی، رجیستری بررسی ابزار، Attack Graph و ریسک توضیح‌پذیر، طرح اصلاح و Patch Preview، Threat Intel/Forensics، صف محلی محدود، Lab مصنوعی، گزارش HTML و معیارهای QA. Website Security Specialist v2.0 با مانیفست تعامل، ماتریس coverage، نقشه معماری evidence-backed و Playbook 23 اضافه شده است. Cloud/AD runtime، worker لینوکس ایزوله، API DAST کامل، مانیتورینگ پس‌زمینه قابل اتکا و APK/AAB باینری هنوز کامل نیستند.", color = Muted, fontSize = 11.sp)
+                 }
+             }
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/Authorization.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/Authorization.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/Authorization.kt	2026-11-22 22:29:40.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/Authorization.kt	2026-11-23 05:17:30.176442818 +0000
+@@ -28,7 +28,8 @@
+ ) {
+     companion object {
+         fun forSingleTarget(rawUrl: String, allowPrivateNetwork: Boolean): AuthorizationManifest? {
+-            val parsed = runCatching { URL(normalizeUrl(rawUrl) ?: return null) }.getOrNull() ?: return null
++            val normalized = normalizeUrl(rawUrl) ?: return null
++            val parsed = runCatching { URL(normalized) }.getOrNull() ?: return null
+             val host = canonicalHost(parsed.host) ?: return null
+             val port = if (parsed.port >= 0) parsed.port else if (parsed.protocol.equals("https", true)) 443 else 80
+             return AuthorizationManifest(
+@@ -48,30 +49,82 @@
+     val authorizationId: String = ""
+ )
+ 
++/** Strict path validation shared by URL inputs and the caller-provided scope manifest. */
++private object AuthorizationPathPolicy {
++    private val malformedPercent = Regex("%(?![0-9a-fA-F]{2})")
++    // Reject encoded traversal/separators, controls and a second decoding layer (%25).
++    private val ambiguousEncoding = Regex("(?i)%(?:2e|2f|5c|00|0a|0d|25)")
++
++    fun canonical(path: String): String? {
++        if (path.isEmpty() || path.length > 2_048 || !path.startsWith('/')) return null
++        if (path.any { it.code < 0x20 || it.code == 0x7f || it == '\\' || it == '?' || it == '#' }) return null
++        if (malformedPercent.containsMatchIn(path) || ambiguousEncoding.containsMatchIn(path)) return null
++        if (path.split('/').any { it == "." || it == ".." }) return null
++        return path
++    }
++
++    fun matches(path: String, prefix: String): Boolean {
++        val base = prefix.trimEnd('/').ifEmpty { "/" }
++        return base == "/" || path == base || path.startsWith("$base/")
++    }
++}
++
+ object ScopeEnforcer {
+     fun validate(rawUrl: String, manifest: AuthorizationManifest?, now: Long = System.currentTimeMillis()): ScopeDecision {
+         if (manifest == null) return ScopeDecision(false, reason = "مجوز مستند و محدود به هدف ایجاد نشده است.")
+         if (manifest.schemaVersion != 1) return ScopeDecision(false, reason = "نسخه مانیفست مجوز پشتیبانی نمی‌شود.")
+-        if (now !in manifest.validFromEpochMs..manifest.validUntilEpochMs) return ScopeDecision(false, reason = "بازه زمانی مجوز بررسی پایان یافته یا هنوز آغاز نشده است.")
+-        if (manifest.maxRequests < 1 || manifest.requestsPerMinute < 1) return ScopeDecision(false, reason = "بودجه درخواست مجاز نامعتبر است.")
+-        if ("PASSIVE_HTTP_GET" !in manifest.allowedMethods) return ScopeDecision(false, reason = "روش بررسی HTTP در مجوز مجاز نیست.")
+-        val normalized = normalizeUrl(rawUrl) ?: return ScopeDecision(false, reason = "آدرس نامعتبر است؛ فقط HTTP و HTTPS پشتیبانی می‌شوند.")
+-        val parsed = runCatching { URL(normalized) }.getOrNull() ?: return ScopeDecision(false, reason = "آدرس قابل تجزیه نیست.")
+-        val host = canonicalHost(parsed.host) ?: return ScopeDecision(false, reason = "نام میزبان معتبر نیست.")
++        if (manifest.authorizationId.isBlank() || manifest.authorizationId.length > 128 ||
++            manifest.authorizationId.any { it.code < 0x20 || it.code == 0x7f } ||
++            manifest.ownerDeclaration.isBlank() || manifest.ownerDeclaration.length > 1_000 ||
++            manifest.ownerDeclaration.any { it.code < 0x20 && it != '\n' && it != '\t' }) {
++            return ScopeDecision(false, reason = "شناسه مجوز یا اظهار مالکیت خالی، بیش‌ازحد بزرگ یا نامعتبر است.")
++        }
++        if (manifest.validFromEpochMs <= 0 || manifest.validUntilEpochMs < manifest.validFromEpochMs ||
++            now !in manifest.validFromEpochMs..manifest.validUntilEpochMs) {
++            return ScopeDecision(false, reason = "بازه زمانی مجوز بررسی نامعتبر، پایان‌یافته یا هنوز آغازنشده است.")
++        }
++        if (manifest.maxRequests !in 1..100_000 || manifest.requestsPerMinute !in 1..10_000) {
++            return ScopeDecision(false, reason = "بودجه درخواست مجاز نامعتبر است.")
++        }
++        if (manifest.allowedPorts.isEmpty() || manifest.allowedPorts.size > 100 || manifest.allowedPorts.any { it !in 1..65_535 }) {
++            return ScopeDecision(false, reason = "فهرست درگاه‌های مجاز نامعتبر است.")
++        }
++        if (manifest.allowedMethods != setOf("PASSIVE_HTTP_GET")) {
++            return ScopeDecision(false, reason = "فقط روش غیرفعال HTTP GET در این ابزار پشتیبانی و مجاز است.")
++        }
++        if (manifest.authorizedHosts.isEmpty() || manifest.authorizedHosts.size > 100 || manifest.excludedHosts.size > 100 ||
++            manifest.allowedPathPrefixes.isEmpty() || manifest.allowedPathPrefixes.size > 100 || manifest.excludedPaths.size > 100) {
++            return ScopeDecision(false, reason = "فهرست میزبان‌ها یا مسیرهای مجاز از محدوده امن خارج است.")
++        }
++
++        val normalized = normalizeUrl(rawUrl)
++            ?: return ScopeDecision(false, reason = "آدرس نامعتبر است؛ فقط HTTP و HTTPS با مسیر امن پشتیبانی می‌شوند.")
++        val parsed = runCatching { URL(normalized) }.getOrNull()
++            ?: return ScopeDecision(false, reason = "آدرس قابل تجزیه نیست.")
++        val host = canonicalHost(parsed.host)
++            ?: return ScopeDecision(false, reason = "نام میزبان معتبر نیست.")
+         val port = if (parsed.port >= 0) parsed.port else if (parsed.protocol.equals("https", true)) 443 else 80
+-        val path = parsed.path.ifBlank { "/" }
+-        if (path.contains("\\") || Regex("(?i)%2e|%2f|%5c").containsMatchIn(path) || path.split('/').any { it == ".." || it == "." }) {
+-            return ScopeDecision(false, reason = "مسیر دارای الگوی مبهم یا traversal است.")
++        val path = AuthorizationPathPolicy.canonical(parsed.path.ifBlank { "/" })
++            ?: return ScopeDecision(false, reason = "مسیر مقصد دارای شکل مبهم، control character یا traversal است.")
++
++        val authorized = manifest.authorizedHosts.mapNotNull(::canonicalHost)
++        val excluded = manifest.excludedHosts.mapNotNull(::canonicalHost)
++        if (authorized.size != manifest.authorizedHosts.size || excluded.size != manifest.excludedHosts.size) {
++            return ScopeDecision(false, reason = "یکی از میزبان‌های مانیفست معتبر نیست.")
+         }
+-        val authorized = manifest.authorizedHosts.mapNotNull(::canonicalHost).toSet()
+-        val excluded = manifest.excludedHosts.mapNotNull(::canonicalHost).toSet()
+-        if (host in excluded || host !in authorized) return ScopeDecision(false, reason = "میزبان خارج از محدوده دقیق مجوز است.")
+-        if (port !in manifest.allowedPorts) return ScopeDecision(false, reason = "درگاه هدف در مانیفست مجاز نشده است.")
+-        val inAllowedPath = manifest.allowedPathPrefixes.any { prefix ->
+-            val base = prefix.ifBlank { "/" }.let { if (it.startsWith('/')) it else "/$it" }
+-            base == "/" || path == base.trimEnd('/') || path.startsWith(base.trimEnd('/') + "/")
++        if (host in excluded || host !in authorized.toSet()) {
++            return ScopeDecision(false, reason = "میزبان خارج از محدوده دقیق مجوز است.")
+         }
+-        if (!inAllowedPath || manifest.excludedPaths.any { path == it || path.startsWith(it.trimEnd('/') + "/") }) {
++        if (port !in manifest.allowedPorts) return ScopeDecision(false, reason = "درگاه هدف در مانیفست مجاز نشده است.")
++
++        val allowedPaths = manifest.allowedPathPrefixes.mapNotNull(AuthorizationPathPolicy::canonical)
++        val excludedPaths = manifest.excludedPaths.mapNotNull(AuthorizationPathPolicy::canonical)
++        if (allowedPaths.size != manifest.allowedPathPrefixes.size || excludedPaths.size != manifest.excludedPaths.size) {
++            return ScopeDecision(false, reason = "یکی از مسیرهای مجاز یا ممنوع مانیفست دارای شکل نامعتبر است.")
++        }
++        val inAllowedPath = allowedPaths.any { AuthorizationPathPolicy.matches(path, it) }
++        val inExcludedPath = excludedPaths.any { AuthorizationPathPolicy.matches(path, it) }
++        if (!inAllowedPath || inExcludedPath) {
+             return ScopeDecision(false, reason = "مسیر خارج از محدوده مجاز مانیفست است.")
+         }
+         return ScopeDecision(true, normalized, "هدف با میزبان، درگاه و مسیر مجاز تطبیق دارد.", manifest.authorizationId)
+@@ -80,22 +133,41 @@
+ 
+ fun normalizeUrl(raw: String): String? {
+     val value = raw.trim()
+-    if (value.isBlank() || value.any { it.isWhitespace() || it == '\r' || it == '\n' }) return null
++    if (value.isBlank() || value.length > 4_096 ||
++        value.any { it.isWhitespace() || it.code < 0x20 || it.code == 0x7f || it == '\\' }) return null
+     val candidate = if (value.startsWith("http://", true) || value.startsWith("https://", true)) value else "https://$value"
+     return runCatching {
+         val parsed = URL(candidate)
+-        if (parsed.protocol.lowercase(Locale.ROOT) !in setOf("http", "https") || parsed.host.isBlank() ||
+-            parsed.userInfo != null || parsed.ref != null || parsed.port !in -1..65535 || parsed.host.contains('%') ||
+-            parsed.path.contains("\\") || Regex("(?i)%2e|%2f|%5c").containsMatchIn(parsed.path) ||
+-            parsed.path.split('/').any { it == ".." || it == "." }) null
++        val scheme = parsed.protocol.lowercase(Locale.ROOT)
++        val path = parsed.path.ifBlank { "/" }
++        val host = canonicalHost(parsed.host)
++        if (scheme !in setOf("http", "https") || host == null || parsed.userInfo != null || parsed.ref != null ||
++            parsed.port !in -1..65_535 || parsed.port == 0 || parsed.host.contains('%') ||
++            AuthorizationPathPolicy.canonical(path) == null || parsed.query.orEmpty().length > 2_048 ||
++            parsed.query.orEmpty().any { it.code < 0x20 || it.code == 0x7f }) null
+         else parsed.toExternalForm()
+     }.getOrNull()
+ }
+ 
++/** Canonicalizes DNS names and numeric IP literals without performing a hostname lookup. */
+ fun canonicalHost(rawHost: String): String? = runCatching {
+-    val host = rawHost.trim().trimEnd('.').lowercase(Locale.ROOT)
+-    if (host.isBlank()) return null
+-    if (host.contains(':')) host else IDN.toASCII(host, IDN.USE_STD3_ASCII_RULES)
++    val host = rawHost.trim().removeSurrounding("[", "]").trimEnd('.').lowercase(Locale.ROOT)
++    if (host.isBlank() || host.length > 253 || host.contains('%')) return null
++    if (host.contains(':')) {
++        // A colon forces a numeric IPv6 parse; scoped/zone identifiers are rejected above.
++        val address = InetAddress.getByName(host)
++        if (address !is Inet6Address) return null
++        return address.hostAddress.substringBefore('%').lowercase(Locale.ROOT)
++    }
++    if (host.all { it.isDigit() || it == '.' }) {
++        val parts = host.split('.')
++        if (parts.size != 4 || parts.any { it.isEmpty() || it.length > 3 || (it.length > 1 && it.startsWith('0')) }) return null
++        if (parts.any { it.toIntOrNull() !in 0..255 }) return null
++        return parts.joinToString(".") { it.toInt().toString() }
++    }
++    val ascii = IDN.toASCII(host, IDN.USE_STD3_ASCII_RULES).lowercase(Locale.ROOT)
++    if (ascii.length > 253 || ascii.split('.').any { it.isEmpty() || it.length > 63 }) return null
++    ascii
+ }.getOrNull()
+ 
+ /** Conservatively classifies local, private, shared, documentation and reserved IP ranges. */
+@@ -118,58 +190,35 @@
+         val a = bytes[0].toInt() and 0xff
+         val b = bytes[1].toInt() and 0xff
+         val c = bytes[2].toInt() and 0xff
+-        return a == 0 ||                                   // 0.0.0.0/8 "this network"
+-            a == 10 ||                                     // RFC 1918
+-            a == 127 ||                                    // loopback
+-            a >= 224 ||                                    // multicast + 240.0.0.0/4 reserved + broadcast
+-            (a == 100 && b in 64..127) ||                  // 100.64.0.0/10 CGNAT
+-            (a == 169 && b == 254) ||                      // link-local
+-            (a == 172 && b in 16..31) ||                   // RFC 1918
+-            (a == 192 && b == 0 && c == 0) ||              // 192.0.0.0/24 IETF protocol assignments
+-            (a == 192 && b == 0 && c == 2) ||              // 192.0.2.0/24 TEST-NET-1
+-            (a == 192 && b == 88 && c == 99) ||            // 192.88.99.0/24 deprecated 6to4 relay anycast
+-            (a == 192 && b == 168) ||                      // RFC 1918
+-            (a == 198 && (b == 18 || b == 19)) ||          // 198.18.0.0/15 benchmarking
+-            (a == 198 && b == 51 && c == 100) ||           // 198.51.100.0/24 TEST-NET-2
+-            (a == 203 && b == 0 && c == 113)               // 203.0.113.0/24 TEST-NET-3
+-    }
+-
+-    /**
+-     * IPv6: NAT64 (64:ff9b::/96) and 6to4 (2002::/16) addresses are judged by the IPv4 address they embed, so a DNS64
+-     * answer for a public host stays usable on IPv6-only networks while one that wraps 10.0.0.1 or 127.0.0.1 is blocked.
+-     * Teredo, IPv4-compatible, discard, benchmarking, ORCHID, SRv6, local-use NAT64, documentation and unique-local space are non-public.
+-     */
++        return a == 0 || a == 10 || a == 127 || a >= 224 ||
++            (a == 100 && b in 64..127) || (a == 169 && b == 254) ||
++            (a == 172 && b in 16..31) || (a == 192 && b == 0 && c == 0) ||
++            (a == 192 && b == 0 && c == 2) || (a == 192 && b == 88 && c == 99) ||
++            (a == 192 && b == 168) || (a == 198 && (b == 18 || b == 19)) ||
++            (a == 198 && b == 51 && c == 100) || (a == 203 && b == 0 && c == 113)
++    }
++
++    /** IPv6 special-use and transition ranges are blocked or judged by embedded IPv4 address. */
+     internal fun isNonPublicV6(bytes: ByteArray): Boolean {
+         if (bytes.size != 16) return true
+         fun u(i: Int) = bytes[i].toInt() and 0xff
+         val first = u(0)
+         val second = u(1)
+-        // fc00::/7 unique local
+         if ((first and 0xfe) == 0xfc) return true
+-        // fe80::/10 link-local and fec0::/10 deprecated site-local
+         if (first == 0xfe && (second and 0xc0) == 0x80) return true
+         if (first == 0xfe && (second and 0xc0) == 0xc0) return true
+-        // ::/8 is reserved (unspecified, loopback, IPv4-compatible, ...) except the NAT64 well-known prefix 64:ff9b::/96,
+-        // which is judged by the IPv4 address it embeds so DNS64 answers for public hosts stay usable on IPv6-only networks.
+         if (first == 0x00) {
+             if (second == 0x64 && u(2) == 0xff && u(3) == 0x9b && (4..11).all { u(it) == 0 }) {
+                 return isNonPublicV4(bytes.copyOfRange(12, 16))
+             }
+-            return true // includes 64:ff9b:1::/48 local-use NAT64
++            return true
+         }
+-        // 100::/64 discard-only
+         if (first == 0x01 && second == 0x00 && (2..7).all { u(it) == 0 }) return true
+-        // 2001::/23 IETF protocol assignments (Teredo 2001::/32, benchmarking 2001:2::/48, ORCHID 2001:10::/28, ORCHIDv2 2001:20::/28 ...)
+         if (first == 0x20 && second == 0x01 && u(2) <= 0x01) return true
+-        // 2001:db8::/32 documentation
+         if (first == 0x20 && second == 0x01 && u(2) == 0x0d && u(3) == 0xb8) return true
+-        // 3fff::/20 documentation (RFC 9637)
+         if (first == 0x3f && second == 0xff && (u(2) and 0xf0) == 0x00) return true
+-        // 5f00::/16 SRv6 SIDs
+         if (first == 0x5f && second == 0x00) return true
+-        // 2002::/16 6to4 -> judge the embedded IPv4 in bytes 2..5
+         if (first == 0x20 && second == 0x02) return isNonPublicV4(bytes.copyOfRange(2, 6))
+-        // ff00::/8 multicast
+         if (first == 0xff) return true
+         return false
+     }
+@@ -186,7 +235,8 @@
+ 
+     fun consume(manifest: AuthorizationManifest, now: Long = System.currentTimeMillis()): Boolean {
+         discardExpired(now)
+-        if (manifest.authorizationId.isBlank() || manifest.maxRequests < 1 || manifest.requestsPerMinute < 1 || now > manifest.validUntilEpochMs) return false
++        if (manifest.authorizationId.isBlank() || manifest.maxRequests !in 1..100_000 ||
++            manifest.requestsPerMinute !in 1..10_000 || now !in manifest.validFromEpochMs..manifest.validUntilEpochMs) return false
+         val bucket = usage.computeIfAbsent(manifest.authorizationId) { Usage(validUntilEpochMs = manifest.validUntilEpochMs) }
+         synchronized(bucket) {
+             while (bucket.timestamps.isNotEmpty() && now - bucket.timestamps.peekFirst() >= 60_000L) bucket.timestamps.removeFirst()
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/EvidenceSanitizer.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/EvidenceSanitizer.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/EvidenceSanitizer.kt	2026-11-22 22:12:34.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/EvidenceSanitizer.kt	2026-11-23 05:11:26.239708623 +0000
+@@ -1,22 +1,38 @@
+ package com.siteguard.app.core
+ 
+-/** Prevents common credential patterns from being copied into findings, reports or local history. */
++/** Redacts common credential formats before evidence enters reports, UI snippets or local history. */
+ object EvidenceSanitizer {
+     private val quotedAssignment = Regex(
+-        """(?i)((?:api[_-]?key|secret[_-]?key|client[_-]?secret|password|passwd|access[_-]?token|auth[_-]?token|private[_-]?key)\s*[:=]\s*)(["'])([^"'\r\n]{4,})(["'])"""
++        """(?i)((?:api[_-]?key|secret[_-]?key|client[_-]?secret|password|passwd|access[_-]?token|auth[_-]?token|private[_-]?key|refresh[_-]?token)\s*[:=]\s*)(["'])([^"'\r\n]{4,})(["'])"""
++    )
++    private val jsonQuotedAssignment = Regex(
++        """(?i)(["'](?:api[_-]?key|secret[_-]?key|client[_-]?secret|password|passwd|access[_-]?token|auth[_-]?token|private[_-]?key|refresh[_-]?token)["']\s*:\s*)(["'])([^"'\r\n]{4,})(["'])"""
+     )
+     private val unquotedAssignment = Regex(
+-        """(?i)((?:api[_-]?key|secret[_-]?key|client[_-]?secret|password|passwd|access[_-]?token|auth[_-]?token|private[_-]?key)\s*[:=]\s*)([A-Za-z0-9_.\-/+=]{8,})"""
++        """(?i)((?:api[_-]?key|secret[_-]?key|client[_-]?secret|password|passwd|access[_-]?token|auth[_-]?token|private[_-]?key|refresh[_-]?token)\s*[:=]\s*)([-A-Za-z0-9_./+=]{8,})"""
+     )
+-    private val authorizationHeader = Regex("(?i)(authorization\\s*:\\s*(?:bearer|basic)\\s+)[A-Za-z0-9_./+=-]+")
++    private val authorizationHeader = Regex("""(?i)(authorization\s*:\s*(?:bearer|basic)\s+)[-A-Za-z0-9_./+=]+""")
++    private val pemPrivateKey = Regex("""(?is)-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----.*?-----END [A-Z0-9 ]*PRIVATE KEY-----""")
++    private val githubToken = Regex("""\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b""")
++    private val awsAccessKey = Regex("""\bAKIA[0-9A-Z]{16}\b""")
++    private val jwt = Regex("""\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b""")
++    private val credentialUrl = Regex("""(?i)(https?://[^:/@\s]+:)[^@/\s]+@""")
+ 
+     fun sanitize(text: String): String {
+-        val quoted = quotedAssignment.replace(text) { match ->
++        if (text.isEmpty()) return text
++        var safe = pemPrivateKey.replace(text, "[PRIVATE KEY REDACTED]")
++        safe = jsonQuotedAssignment.replace(safe) { match ->
+             match.groupValues[1] + match.groupValues[2] + "[REDACTED]" + match.groupValues[4]
+         }
+-        val unquoted = unquotedAssignment.replace(quoted) { match ->
+-            match.groupValues[1] + "[REDACTED]"
++        safe = quotedAssignment.replace(safe) { match ->
++            match.groupValues[1] + match.groupValues[2] + "[REDACTED]" + match.groupValues[4]
+         }
+-        return authorizationHeader.replace(unquoted) { match -> match.groupValues[1] + "[REDACTED]" }
++        safe = unquotedAssignment.replace(safe) { match -> match.groupValues[1] + "[REDACTED]" }
++        safe = authorizationHeader.replace(safe) { match -> match.groupValues[1] + "[REDACTED]" }
++        safe = credentialUrl.replace(safe) { match -> match.groupValues[1] + "[REDACTED]@" }
++        safe = githubToken.replace(safe, "[TOKEN REDACTED]")
++        safe = awsAccessKey.replace(safe, "[TOKEN REDACTED]")
++        safe = jwt.replace(safe, "[JWT REDACTED]")
++        return safe
+     }
+ }
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/PlatformContracts.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/PlatformContracts.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/PlatformContracts.kt	2026-11-22 22:12:34.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/PlatformContracts.kt	2026-11-23 05:15:27.671721873 +0000
+@@ -111,17 +111,17 @@
+ 
+ object JsonReportExporter : ReportExporterV1 {
+     override fun exportScan(result: ScanResult): String = JSONObject().apply {
+-        put("schema_version", 1)
++        put("schema_version", SiteGuardBuildInfo.REPORT_SCHEMA_VERSION)
+         put("product", "SiteGuard Android")
+-        put("version", "0.8.0")
+-        put("target", result.host)
++        put("version", SiteGuardBuildInfo.VERSION_NAME)
++        put("target", EvidenceSanitizer.sanitize(result.host).take(253))
+         put("http_status", result.httpStatus ?: JSONObject.NULL)
+         put("scanned_at_epoch_ms", result.scannedAt)
+         put("authorization_id", result.authorizationId)
+         put("connected_address", result.connectedAddress)
+         put("scope", "single exact host and port; passive HTTP GET; redirects disabled")
+-        put("message", result.message)
+-        put("coverage_notes", JSONArray(result.coverageNotes))
++        put("message", EvidenceSanitizer.sanitize(result.message).take(2_000))
++        put("coverage_notes", JSONArray(result.coverageNotes.map { EvidenceSanitizer.sanitize(it).take(1_000) }))
+         put("findings", JSONArray().apply { result.findings.forEach { put(findingJson(it)) } })
+         put("limitations", JSONArray(listOf("This is a bounded passive baseline, not a full security assessment.", "No exploit, brute force, authenticated tests, crawling or state-changing requests were performed.")))
+     }.toString(2)
+@@ -201,36 +201,39 @@
+         put("skipped_entries", JSONArray(project.skippedEntries))
+     }
+ 
++    private fun safeReportText(value: String, maxLength: Int = 4_000): String =
++        EvidenceSanitizer.sanitize(value).take(maxLength)
++
+     fun findingJson(f: Finding): JSONObject = JSONObject().apply {
+-        put("id", f.id); put("title", f.title); put("category_cwe", f.cwe)
+-        put("severity", f.severity.name); put("status", f.status.name); put("confidence", f.confidence)
+-        put("affected_asset", f.affectedAsset); put("exact_location", f.exactLocation)
+-        put("detection_method", f.detectionMethod); put("tool_version", f.toolVersion)
+-        put("detected_at_epoch_ms", f.detectedAtEpochMs); put("evidence", EvidenceSanitizer.sanitize(f.evidence))
+-        put("description", f.description); put("business_impact", f.businessImpact)
+-        put("exploit_prerequisites", f.exploitPrerequisites); put("remediation", f.remediation)
+-        put("safe_validation", f.safeValidation); put("not_tested", f.notTested)
+-        put("verification", f.verificationProcedure); put("expected_result", f.expectedResult)
+-        put("actual_result", f.actualResult); put("residual_risk", f.residualRisk)
++        put("id", safeReportText(f.id, 200)); put("title", safeReportText(f.title, 500)); put("category_cwe", safeReportText(f.cwe, 80))
++        put("severity", f.severity.name); put("status", f.status.name); put("confidence", safeReportText(f.confidence, 80))
++        put("affected_asset", safeReportText(f.affectedAsset, 1_000)); put("exact_location", safeReportText(f.exactLocation, 1_000))
++        put("detection_method", safeReportText(f.detectionMethod, 300)); put("tool_version", safeReportText(f.toolVersion, 80))
++        put("detected_at_epoch_ms", f.detectedAtEpochMs); put("evidence", safeReportText(f.evidence, 1_000))
++        put("description", safeReportText(f.description)); put("business_impact", safeReportText(f.businessImpact))
++        put("exploit_prerequisites", safeReportText(f.exploitPrerequisites)); put("remediation", safeReportText(f.remediation))
++        put("safe_validation", safeReportText(f.safeValidation)); put("not_tested", safeReportText(f.notTested))
++        put("verification", safeReportText(f.verificationProcedure)); put("expected_result", safeReportText(f.expectedResult))
++        put("actual_result", safeReportText(f.actualResult)); put("residual_risk", safeReportText(f.residualRisk))
+         val evidence = DefaultEvidenceProvider.evidenceFor(f)
+         put("evidence_reference", JSONObject()
+-            .put("id", evidence.evidenceId).put("sha256", evidence.hashSha256).put("method", evidence.method))
++            .put("id", safeReportText(evidence.evidenceId, 200)).put("sha256", safeReportText(evidence.hashSha256, 64)).put("method", safeReportText(evidence.method, 200)))
+         val priority = RiskEngine.prioritize(f)
+         put("triage_priority", JSONObject().put("score", priority.score).put("band", priority.band)
+-            .put("explanation", priority.explanation))
++            .put("explanation", safeReportText(priority.explanation, 1_000)))
+         val plan = DefaultRemediationProvider.createPlan(f)
+         put("remediation_plan", JSONObject().apply {
+-            put("root_cause_hypothesis", plan.rootCause)
++            put("root_cause_hypothesis", safeReportText(plan.rootCause))
+             put("steps", JSONArray().apply { plan.steps.forEach { step -> put(JSONObject()
+-                .put("order", step.order).put("title", step.title).put("instruction", step.instruction)
++                .put("order", step.order).put("title", safeReportText(step.title, 500)).put("instruction", safeReportText(step.instruction))
+                 .put("requires_approval", step.requiresApproval)) } })
+-            put("verification", plan.verification)
+-            put("regression_tests", JSONArray(plan.regressionTests))
+-            put("staging_validation", plan.stagingValidation)
+-            put("post_fix_retest", plan.postFixRetest)
++            put("verification", safeReportText(plan.verification))
++            put("regression_tests", JSONArray(plan.regressionTests.map { safeReportText(it, 1_000) }))
++            put("staging_validation", safeReportText(plan.stagingValidation))
++            put("post_fix_retest", safeReportText(plan.postFixRetest))
+             put("patch_diff_status", plan.patchDiffStatus)
+-            put("proposed_patch_diff", plan.proposedPatchDiff ?: JSONObject.NULL)
+-            put("rollback", plan.rollback)
++            put("proposed_patch_diff", plan.proposedPatchDiff?.let { safeReportText(it, 8_000) } ?: JSONObject.NULL)
++            put("rollback", safeReportText(plan.rollback))
+             put("staging_only", plan.stagingOnly)
+             put("automatic_patch_available", plan.automaticPatchAvailable)
+         })
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/ScanEngine.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/ScanEngine.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/ScanEngine.kt	2026-11-22 22:30:40.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/ScanEngine.kt	2026-11-23 05:12:03.403090112 +0000
+@@ -1,7 +1,11 @@
+ package com.siteguard.app.core
+ 
++import kotlinx.coroutines.CancellationException
+ import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.currentCoroutineContext
++import kotlinx.coroutines.ensureActive
+ import kotlinx.coroutines.withContext
++import kotlinx.coroutines.withTimeout
+ import java.io.BufferedInputStream
+ import java.io.ByteArrayOutputStream
+ import java.io.InputStream
+@@ -32,7 +36,7 @@
+     val affectedAsset: String = "",
+     val exactLocation: String = "",
+     val detectionMethod: String = "deterministic-rule",
+-    val toolVersion: String = "0.8.0",
++    val toolVersion: String = SiteGuardBuildInfo.VERSION_NAME,
+     val detectedAtEpochMs: Long = System.currentTimeMillis(),
+     val businessImpact: String = "نیازمند ارزیابی متناسب با کاربرد دارایی است.",
+     val exploitPrerequisites: String = "از شواهد فعلی مشخص نشده است.",
+@@ -62,7 +66,9 @@
+         input: String,
+         allowPrivateNetwork: Boolean = false,
+         authorization: AuthorizationManifest? = null
+-    ): ScanResult = withContext(Dispatchers.IO) {
++    ): ScanResult = withTimeout(SCAN_DEADLINE_MS) {
++        withContext(Dispatchers.IO) {
++        currentCoroutineContext().ensureActive()
+         val decision = ScopeEnforcer.validate(input, authorization)
+         if (!decision.allowed) return@withContext ScanResult("", emptyList(), "بررسی متوقف شد: ${decision.reason}")
+         if (authorization?.allowPrivateNetwork != allowPrivateNetwork) {
+@@ -73,7 +79,9 @@
+         val hostForDns = url.host.removePrefix("[").removeSuffix("]")
+         var pinnedAddress = ""
+         try {
++            currentCoroutineContext().ensureActive()
+             val addresses = InetAddress.getAllByName(hostForDns).distinctBy { it.hostAddress }
++            currentCoroutineContext().ensureActive()
+             if (addresses.isEmpty()) return@withContext ScanResult(url.host, emptyList(), "دامنه به IP تبدیل نشد.", authorizationId = decision.authorizationId)
+             val privateAddresses = addresses.filter(AddressPolicy::isNonPublic)
+             if (privateAddresses.isNotEmpty() && !authorization.allowPrivateNetwork) {
+@@ -87,7 +95,9 @@
+             }
+             val selectedAddress = addresses.first()
+             pinnedAddress = selectedAddress.hostAddress.orEmpty()
++            currentCoroutineContext().ensureActive()
+             val observation = requestHeadersOnly(url, selectedAddress, port)
++            currentCoroutineContext().ensureActive()
+             val findings = inspectResponse(url, observation)
+             ScanResult(
+                 host = url.host,
+@@ -104,6 +114,8 @@
+                     "فقط سرآیندهای یک پاسخ بررسی شدند؛ این نتیجه ارزیابی جامع امنیت سایت نیست."
+                 )
+             )
++        } catch (cancelled: CancellationException) {
++            throw cancelled
+         } catch (e: Exception) {
+             val failedPort = if (url.port >= 0) url.port else if (url.protocol.equals("https", true)) 443 else 80
+             val tlsFailure = if (url.protocol.equals("https", true)) TlsFailureClassifier.classify(e) else null
+@@ -131,6 +143,12 @@
+                 coverageNotes = listOf("درخواست با خطا متوقف شد؛ خطا به‌عنوان یافته امنیتی ثبت نشده است.")
+             )
+         }
++        }
++    }
++
++    companion object {
++        // Bounds DNS+connect+TLS+header work; socket connect/read phases each have their own 8s cap.
++        const val SCAN_DEADLINE_MS = 26_000L
+     }
+ 
+     /** Connects to the exact DNS answer already checked, preventing a second hostname resolution at connect time. */
+@@ -163,7 +181,7 @@
+                 val request = buildString {
+                     append("GET $target HTTP/1.1\r\n")
+                     append("Host: $hostHeader${if (defaultPort) "" else ":$port"}\r\n")
+-                    append("User-Agent: SiteGuard-Android/0.8.0 (authorized-passive-audit)\r\n")
++                    append("User-Agent: ${SiteGuardBuildInfo.USER_AGENT}\r\n")
+                     append("Accept: text/html,application/json;q=0.9,*/*;q=0.5\r\n")
+                     append("Accept-Encoding: identity\r\n")
+                     append("Range: bytes=0-0\r\n")
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt	2026-11-23 05:12:03.402568612 +0000
+@@ -0,0 +1,9 @@
++package com.siteguard.app.core
++
++/** Single source of truth for user-agent and report provenance metadata. */
++object SiteGuardBuildInfo {
++    const val VERSION_NAME = "0.10.0"
++    const val VERSION_CODE = 11
++    const val REPORT_SCHEMA_VERSION = 4
++    const val USER_AGENT = "SiteGuard-Android/$VERSION_NAME (authorized-passive-audit)"
++}
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt	2026-11-22 22:33:04.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt	2026-11-23 05:12:41.659520409 +0000
+@@ -1,10 +1,12 @@
+ package com.siteguard.app.core
+ 
++import kotlinx.coroutines.CancellationException
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.currentCoroutineContext
+ import kotlinx.coroutines.delay
+-import kotlinx.coroutines.isActive
++import kotlinx.coroutines.ensureActive
+ import kotlinx.coroutines.withContext
++import kotlinx.coroutines.withTimeout
+ import java.io.ByteArrayOutputStream
+ import java.io.InputStream
+ import java.net.InetAddress
+@@ -25,13 +27,15 @@
+     val maxBodyBytes: Int = 128 * 1024,
+     val connectTimeoutMs: Int = 5_000,
+     val readTimeoutMs: Int = 5_000,
+-    val honorRequestRate: Boolean = true
++    val honorRequestRate: Boolean = true,
++    val maxDurationMs: Long = 60_000L
+ ) {
+     init {
+         require(maxPages in 1..25)
+         require(maxDepth in 0..2)
+         require(maxBodyBytes in 8 * 1024..256 * 1024)
+         require(connectTimeoutMs in 1_000..10_000 && readTimeoutMs in 1_000..10_000)
++        require(maxDurationMs in 5_000L..180_000L)
+     }
+ }
+ 
+@@ -72,7 +76,8 @@
+         startUrl: String,
+         manifest: WebsiteEngagementManifestV2,
+         options: WebsiteDiscoveryOptionsV1 = WebsiteDiscoveryOptionsV1()
+-    ): WebsiteDiscoveryResultV1 = withContext(Dispatchers.IO) {
++    ): WebsiteDiscoveryResultV1 = withTimeout(options.maxDurationMs) {
++        withContext(Dispatchers.IO) {
+         val started = System.currentTimeMillis()
+         val pages = mutableListOf<WebsiteDiscoveredPageV1>()
+         val events = mutableListOf<WebsiteDiscoveryEventV1>()
+@@ -94,10 +99,7 @@
+         queue.add(initial.normalizedUrl to 0)
+         var lastRequestAt = 0L
+         while (queue.isNotEmpty() && pages.size < options.maxPages) {
+-            if (!currentCoroutineContext().isActive) {
+-                events += WebsiteDiscoveryEventV1("", "CANCELLED", "لغو همکاری‌کننده کاربر دریافت شد.")
+-                break
+-            }
++            currentCoroutineContext().ensureActive()
+             val (candidate, depth) = queue.removeFirst()
+             if (requests >= minOf(options.maxPages, manifest.maxRequests)) {
+                 events += WebsiteDiscoveryEventV1(candidate, "BUDGET_BLOCKED", "بودجه درخواست یا سقف صفحه مصرف شده است.")
+@@ -119,7 +121,9 @@
+             requests++
+             lastRequestAt = System.currentTimeMillis()
+             try {
++                currentCoroutineContext().ensureActive()
+                 val response = fetchPinned(canonical, manifest, options)
++                currentCoroutineContext().ensureActive()
+                 val contentType = response.headers["content-type"].orEmpty().substringBefore(';').trim().lowercase()
+                 val html = contentType == "text/html" || contentType == "application/xhtml+xml"
+                 val bodyText = if (html) response.body.toString(Charsets.UTF_8) else ""
+@@ -143,6 +147,8 @@
+                     val location = response.headers["location"]
+                     if (!location.isNullOrBlank()) events += WebsiteDiscoveryEventV1(canonical, "REDIRECT_NOT_FOLLOWED", "پاسخ redirect به مقصد جدید دریافت شد؛ برای جلوگیری از scope escape به‌صورت خودکار دنبال نشد.")
+                 }
++            } catch (cancelled: CancellationException) {
++                throw cancelled
+             } catch (e: Exception) {
+                 val tls = if (canonical.startsWith("https://", ignoreCase = true)) TlsFailureClassifier.classify(e) else null
+                 if (tls != null) {
+@@ -161,6 +167,7 @@
+                 "محتوای خام صفحه ذخیره نمی‌شود؛ فقط hash، عنوان پاک‌سازی‌شده و هدرهای مجاز نگهداری می‌شوند.",
+                 "این قابلیت crawler محدود passive است؛ DAST، بررسی auth، API mutation، checkout و آزمون business logic اجرا نمی‌شود."
+             ))
++        }
+     }
+ 
+     /** Result of a single pinned HTTPS GET used only to read an ownership-proof file. */
+@@ -242,7 +249,7 @@
+                 val request = buildString {
+                     append("GET $path HTTP/1.1\r\n")
+                     append("Host: $hostHeader${if (defaultPort) "" else ":$port"}\r\n")
+-                    append("User-Agent: SiteGuard-Android/0.8.0 (authorized-passive-discovery)\r\n")
++                    append("User-Agent: ${SiteGuardBuildInfo.USER_AGENT}\r\n")
+                     append("Accept: text/html,application/xhtml+xml;q=0.9\r\nAccept-Encoding: identity\r\n")
+                     append("Range: bytes=0-${options.maxBodyBytes - 1}\r\nConnection: close\r\n\r\n")
+                 }
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/AuthorizationScopeTest.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/AuthorizationScopeTest.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/AuthorizationScopeTest.kt	2026-11-22 22:12:34.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/AuthorizationScopeTest.kt	2026-11-23 05:17:30.176621608 +0000
+@@ -1,6 +1,8 @@
+ package com.siteguard.app.core
+ 
++import org.junit.Assert.assertEquals
+ import org.junit.Assert.assertFalse
++import org.junit.Assert.assertNull
+ import org.junit.Assert.assertTrue
+ import org.junit.Test
+ 
+@@ -34,4 +36,47 @@
+         assertFalse(ScopeEnforcer.validate("javascript:alert(1)", AuthorizationManifest.forSingleTarget("example.com", false)).allowed)
+         assertFalse(ScopeEnforcer.validate("https://example.com/%2e%2e/private", AuthorizationManifest.forSingleTarget("example.com", false)).allowed)
+     }
++    @Test fun rejectsAmbiguousAndDoubleEncodedPaths() {
++        val manifest = AuthorizationManifest.forSingleTarget("https://example.com/admin", false)!!
++        listOf(
++            "https://example.com/admin/%2e%2e/private",
++            "https://example.com/admin/%252e%252e/private",
++            "https://example.com/admin%2fprivate",
++            "https://example.com/admin/%5cprivate",
++            "https://example.com/admin/%xx"
++        ).forEach { target -> assertFalse(target, ScopeEnforcer.validate(target, manifest).allowed) }
++    }
++
++    @Test fun rejectsMalformedAuthorizationManifestPathsAndLimits() {
++        val manifest = AuthorizationManifest.forSingleTarget("https://example.com/admin", false)!!
++        assertFalse(ScopeEnforcer.validate("https://example.com/admin", manifest.copy(allowedPathPrefixes = setOf("/admin/../"))).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/admin", manifest.copy(excludedPaths = setOf("relative/path"))).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/admin", manifest.copy(allowedPorts = setOf(0))).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/admin", manifest.copy(validFromEpochMs = 200, validUntilEpochMs = 100), now = 150).allowed)
++    }
++
++    @Test fun pathMatchingUsesSegmentBoundariesAndExclusions() {
++        val manifest = AuthorizationManifest.forSingleTarget("https://example.com/", false)!!
++            .copy(allowedPathPrefixes = setOf("/admin"), excludedPaths = setOf("/admin/private"))
++        assertTrue(ScopeEnforcer.validate("https://example.com/admin/reports", manifest).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/administrator", manifest).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/admin/private/export", manifest).allowed)
++        assertTrue(ScopeEnforcer.validate("https://example.com/admin/privately", manifest).allowed)
++    }
++
++    @Test fun rejectsUnsupportedMethodsAndOversizedAuthorizationLists() {
++        val manifest = AuthorizationManifest.forSingleTarget("https://example.com/", false)!!
++        assertFalse(ScopeEnforcer.validate("https://example.com/", manifest.copy(allowedMethods = setOf("PASSIVE_HTTP_GET", "POST"))).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/", manifest.copy(authorizedHosts = (1..101).map { "h$it.example" }.toSet())).allowed)
++        assertFalse(ScopeEnforcer.validate("https://example.com/", manifest.copy(authorizationId = "bad\u0000id")).allowed)
++    }
++
++    @Test fun canonicalizesIdnAndRejectsAmbiguousNumericHosts() {
++        assertEquals(canonicalHost("Exämple.com"), canonicalHost("xn--exmple-cua.com"))
++        assertEquals("8.8.8.8", canonicalHost("8.8.8.8"))
++        assertNull(canonicalHost("127.1"))
++        assertNull(canonicalHost("0177.0.0.1"))
++        assertNull(canonicalHost("256.1.1.1"))
++    }
++
+ }
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/EvidenceSanitizerTest.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/EvidenceSanitizerTest.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/EvidenceSanitizerTest.kt	2026-11-22 22:12:34.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/EvidenceSanitizerTest.kt	2026-11-23 05:12:41.660835059 +0000
+@@ -13,4 +13,20 @@
+         assertFalse(sanitized.contains("verySecret123"))
+         assertFalse(sanitized.contains("eyJhbGciOiJIUzI1NiJ9"))
+     }
++    @Test fun redactsQuotedJsonKeysAndCommonProviderTokens() {
++        val input = """{"password":"json-secret-value", "api_key":"api-secret-value"} AKIA1234567890ABCDEF ghp_abcdefghijklmnopqrstuvwxyz123456 eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature1234"""
++        val safe = EvidenceSanitizer.sanitize(input)
++        listOf("json-secret-value", "api-secret-value", "AKIA1234567890ABCDEF", "ghp_abcdefghijklmnopqrstuvwxyz123456", "eyJhbGciOiJIUzI1NiJ9").forEach {
++            assertFalse("leaked $it", safe.contains(it))
++        }
++    }
++
++    @Test fun redactsPemPrivateKeysAndCredentialUrls() {
++        val pem = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC\n-----END PRIVATE KEY-----"
++        val safe = EvidenceSanitizer.sanitize("connect https://admin:secret-password@example.test/key $pem")
++        assertFalse(safe.contains("secret-password"))
++        assertFalse(safe.contains("MIIEvQIB"))
++        assertTrue(safe.contains("[PRIVATE KEY REDACTED]"))
++    }
++
+ }
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/WebsiteDiscoveryOptionsTest.kt /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/WebsiteDiscoveryOptionsTest.kt
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/WebsiteDiscoveryOptionsTest.kt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/app/src/test/java/com/siteguard/app/core/WebsiteDiscoveryOptionsTest.kt	2026-11-23 05:17:30.176893620 +0000
+@@ -0,0 +1,17 @@
++package com.siteguard.app.core
++
++import org.junit.Assert.assertEquals
++import org.junit.Assert.assertThrows
++import org.junit.Test
++
++class WebsiteDiscoveryOptionsTest {
++    @Test fun defaultDiscoveryDeadlineIsBounded() {
++        assertEquals(60_000L, WebsiteDiscoveryOptionsV1().maxDurationMs)
++        assertEquals(180_000L, WebsiteDiscoveryOptionsV1(maxDurationMs = 180_000L).maxDurationMs)
++    }
++
++    @Test fun rejectsDiscoveryDeadlinesOutsideSafeRange() {
++        assertThrows(IllegalArgumentException::class.java) { WebsiteDiscoveryOptionsV1(maxDurationMs = 4_999L) }
++        assertThrows(IllegalArgumentException::class.java) { WebsiteDiscoveryOptionsV1(maxDurationMs = 180_001L) }
++    }
++}
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md	2026-11-23 05:17:48.288639725 +0000
+@@ -0,0 +1,107 @@
++# ماتریس اجرای پرامت ۱۰۰٬۰۰۰ خطی — SiteGuard Android v0.10.0
++
++## ممیزی ساختار ورودی
++
++پرامت بارگذاری‌شده به‌صورت کامل خوانده و شمارش شد:
++
++- ۱۰۰٬۰۰۰ ردیف؛
++- ۴۰ حوزه؛
++- ۴۰۰ قابلیت متمایز (۱۰ قابلیت در هر حوزه)؛
++- ۲٬۰۰۰ معیار پذیرش متمایز (۵۰ معیار برای هر حوزه)؛
++- ۵ مرحله اجرایی، هرکدام شامل ۲۰٬۰۰۰ ردیف: ممیزی، پیاده‌سازی، یکپارچه‌سازی، اعتبارسنجی، پایش/تحویل.
++
++بنابراین تعداد ردیف‌ها به معنی ۱۰۰٬۰۰۰ قابلیت متفاوت نیست؛ ساختار پرامت، ۴۰۰ قابلیت را با ۵۰ معیار و ۵ مرحله ترکیب می‌کند.
++
++## معنای وضعیت‌ها
++
++- **Partial:** بخشی از کد یا گردش‌کار در مخزن وجود دارد، اما معیارهای کامل حوزه اثبات نشده‌اند.
++- **Tested:** فقط برای تست مشخصی که واقعاً اجرا و ثبت شده باشد؛ هیچ‌یک از ۴۰ حوزه به‌عنوان یک کل، Tested اعلام نشده است.
++- **Unsupported:** در نسخه فعلی ماژول قابل استفاده‌ای برای آن قابلیت وجود ندارد.
++- **Blocked:** ادامه اعتبارسنجی به محیط/ابزار بیرونی نیاز دارد و این محیط آن را فراهم نکرده است.
++
++## وضعیت ۴۰ حوزه بر اساس کد و مستندات واقعی
++
++> این ماتریس ادعای اجرای کامل ۲٬۰۰۰ معیار را نمی‌کند. برای هر حوزه مسیرهای واقعی موجود و محدودیت فعلی ثبت شده‌اند. تست‌های ثبت‌شده در نسخه ۰٫۸٫۰، شواهد تاریخی بسته ورودی‌اند و به‌عنوان تست جدید نسخه ۰٫۹٫۰ معرفی نمی‌شوند.
++
++| # | حوزه | فایل‌ها/ماژول‌های موجود | تست/شاهد مرتبط | وضعیت | مانع یا کار باقیمانده |
++|---:|---|---|---|---|---|
++| 01 | ممیزی مخزن و حفظ سازگاری | `MainActivity.kt`، ۴۰+ فایل `core/`، `SPECIFICATION_GAPS.md`، `TEST_PLAN.md` | `CoreSpecificationContractTest`، آزمون‌های ماژولار | **Partial** | ممیزی منبع و نگاشت قراردادها وجود دارد؛ ماتریس کامل ۴۰ حوزه و اجرای کامل acceptance هنوز انجام نشده است. |
++| 02 | رابط Android و Jetpack Compose | `MainActivity.kt`، `OwnershipHygienePanel.kt`، `app/src/main/res/` | تست Compose/دستگاه در این بسته اجرا نشده | **Partial** | UX نسخه ۰٫۹ بهبود یافته، اما build واقعی Compose، screen reader، فونت بزرگ و دستگاه باید اجرا شود. |
++| 03 | معماری و قراردادهای مشترک | `PlatformContracts.kt`، `AssessmentWorkflow.kt`، `ExecutionOrderAcceptance.kt` | `CoreSpecificationContractTest`، `ExtendedSpecificationTest` | **Partial** | قراردادها و گردش‌کار وجود دارند؛ versioning و پوشش همه adapterها کامل نیست. |
++| 04 | مدل دامنه و ذخیره‌سازی محلی | `LocalAuditHistory.kt`، `LocalSecurityKnowledgeStore.kt`، `LocalDataCipher.kt` | `ExtendedSpecificationTest` | **Partial** | ذخیره‌سازی و رمزنگاری محلی پیاده شده؛ migration/recovery/backup کامل هنوز وجود ندارد. |
++| 05 | مجوز، Scope و سیاست امنیتی | `Authorization.kt`، `SecurityPolicyEngine.kt`، `OwnershipProofV1.kt` | `AuthorizationScopeTest`، `OwnershipProofTest` | **Partial** | scope و اعتبار زمانی/دامنه بررسی می‌شود؛ intake کامل engagement و shared egress gate هنوز ناقص است. |
++| 06 | ارکستراسیون و چرخه اجرای اسکن | `ScanOrchestrator.kt`، `ScanEngine.kt`، `AssessmentWorkflow.kt` | `WebsiteAnalysisTest`، `CrawlerRobustnessTest` | **Partial** | جریان‌های اصلی وجود دارند؛ صف پایدار و بازیابی کامل پس از مرگ فرایند تضمین نیست. |
++| 07 | دارایی‌ها و کشف معماری | `WebsiteDiscoveryEngineV1.kt`، `ProjectArchiveAnalyzer.kt`، `WebsiteSecuritySpecialistEngineV2.kt` | `SpecialistArchiveIntegrationTest` | **Partial** | کشف passive محدود و شواهد ZIP وجود دارد؛ کشف runtime/CDN/origin و معماری کامل وجود ندارد. |
++| 08 | خزش passive وب‌سایت | `WebsiteDiscoveryEngineV1.kt` | `CrawlerRobustnessTest`، `ExtendedModulesV080Test` | **Partial** | GET محدود، host/path/time/request bounds و IP pinning پیاده شده؛ sitemap index/robots و coverage گسترده ناقص است. |
++| 09 | DNS و TLS و لایه انتقال | `TlsFailureClassifier.kt`، `AddressPolicy` در `ScanEngine.kt`، `NetworkEnterpriseSecurityAnalyzer.kt` | `TlsFailureClassifierTest`، `AddressPolicyTest` | **Partial** | طبقه‌بندی خطای TLS و policy آدرس موجود است؛ enumeration رکورد DNS، cipher/protocol و OCSP/CT ناقص است. |
++| 10 | هدرها و کوکی و پیکربندی وب | `PassiveHygieneChecksV1.kt`، `ScanEngine.kt` | `PassiveHygieneChecksTest`، `ExtendedModulesV080Test` | **Partial** | بخشی از hygiene و redaction پیاده شده؛ تحلیل کامل هدر/کوکی و integration در همه گزارش‌ها کامل نیست. |
++| 11 | احراز هویت و مجوزدهی برنامه | `Authorization.kt`، `SecurityPolicyEngine.kt`، `SourceCodeAnalyzer.kt` | `AuthorizationScopeTest`، `OwnershipProofTest` | **Partial** | قواعد ایستا و scope محدود وجود دارد؛ BOLA/BFLA و auth runtime چندحسابی اجرا نشده است. |
++| 12 | تحلیل ورودی و خروجی و تزریق | `SourceCodeAnalyzer.kt`، `ApiSchemaAnalyzer.kt`، `WordPressSecurityAnalyzer.kt` | `ExtendedSpecificationTest`، `WebsiteSpecialistV2Test` | **Partial** | تحلیل heuristic/signature است؛ AST، taint tracking و dataflow کامل وجود ندارد. |
++| 13 | امنیت فایل و آپلود و آرشیو | `ProjectArchiveAnalyzer.kt`، `ArchivePathPolicy` در analyzer | `ArchivePathPolicyTest`، `SpecialistArchiveIntegrationTest` | **Partial** | کنترل ZIP و محدودیت حجم/مسیر در analyzer وجود دارد؛ runtime upload و همه parserها پوشش ندارند. |
++| 14 | امنیت REST و OpenAPI | `ApiSchemaAnalyzer.kt`، `GraphQlSoapSchemaAnalyzer.kt` | `ApiSchemaAnalyzerTest`، `ExtendedModulesV080Test` | **Partial** | تحلیل schema و declaration است؛ احراز هویت واقعی endpoint و API DAST اجرا نشده. |
++| 15 | امنیت GraphQL و SOAP | `GraphQlSoapSchemaAnalyzer.kt` | `ExtendedModulesV080Test` | **Partial** | SDL/WSDL و نشانه‌های امنیتی schema بررسی می‌شوند؛ resolver runtime، depth/complexity و SOAP operationها اجرا نشده‌اند. |
++| 16 | امنیت WordPress | `WordPressSecurityAnalyzer.kt`، `WebsiteSecuritySpecialistEngineV2.kt` | `ExtendedModulesV080Test`، `WebsiteSpecialistV2Test` | **Partial** | تحلیل ایستای PHP و برخی nonce/capability/deserialization signals؛ اتصال read-only احرازشده به وردپرس وجود ندارد. |
++| 17 | امنیت WooCommerce | `WordPressSecurityAnalyzer.kt`، `WebsiteSecuritySpecialistEngineV2.kt` | `ExtendedModulesV080Test`، `WebsiteSpecialistV2Test` | **Partial** | نشانه‌های ownership و webhook در سورس؛ business logic runtime و حساب‌های synthetic آزمون نشده‌اند. |
++| 18 | تحلیل ایستای PHP | `SourceCodeAnalyzer.kt`، `WordPressSecurityAnalyzer.kt` | `WebsiteSpecialistV2Test`، `ExtendedSpecificationTest` | **Partial** | قواعد heuristic وجود دارد؛ parser/AST/dataflow و تحلیل interprocedural کامل نیست. |
++| 19 | تحلیل ایستای JavaScript و TypeScript | `SourceCodeAnalyzer.kt`، `ProjectArchiveAnalyzer.kt` | `ExtendedSpecificationTest` | **Partial** | الگوهای ایستا وجود دارند؛ AST و taint tracking و پیکربندی کامل frameworkها موجود نیست. |
++| 20 | وابستگی و SBOM و زنجیره تأمین | `DependencyInventoryAnalyzer.kt`، `ProjectArchiveAnalyzer.kt`، `JsonReportExporter` | `ExtendedSpecificationTest`، `SpecialistArchiveIntegrationTest` | **Partial** | inventory/SBOM موجود است؛ provenance، hash و license تطبیق کامل همه package managerها ندارد. |
++| 21 | امنیت شبکه و سازمانی | `NetworkEnterpriseSecurityAnalyzer.kt`، TCP/TLS probe در `MainActivity.kt` | `NetworkEnterpriseSecurityAnalyzerTest`، `AddressPolicyTest` | **Partial** | بررسی محدود و هدف‌مند وجود دارد؛ discovery گسترده و segmentation کامل نیست. |
++| 22 | هویت سازمانی AD و Entra و SSO | `CloudConfigurationAnalyzer.kt`، `NetworkEnterpriseSecurityAnalyzer.kt` | تست اختصاصی اتصال زنده موجود نیست | **Partial** | برخی بررسی‌های ایستا/پیکربندی؛ اتصال زنده AD/Entra/Kerberos/SSO پشتیبانی نمی‌شود. |
++| 23 | امنیت Cloud و IAM و Storage | `CloudConfigurationAnalyzer.kt`، `ProjectArchiveAnalyzer.kt` | `CloudConfigurationAnalyzerTest` | **Partial** | فقط بررسی فایل پیکربندی؛ اتصال به cloud account و ارزیابی IAM/Storage runtime وجود ندارد. |
++| 24 | Container و Kubernetes و IaC و CI/CD | `CloudConfigurationAnalyzer.kt`، `ProjectArchiveAnalyzer.kt` | `CloudConfigurationAnalyzerTest`، `ExtendedSpecificationTest` | **Partial** | تحلیل ایستای manifest/configuration؛ cluster runtime و policy admission اجرا نمی‌شود. |
++| 25 | امنیت موبایل Android و APK/AAB | `MobileSecurityAnalyzer.kt`، `ProjectArchiveAnalyzer.kt` | `MobileSecurityAnalyzerTest`، `ExtendedModulesV080Test` | **Partial** | تحلیل source/متادیتا و marker inventory؛ decode کامل AXML/DEX، signature validation و MobSF وجود ندارد. |
++| 26 | Red Team دفاعی و MITRE ATT&CK | `DefensiveIntelligence.kt`، `LabSimulation.kt`، `SecurityKnowledgeBase.kt` | `DefensiveIntelligenceTest`، `ExtendedSpecificationTest` | **Partial** | نگاشت دفاعی و fixture مصنوعی؛ exploit/lateral movement یا آزمون واقعی Red Team پشتیبانی نمی‌شود. |
++| 27 | Threat Intelligence و advisory feeds | `DefensiveIntelligence.kt`، `SecurityKnowledgeBase.kt`، `LocalSecurityKnowledgePack.kt` | `DefensiveIntelligenceTest` | **Partial** | دانش محلی curated وجود دارد؛ feed زنده CVE/NVD/CISA/OSV و امضای بسته به‌روزرسانی نشده است. |
++| 28 | Forensics و chain of custody | `ThreatForensicsEngine.kt`، `PersistentChainOfCustodyLedgerV1.kt`، `LocalAuditHistory.kt` | `ExtendedModulesV080Test`، `ExtendedSpecificationTest` | **Partial** | hash/timeline و زنجیره hash محلی؛ امضای سخت‌افزاری و external witness وجود ندارد. |
++| 29 | دانش محلی و Rule Engine | `SecurityKnowledgeBase.kt`، `LocalSecurityKnowledgePack.kt`، `LocalSecurityKnowledgeStore.kt` | `ExtendedSpecificationTest` | **Partial** | جست‌وجوی آفلاین و قواعد deterministic؛ دیتاست کامل/به‌روز و feed امضاشده موجود نیست. |
++| 30 | Attack Graph و Risk Engine | `AttackGraphRiskEngine.kt`، `RiskEngine.kt`، `RootCauseAnalyzer.kt` | `DefensiveIntelligenceTest`، `ExtendedSpecificationTest` | **Partial** | گراف شواهد و اولویت‌بندی توضیح‌پذیر؛ امتیاز خطر یا مسیر گراف اثبات exploitability نیست. |
++| 31 | اصلاح و Patch و Rollback | `RemediationPatchEngine.kt`، `WebsiteRemediationPlaybook.kt` | `ExtendedSpecificationTest`، `WebsiteSpecialistV2Test` | **Partial** | طرح اصلاح، preview، backup/rollback و retest guide؛ اعمال خودکار production عمداً وجود ندارد. |
++| 32 | Automation و WorkManager | `SecurityAutomation.kt`، `ScanOrchestrator.kt` | `ExtendedSpecificationTest` | **Partial** | صف bounded و کنترل لغو؛ WorkManager پایدار، resume کامل و مانیتورینگ همیشه‌روشن وجود ندارد. |
++| 33 | Lab و Simulation | `LabSimulation.kt` | `ExtendedSpecificationTest`، اجرای fixtureهای محلی ثبت‌شده در v0.8.0 | **Partial** | سناریوهای مصنوعی آفلاین؛ VM/container disposable lab و اجرای هدف واقعی وجود ندارد. |
++| 34 | GitHub Tool Intelligence | `GitHubToolIntelligence.kt`، `BuildReleasePolicy.kt` | تست‌های کلی QA/release | **Partial** | registry و مدل بازبینی ابزار؛ دانلود/اجرای untrusted repository و نصب‌کننده امضاشده خودکار وجود ندارد. |
++| 35 | گزارش و Export | `ReportingQualityEngine.kt`، `PlatformContracts.kt`، `MainActivity.kt` | `ExtendedSpecificationTest` | **Partial** | JSON/HTML و اکنون فهرست یکپارچه یافته‌ها؛ PDF و اعتبارسنجی همه round-tripها کامل نیست. |
++| 36 | دیتابیس و رمزنگاری و بازیابی | `LocalDataCipher.kt`، `LocalAuditHistory.kt`، `LocalSecurityKnowledgeStore.kt` | `EvidenceSanitizerTest`، `ExtendedSpecificationTest` | **Partial** | رمزنگاری محلی و ذخیره گزارش؛ recovery/backup/migration جامع و تست restore انجام نشده. |
++| 37 | Local Linux Worker و IPC | فایل worker/IPC قابل استقرار در بسته موجود نیست | تست مرتبط وجود ندارد | **Unsupported** | worker لینوکس ایزوله، IPC احراز هویت‌شده و sandbox toolchain پیاده نشده است. |
++| 38 | Resource و Capability Manager | `DeviceCapabilityDetector.kt`، `BuildReleasePolicy.kt` | تست مستقل resource budget وجود ندارد | **Partial** | تشخیص برخی قابلیت‌های دستگاه؛ بودجه RAM/CPU/disk/battery و throttling کامل نشده. |
++| 39 | QA و Benchmark | `app/src/test/java/com/siteguard/app/core/`، `TEST_PLAN.md`، `tools/final-release-gate.sh` | تست‌های unit موجود؛ benchmark جامع موجود نیست | **Partial** | تست‌های هدفمند و source gate؛ Android Gradle/JUnit/lint/device/benchmark در این محیط اجرا نشده. |
++| 40 | Build و Release و Privacy | `app/build.gradle.kts`، `.github/workflows/android-ci.yml`، `BuildReleasePolicy.kt`، `tools/` | source release gate در این بسته اجرا می‌شود؛ build Android نه | **Blocked** | نسخه ۰٫۹٫۰ و CI تعریف شده‌اند؛ در این محیط Gradle executable، Android SDK و wrapper JAR موجود نیست، پس APK build/sign/install تأیید نشده است. |
++
++## تغییرات واقعی این ارتقا (v0.9.0)
++
++1. تم مشکی/قرمز حفظ شد و هدر برند، وضعیت اجرای زنده، کارت‌های آماری و سلسله‌مراتب بصری بازطراحی شدند.
++2. چهار مقصد ناوبری پایین صفحه حفظ و کنتراست وضعیت انتخاب‌شده و برچسب‌های دسترس‌پذیری بهتر شد.
++3. یافته‌های اسکن وب، تحلیل سورس و تحلیل ZIP در یک مجموعه deduplicate و بر اساس شدت مرتب می‌شوند؛ جست‌وجوی عنوان/شناسه/دارایی/CWE و فیلتر شدت نیز اضافه شده است. کارت‌های تکراری از داخل پنل‌های تحلیلی حذف شدند و آمار داشبورد اکنون از همین مجموعه یکپارچه محاسبه می‌شود.
++4. جزئیات طولانی Website Security Specialist شامل کنترل‌ها، شواهد، نقشه معماری، طرح آزمون و وابستگی‌ها به‌صورت پیش‌فرض جمع هستند و با اقدام کاربر باز می‌شوند؛ خلاصه و شاخص‌ها همچنان دیده می‌شوند.
++5. خروجی JSON از schema نسخه ۳ استفاده می‌کند و آرایه سطح بالای `findings` همه منابع را پوشش می‌دهد. نسخه برنامه ۰٫۹٫۰ و versionCode 10 شد.
++
++## تست‌ها و محدودیت‌های اعتبارسنجی
++
++- نسخه قبلی شامل تست‌های unit و نتایج runner محلی است؛ این فایل‌ها برای حفظ تاریخچه نگه داشته شده‌اند.
++- `tools/final-release-gate.sh` در زمان تحویل این نسخه جداگانه اجرا و خروجی آن در `TEST_RESULTS_v0.9.0.txt` ثبت می‌شود.
++- محیط فعلی `gradle`، Gradle wrapper JAR، Android SDK و `adb` ندارد. در نتیجه compile واقعی Compose/Android، `:app:testDebugUnitTest`، lint، assembleDebug/Release، امضا، نصب/ارتقا و آزمون screen reader/فونت بزرگ/دستگاه قابل اجرا نیستند و **تأیید نشده‌اند**.
++- هیچ AI API، hosted inference، backend اجباری یا تغییر خودکار production اضافه نشده است.
++
++
++## الحاقیه نسخه v0.10.0 — اصلاحات واقعی و محدوده اثر
++
++این نسخه جایگزین ارزیابی ۴۰ حوزه‌ای قبلی نمی‌شود؛ فقط delta زیر را بر اساس کد و تست‌های افزوده ثبت می‌کند:
++
++| حوزه | فایل‌های تغییرکرده | تغییر واقعی در v0.10.0 | شواهد جدید | وضعیت کل حوزه |
++|---:|---|---|---|---|
++| 01 | `Authorization.kt`، `EvidenceSanitizer.kt`، `PlatformContracts.kt` | اعتبارسنجی سخت‌گیرانه‌تر manifest/path/host/port و پاک‌سازی متن خروجی | compile مستقل Kotlin و policy smoke tests؛ تست JUnit به بسته افزوده شده ولی Gradle آن اجرا نشده | **Partial** |
++| 04 | `SiteGuardBuildInfo.kt`، `PlatformContracts.kt` | نسخه و schema مرکزی؛ پاک‌سازی متن‌های حساس در finding/remediation report | بررسی کد و release gate | **Partial** |
++| 05 | `Authorization.kt`، `AuthorizationScopeTest.kt` | رد path traversal و encoding مبهم، زمان نامعتبر، budget/port/host نامعتبر، مرزبندی قطعه مسیر و IDN/IP مبهم | policy smoke tests؛ JUnit source افزوده‌شده | **Partial** |
++| 06 | `ScanEngine.kt`، `WebsiteDiscoveryEngineV1.kt`، `MainActivity.kt` | deadline سراسری coroutine و انتشار CancellationException به فراخواننده؛ نمایش پیام timeout در UI | compile مستقل Kotlin با coroutine/JVM و stubs محدود؛ Gradle/device test اجرا نشده | **Partial** |
++| 08 | `WebsiteDiscoveryEngineV1.kt` | سقف زمان قابل تنظیم ۵ تا ۱۸۰ ثانیه، checkpoint لغو، و عدم ثبت cancellation به‌عنوان خطای درخواست | compile مستقل Kotlin با stubs محدود | **Partial** |
++| 10 | `EvidenceSanitizer.kt`، `EvidenceSanitizerTest.kt`، `PlatformContracts.kt` | redaction credentialهای JSON، header، provider token، PEM، JWT و URL credential پیش از قرارگیری در گزارش | policy smoke tests؛ JUnit source افزوده‌شده | **Partial** |
++| 28 | `EvidenceSanitizer.kt`، `PlatformContracts.kt` | کمینه‌سازی افشای credential در evidence/remediation report | policy smoke tests و بررسی release gate | **Partial** |
++| 40 | `SiteGuardBuildInfo.kt`، `TEST_RESULTS_v0.10.0.txt` | ثبت نسخه، schema، تست‌های اجراشده و blockerهای build به‌صورت قابل بازبینی | source release gate و خروجی compile/test محلی | **Partial** |
++
++**وضعیت تجمیعی ۴۰ حوزه تغییر نکرده است:** ۳۸ حوزه Partial، یک حوزه Unsupported و یک حوزه Blocked. هیچ حوزه‌ای صرفاً به دلیل وجود کد یا عبور یک smoke test به Tested/Complete ارتقا داده نشده است. ۲٬۰۰۰ معیار پذیرش همچنان به‌طور کامل اجرا و تأیید نشده‌اند.
++
++### محدودیت‌های جدیدی که همچنان باقی‌اند
++
++- `InetAddress.getAllByName` در resolver سیستم یک فراخوانی blocking است؛ timeout coroutine در checkpointها و مرحله socket اعمال می‌شود، اما نمی‌تواند تضمین کند resolver بومی سیستم‌عامل در همه شرایط فوراً interrupt شود.
++- آزمون JUnit افزوده شده، اما در این محیط Gradle task آن اجرا نشده است.
++- اجرای کامل Android/Compose با SDK، lint، APK، device, RTL/TalkBack و lifecycle هنوز Blocked است.
++- تحلیل AST/taint، DAST احرازشده، shared egress gate همه adapterها، صف پایدار و خودکارسازی production همچنان در ماتریس قبلی Partial/Unsupported باقی می‌مانند.
+diff -ruN /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/tools/final-release-gate.sh /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/tools/final-release-gate.sh
+--- /mnt/data/siteguard_upgrade_v100/base/SiteGuard-Android-v0.9.0/tools/final-release-gate.sh	2026-11-22 22:51:48.000000000 +0000
++++ /mnt/data/siteguard_upgrade_v100/SiteGuard-Android-v0.9.0/tools/final-release-gate.sh	2026-11-23 05:19:02.774257612 +0000
+@@ -44,22 +44,38 @@
+ pass 'v0.8.0 specialist, schema-analysis, crawler and forensic modules are present'
+ 
+ [[ -f "$ROOT/docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md" ]] || fail '40-domain prompt coverage matrix is missing'
++[[ -f "$ROOT/docs/PROMPT_40_DOMAIN_COVERAGE_v0.10.0.md" ]] || fail 'v0.10.0 prompt coverage delta is missing'
++[[ -f "$ROOT/RELEASE_NOTES_v0.10.0.md" ]] || fail 'v0.10.0 release notes are missing'
++[[ -f "$ROOT/SPEC_EXECUTION_LOG_v0.10.0.md" ]] || fail 'v0.10.0 execution log is missing'
++[[ -f "$ROOT/TEST_RESULTS_v0.10.0.txt" ]] || fail 'v0.10.0 test report is missing'
+ grep -q '۴۰ حوزه' "$ROOT/docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md" || fail '40-domain prompt coverage matrix lacks its audited domain count'
+ grep -q '۱۰۰٬۰۰۰ ردیف' "$ROOT/docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md" || fail 'prompt matrix does not record the input size'
+ grep -q 'allCurrentFindings' "$ROOT/app/src/main/java/com/siteguard/app/MainActivity.kt" || fail 'Unified findings aggregation is missing'
+ grep -q 'items(visibleFindings' "$ROOT/app/src/main/java/com/siteguard/app/MainActivity.kt" || fail 'Unified findings list is not rendered'
+-grep -q 'schema_version", 3' "$ROOT/app/src/main/java/com/siteguard/app/MainActivity.kt" || fail 'JSON report schema was not advanced'
++grep -q 'REPORT_SCHEMA_VERSION' "$ROOT/app/src/main/java/com/siteguard/app/MainActivity.kt" || fail 'JSON report schema is not sourced from build metadata'
+ grep -q 'specialistDetailsExpanded' "$ROOT/app/src/main/java/com/siteguard/app/MainActivity.kt" || fail 'Expandable specialist details are missing'
+ pass 'v0.9.0 UX, unified findings/reporting and 40-domain prompt matrix are present'
+ 
+ [[ -f "$ROOT/app/src/test/java/com/siteguard/app/core/ExtendedModulesV080Test.kt" ]] || fail 'v0.8.0 focused test source is missing'
+ [[ -f "$ROOT/TEST_RESULTS_v0.8.0.txt" ]] || fail 'v0.8.0 test results are missing'
+ pass 'Focused v0.8.0 regression tests and results are present'
++[[ -f "$ROOT/app/src/test/java/com/siteguard/app/core/AuthorizationScopeTest.kt" ]] || fail 'Authorization scope regression tests are missing'
++[[ -f "$ROOT/app/src/test/java/com/siteguard/app/core/EvidenceSanitizerTest.kt" ]] || fail 'Evidence redaction regression tests are missing'
++[[ -f "$ROOT/app/src/test/java/com/siteguard/app/core/WebsiteDiscoveryOptionsTest.kt" ]] || fail 'Website discovery deadline regression tests are missing'
++pass 'v0.10.0 authorization, evidence-redaction and crawler-deadline regression tests are present'
+ 
+ VERSION_CODE=$(grep -E 'versionCode\s*=' "$ROOT/app/build.gradle.kts" | grep -oE '[0-9]+' | head -1)
+ VERSION_NAME=$(grep -E 'versionName\s*=' "$ROOT/app/build.gradle.kts" | sed -E 's/.*"([^"]+)".*/\1/')
+-[[ "$VERSION_CODE" == '10' && "$VERSION_NAME" == '0.9.0' ]] || fail "Unexpected app version ($VERSION_NAME / $VERSION_CODE)"
+-pass 'App version metadata is v0.9.0 / versionCode 10'
++[[ "$VERSION_CODE" == '11' && "$VERSION_NAME" == '0.10.0' ]] || fail "Unexpected app version ($VERSION_NAME / $VERSION_CODE)"
++pass 'App version metadata is v0.10.0 / versionCode 11'
++[[ -f "$ROOT/app/src/main/java/com/siteguard/app/core/SiteGuardBuildInfo.kt" ]] || fail 'Central build metadata is missing'
++grep -q 'maxDurationMs: Long = 60_000L' "$ROOT/app/src/main/java/com/siteguard/app/core/WebsiteDiscoveryEngineV1.kt" || fail 'Crawler global time budget is missing'
++grep -q 'catch (cancelled: CancellationException)' "$ROOT/app/src/main/java/com/siteguard/app/core/ScanEngine.kt" || fail 'Scan cancellation propagation is missing'
++grep -q 'ambiguousEncoding' "$ROOT/app/src/main/java/com/siteguard/app/core/Authorization.kt" || fail 'Encoded path validation is missing'
++grep -q 'manifest.allowedMethods != setOf("PASSIVE_HTTP_GET")' "$ROOT/app/src/main/java/com/siteguard/app/core/Authorization.kt" || fail 'Passive-only method allowlist is missing'
++grep -q 'jsonQuotedAssignment' "$ROOT/app/src/main/java/com/siteguard/app/core/EvidenceSanitizer.kt" || fail 'JSON credential redaction is missing'
++grep -q 'plan.proposedPatchDiff?.let { safeReportText(it' "$ROOT/app/src/main/java/com/siteguard/app/core/PlatformContracts.kt" || fail 'Remediation patch report redaction is missing'
++pass 'v0.10.0 authorization, timeout/cancellation and evidence-redaction hardening is present'
+ 
+ for f in \
+   "$ROOT/.github/workflows/android-ci.yml" \

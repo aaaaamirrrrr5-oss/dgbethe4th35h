@@ -1,0 +1,19 @@
+SiteGuard Android v0.13.0 — ارتقا از v0.12.0
+
+نسخه برنامه: 0.13.0 / versionCode 14 / JSON report schema 7
+
+تغییرات اجرایی:
+1) بررسی DNS خواندنی SPF، DMARC و CAA از طریق DNS-over-HTTPS با timeout، سقف پاسخ و بدون تغییر رکوردها.
+2) صف automation رمزگذاری‌شده و ماندگار؛ بازیابی کار interrupted و بررسی مجدد AuthorizationManifest قبل از claim.
+3) اجرای پس‌زمینه کارهای سررسیدشده با Android WorkManager، محدودیت اتصال شبکه، retry محدود، Emergency Stop و ثبت audit؛ اجرای دستی foreground نیز باقی است.
+4) آرشیو رمزگذاری‌شده تا ۳۰ گزارش وب، سورس، پروژه و DNS با خروجی JSON و امکان پاک‌سازی.
+5) baseline رمزگذاری‌شده تا ۵۰ دارایی و مقایسه تغییرات HTTP status، IP و یافته‌ها بین اسکن‌های موفق.
+6) Evidence Confidence Score توضیح‌پذیر، مجزا از اولویت ریسک و CVSS.
+7) خروجی PDF چندصفحه‌ای RTL با Android Storage Access Framework.
+8) یکپارچه‌سازی نسخه UI با metadata مرکزی و schema گزارش 7.
+9) سه فایل تست جدید: DNS posture، evidence confidence و automation recovery.
+
+محدودیت‌هایی که هنوز انجام نشده‌اند: اتصال احرازشده WordPress/WooCommerce، تضمین real-time برای زمان اجرای WorkManager، صفحه‌های مستقل واقعی به‌جای anchorهای فهرست اسکرولی، دستیار مولد/مدل محلی، تحلیل کامل AST/taint، Cloud/AD Runtime و تست دستگاه.
+
+اعتبارسنجی: release gate منبع 19 PASS و 1 WARN. کامپایل/JUnit/lint/APK/device در محیط فعلی اجرا نشدند. Wrapper و pin کردن Actionها هنوز باقی است.
+جزئیات: RELEASE_NOTES_v0.13.0.md و TEST_RESULTS_v0.13.0.txt

@@ -1,0 +1,39 @@
+SiteGuard Android v0.6.0 — verification report
+Date: 2026-11-23
+
+PASS — legacy regression harness (00–10)
+- 24 assertion-based test methods passed in the previous sequential harness.
+- Scope authorization, expiry, request budget, ZIP path/size safety, API schema, mobile manifest/WebView, network config/probe, cloud config, WordPress/source analysis, sanitization and integrated ZIP module coverage were exercised.
+
+PASS — new sequential-specification modules (11–21)
+- 26 ExtendedSpecificationTest methods compiled and ran successfully using Kotlin 1.9.0.
+- GitHub tool review and lifecycle approval gates.
+- Evidence-backed attack graph, inferred/observed distinction, relationship expiry, finding-to-graph integration and transparent risk factors.
+- Exact unique-snippet patch preview, path safety and remediation lifecycle approval gates.
+- Integrated finding-to-graph factory builds only observed, evidence-backed asset/finding/evidence relationships.
+- Evidence hashing, chain-of-custody integrity, UTC timeline normalization and expiry-aware indicator matching.
+- Bounded scheduler, idempotency, authorization expiry re-check, emergency stop and asset drift fingerprinting.
+- Synthetic offline lab scenario determinism and secure post-fix fixture.
+- Authorization policy, exact numeric IP/CIDR, prohibited methods, third-party gate and emergency stop.
+- Coverage denominator, labeled-fixture metrics, HTML escaping, release acceptance and specification sequencing.
+
+PASS — source guard
+- `tools/check-no-hosted-ai.sh` passed: no known hosted inference endpoint reference is configured in application runtime source.
+
+PASS — source-level review
+- Existing UI theme color constants, dashboard and four-item bottom navigation structure retained.
+- New local lab run and HTML report controls were added within the existing dark/red card style.
+- No signing private key, AI API key or backend credential was added.
+
+NOT VERIFIED
+- Android Gradle `:app:testDebugUnitTest`, `:app:lintDebug`, `:app:assembleDebug`, and `:app:assembleRelease` were not executed in this preparation environment; Android SDK and Gradle executable were unavailable.
+- New 25-test harness ran separately against the compiled v0.5.1 core contracts; the complete Android app was not compiled as one Gradle project here.
+- APK installation, upgrade, Android API/ABI compatibility, UI screenshot comparison, low-memory, thermal, battery and process-death recovery were not tested.
+- GitHub Actions was authored but not executed in the user's repository.
+- Signed release APK was not produced. Signing is optional and needs user's own GitHub Secrets.
+- Local Linux worker, durable WorkManager queue, full evidence persistence, full API DAST, binary mobile analysis, live cloud/AD/WordPress checks and external security feed updates are not verified or fully implemented.
+- Specifications 22 and 23 were not supplied, despite being mandatory in the Master Prompt.
+
+COUNT
+- 24 previously passing legacy harness methods + 26 newly passing test methods = 50 test methods currently present/exercised across local harness runs.
+- This is not an Android Gradle/JUnit CI result and does not prove completeness or security of arbitrary targets.

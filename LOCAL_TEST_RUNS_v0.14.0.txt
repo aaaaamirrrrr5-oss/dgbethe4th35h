@@ -1,0 +1,46 @@
+app/src/main/java/com/siteguard/app/advanced/OsvVulnerabilityLookupV1.kt:21:19: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val url = URL(endpoint)
+                  ^
+app/src/main/java/com/siteguard/app/advanced/ThreatIntelV1.kt:88:19: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val url = URL(CISA_KEV_URL)
+                  ^
+app/src/main/java/com/siteguard/app/advanced/WebSurfaceAnalyzerV1.kt:27:22: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val parsed = URL(origin); val host = parsed.host
+                     ^
+app/src/main/java/com/siteguard/app/advanced/WebSurfaceAnalyzerV1.kt:36:26: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+            val target = URL(origin + path.removePrefix("/"))
+                         ^
+app/src/main/java/com/siteguard/app/advanced/WebSurfaceAnalyzerV1.kt:91:19: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val url = URL(if (value.startsWith("https://", true)) value else "https://$value")
+                  ^
+app/src/main/java/com/siteguard/app/advanced/WordPressRuntimeClientV1.kt:53:22: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val parsed = URL(base)
+                     ^
+app/src/main/java/com/siteguard/app/advanced/WordPressRuntimeClientV1.kt:63:31: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+            val endpointUrl = URL(base.trimEnd('/') + "/wp-json/" + route)
+                              ^
+app/src/main/java/com/siteguard/app/advanced/WordPressRuntimeClientV1.kt:112:19: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val url = URL(candidate)
+                  ^
+app/src/main/java/com/siteguard/app/core/Authorization.kt:32:40: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+            val parsed = runCatching { URL(normalized) }.getOrNull() ?: return null
+                                       ^
+app/src/main/java/com/siteguard/app/core/Authorization.kt:102:36: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val parsed = runCatching { URL(normalized) }.getOrNull()
+                                   ^
+app/src/main/java/com/siteguard/app/core/Authorization.kt:140:22: warning: 'constructor URL(String!)' is deprecated. Deprecated in Java
+        val parsed = URL(candidate)
+                     ^
+PASS: bounded JSON parser and duplicate-key rejection
+PASS: local evidence reasoning ranks critical finding
+PASS: CISA KEV fixture parse, date and count validation
+PASS: OSV POST request uses fixed endpoint and escaped query
+PASS: WordPress runtime rejects plain HTTP before network
+PASS: passive web analyzer rejects loopback by default
+PASS: AST/Taint identifies PHP request input to SQL query with source line
+PASS: Cloud analyzer detects root, public ingress and multi-line IAM wildcard
+PASS: Android binary manifest decoded; APK ZIP traversal rejected
+PASS: local patch apply/rollback is hash guarded and ABA resistant
+PASS: comparative reports classify new/resolved/changed and stable
+PASS: automation policy blocks credentials and non-persisted file handles
+TOTAL: 12/12 smoke tests passed

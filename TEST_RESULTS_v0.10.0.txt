@@ -1,0 +1,49 @@
+SiteGuard Android v0.10.0 — گزارش آزمون و تحویل
+تاریخ ثبت: 2026-11-23
+
+خلاصه
+- نسخه برنامه: 0.10.0
+- versionCode: 11
+- schema گزارش JSON: 4
+- نوع خروجی: بسته سورس Android؛ APK در این محیط ساخته نشده است.
+- وضعیت: کنترل منبع و تست‌های مستقل Kotlin/JVM موفق؛ Android Gradle/APK/device tests اجرا نشده‌اند.
+
+1) تغییرات کلیدی
+- اعتبارسنجی fail-closed مجوز، میزبان، پورت، زمان، budget، روش مجاز و path.
+- رد traversal و encoding مبهم/double-encoding و تطبیق path بر مبنای مرز segment.
+- canonicalization نام‌های IDN و رد IPv4های عددی مبهم.
+- redaction credentialهای JSON، header، assignment، PEM، GitHub/AWS token، JWT و credential URL.
+- پاک‌سازی فیلدهای finding و remediation؛ از جمله root-cause hypothesis و proposed patch diff.
+- deadline و cancellation propagation در scan/crawler؛ پیام timeout مجزا در UI.
+
+2) آزمون‌هایی که در این محیط واقعاً اجرا شدند
+- PASS: Kotlin/JVM compile برای `SiteGuardBuildInfo.kt`, `Authorization.kt`, `EvidenceSanitizer.kt`. هشدارهای compiler محدود به constructor قدیمی `java.net.URL` بود.
+- PASS: 27 policy/redaction smoke assertions؛ خروجی runner: `POLICY_SMOKE_TESTS_OK=27`.
+- PASS: Kotlin/JVM compile برای `ScanEngine.kt` و `TlsFailureClassifier.kt` با `kotlinx-coroutines-core` و stub موقت برای قرارداد policy مشترک. این فقط بررسی نوع/نحو کد core مربوطه است، نه build کامل برنامه.
+- PASS: Kotlin/JVM compile برای `WebsiteDiscoveryEngineV1.kt` و `WebsiteDiscoveryOptionsV1` با stubs محدود APIهای manifest و coroutine انجام شد؛ این stubs جایگزین ماژول‌های واقعی Android/manifest نیستند و رفتار runtime شبکه را تست نمی‌کنند.
+- PASS: `bash -n` برای `tools/final-release-gate.sh`, `tools/check-no-hosted-ai.sh`, `tools/bootstrap-wrapper.sh`.
+- PASS: AndroidManifest.xml با XML parser بررسی شد.
+- PASS: `tools/final-release-gate.sh` — 14 PASS و 1 WARN.
+- PASS: آزمون نهایی آرشیو ZIP با `unzip -t` بدون خطا انجام شد؛ SHA-256 نیز جداگانه محاسبه و در فایل همراه ثبت شد.
+
+3) نتیجه release gate
+- 14 PASS، 1 WARN.
+- تنها هشدار: Gradle Wrapper script/JAR در ورودی پروژه موجود نیست؛ این هشدار به معنی خطای سورس نیست، ولی اجرای build را در محیط فعلی مسدود می‌کند.
+- خروجی کامل در `FINAL_RELEASE_GATE_v0.10.0.txt` ذخیره شده است.
+- release gate فقط preflight منبع است و build Android را جایگزین نمی‌کند.
+
+4) مواردی که اجرا نشده‌اند
+- Gradle Wrapper script/JAR در پروژه موجود نیست؛ `gradle` در PATH نصب نشده است.
+- Android SDK در `ANDROID_HOME` و `ANDROID_SDK_ROOT` تعریف نشده و `adb` نیز در دسترس نیست.
+- Gradle `:app:testDebugUnitTest` اجرا نشده است؛ JUnit test source جدید اضافه شده، اما اجرا نشده است.
+- Android/Compose full compilation، lint، `assembleDebug`, `assembleRelease`، APK signing، نصب/upgrade، UI/RTL/TalkBack و تست دستگاه اجرا نشده‌اند.
+- آزمون end-to-end شبکه/DNS و اندازه‌گیری عملکرد/مصرف battery اجرا نشده است.
+
+5) محدودیت‌های فنی و ریسک باقی‌مانده
+- `InetAddress.getAllByName` از resolver بومی سیستم استفاده می‌کند و در بعضی محیط‌ها ممکن است blocking باشد؛ coroutine timeout در checkpointها و لایه socket اعمال می‌شود، اما قطع فوری resolver در همه دستگاه‌ها تضمین نمی‌شود.
+- سه فایل regression test شامل authorization scope، evidence redaction و discovery deadline اضافه شده‌اند؛ به دلیل نبود Gradle و JUnit runner آن‌ها در این محیط اجرا نشده‌اند.
+- ۴۰ حوزه همچنان: ۳۸ Partial، یک Unsupported، یک Blocked. هیچ حوزه‌ای کامل یا Tested اعلام نشده و ۲٬۰۰۰ معیار پذیرش پرامت ۱۰۰٬۰۰۰ ردیفی همگی اجرا نشده‌اند.
+- تحلیل AST/taint، DAST احرازشده، shared egress gate جامع، صف پایدار، cloud/AD live integration و چند حوزه تخصصی همچنان طبق ماتریس جزئی/پشتیبانی‌نشده‌اند.
+
+نتیجه
+نسخه سورس SiteGuard Android v0.10.0 با سخت‌گیری بیشتر در scope، پاک‌سازی شواهد و مدیریت timeout/cancellation آماده بسته‌بندی است. این خروجی APK نیست و آماده انتشار/نصب تأییدشده تلقی نمی‌شود تا GitHub Actions یا Android Studio build، JUnit، lint و تست دستگاه با موفقیت انجام شوند.

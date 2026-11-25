@@ -1,0 +1,67 @@
+SiteGuard Android v0.9.0 — گزارش آزمون و تحویل
+تاریخ ثبت: 2026-11-23
+
+خلاصه
+- نسخه برنامه: 0.9.0
+- versionCode: 10
+- نوع خروجی: بسته سورس Android؛ APK در این محیط ساخته نشده است.
+- وضعیت کلی: کنترل‌های ایستای منبع موفق؛ ساخت واقعی Android و آزمون دستگاه مسدود به دلیل نبود ابزار build.
+
+1) ممیزی پرامت ورودی
+- فایل ورودی: SiteGuard-100000-Line-Upgrade-Prompts-FA.txt
+- تعداد خطوط خوانده‌شده: 100,000
+- تعداد حوزه‌ها: 40
+- تعداد ترکیب‌های متمایز حوزه/قابلیت: 400 (10 قابلیت برای هر حوزه)
+- تعداد معیارهای متمایز: 2,000 (50 معیار برای هر حوزه)
+- مراحل: 5 مرحله با 20,000 ردیف در هر مرحله
+- ماتریس 40 ردیفی در docs/PROMPT_40_DOMAIN_COVERAGE_v0.9.0.md ایجاد و شماره‌گذاری 01 تا 40 اعتبارسنجی شد.
+- تمام نام فایل‌های Kotlin ارجاع‌شده در ماتریس با مسیر واقعی سورس تطبیق داده شدند؛ مرجع گمشده: صفر.
+- این ممیزی ساختار پرامت، ادعای اجرای کامل 2,000 معیار یا تکمیل همه 40 حوزه نیست؛ وضعیت Partial/Unsupported/Blocked در ماتریس ثبت شده است.
+
+2) آزمون‌های اجراشده در این محیط
+- PASS: bash -n tools/final-release-gate.sh tools/check-no-hosted-ai.sh tools/bootstrap-wrapper.sh
+- PASS: tools/final-release-gate.sh — 12 PASS و 1 WARN (جزئیات در بخش 3).
+- PASS: AndroidManifest.xml با XML parser پایتون باز و parse شد.
+- PASS: اسکن متنی endpointهای شناخته‌شده AI hosted در runtime source؛ موردی مطابق قواعد اسکن‌کننده پیدا نشد.
+- PASS: وجود اسناد 00 تا 23 و فایل ترتیب اجرا بررسی شد.
+- PASS: نشانگرهای تم مشکی/قرمز و Bottom Navigation حفظ شده‌اند.
+- PASS: وجود رجیستری پوشش، اسناد، ماژول‌های تخصصی، تست‌های تاریخی، تهدیدمدل، CI و تنظیمات hardening بررسی شد.
+- PASS: versionName=0.9.0 و versionCode=10 بررسی شد.
+- PASS: ساختار جدول ماتریس 40 حوزه با شماره‌های پیوسته و مرتب بررسی شد.
+- PASS: وجود همه فایل‌های Kotlin ارجاع‌شده در ماتریس بررسی شد.
+- PASS: تلاش parser با kotlinc برای MainActivity.kt انجام شد؛ هیچ diagnostic نحوی از نوع expecting/unexpected tokens/type expected/unclosed ثبت نشد.
+- PASS: فایل‌های shell از نظر syntax بررسی شدند.
+
+3) هشدارها و محدودیت محیط
+- WARN: Gradle Wrapper اجرایی و gradle-wrapper.jar در ورودی موجود نیستند.
+- `gradle` در PATH نصب نیست.
+- ANDROID_HOME و ANDROID_SDK_ROOT تنظیم نشده‌اند و Android SDK در دسترس نیست.
+- تلاش مستقل kotlinc برای MainActivity.kt با exit code غیرصفر و خطاهای unresolved reference متوقف شد، چون Android SDK، Compose و classpath کامل ماژول‌ها به آن داده نشده‌اند. این فقط بررسی parser بدون تشخیص خطای نحوی بود؛ compile یا type-check موفق محسوب نمی‌شود.
+
+4) تست‌هایی که اجرا نشده‌اند و نباید PASS تلقی شوند
+- Android Gradle compile و Compose compiler.
+- `:app:testDebugUnitTest` و تمام تست‌های Gradle/JUnit نسخه جاری.
+- Android lint و static checks وابسته به Gradle.
+- `assembleDebug` و `assembleRelease`.
+- امضای release، verify امضا، نصب، به‌روزرسانی از نسخه قبلی و اجرای APK.
+- بررسی UI روی شبیه‌ساز/گوشی، RTL عملی، TalkBack، font scale، چرخش صفحه و رفتار بازگشت/بازیابی state.
+- عملکرد واقعی روی میزبان مجاز، شبکه قطع، DNS failure و بررسی مصرف RAM/CPU/battery.
+- تست‌های v0.8.0 در بسته ورودی تاریخچه‌اند و در این اجرای v0.9.0 دوباره اجرا نشده‌اند.
+
+5) تغییرات v0.9.0
+- داشبورد، هدر برند، وضعیت فعالیت و کارت‌های آماری ارتقا یافتند؛ تم مشکی/قرمز و چهار مقصد Bottom Navigation حفظ شدند.
+- نتایج وب، تحلیل سورس و تحلیل ZIP در فهرست واحد ادغام شدند؛ موارد با کلید شناسه/دارایی/محل دقیق تکراری حذف شدند.
+- جست‌وجوی متن و فیلتر شدت به بخش یافته‌ها افزوده شد؛ آمار داشبورد از یافته‌های یکپارچه استفاده می‌کند.
+- جزئیات تخصصی پرتراکم به‌صورت باز/بسته شونده نمایش داده می‌شوند؛ پنل‌ها و داده‌ها حذف نشده‌اند.
+- خروجی JSON به schema_version=3 و version=0.9.0 ارتقا یافت و فهرست یافته‌های یکپارچه را در سطح اصلی نگه می‌دارد؛ فراداده نسخه HTML نیز به‌روز شد.
+- ماتریس 40 حوزه، گزارش اجرای پنج مرحله، release notes و آزمون‌های پذیرش دستی اضافه شدند.
+
+6) ریسک باقیمانده
+- ریسک اصلی تحویل: build واقعی Android هنوز در محیط دارای Gradle 8.9، JDK 17، Android SDK Platform 35 و Build Tools 35.0.0 اجرا نشده است.
+- تا عبور CI/Android Studio از compile، unit test، lint و assemble، این نسخه را APK آماده نصب یا release تأییدشده تلقی نکنید.
+- تحلیل rule-based و ایستا است؛ نبود یافته معادل امن بودن نیست. مسیرهای DAST، AST/taint، runtime integration و برخی حوزه‌ها طبق ماتریس هنوز جزئی/پشتیبانی‌نشده‌اند.
+- عملیات پرریسک و تغییر خودکار روی production، سفارش/پرداخت/مشتری/موجودی اضافه نشده است؛ اصلاحات همچنان preview/plan هستند.
+
+نتیجه
+نسخه سورس v0.9.0 با ارتقای UX و یکپارچه‌سازی گزارش‌ها آماده بسته‌بندی است. کنترل منبع 12 PASS و 1 WARN دارد. ساخت APK و آزمون‌های Android به دلیل نبود Gradle Wrapper/Gradle و Android SDK در این محیط تأیید نشده‌اند.
+- PASS: آرشیو نهایی `SiteGuard-Android-v0.9.0.zip` با `unzip -t` بررسی شد؛ `No errors detected in compressed data`.
