@@ -1,0 +1,143 @@
+name: Android CI + APK/AAB Release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: siteguard-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-build:
+    name: Verify, test, APK + AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      SITEGUARD_SIGNING_CONFIGURED: ${{ secrets.SITEGUARD_KEYSTORE_BASE64 != '' && secrets.SITEGUARD_KEY_ALIAS != '' && secrets.SITEGUARD_KEYSTORE_PASSWORD != '' && secrets.SITEGUARD_KEY_PASSWORD != '' }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      # ubuntu-latest already ships the Android SDK (ANDROID_HOME) with sdkmanager.
+      # Using it directly avoids the android-actions/setup-android bootstrap, which fails
+      # with cmdline-tools 16.0 (sdkmanager exit code 1).
+      - name: Set up Android SDK
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          SDKMANAGER="$(command -v sdkmanager || true)"
+          if [ -z "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager | sort | tail -n 1)"
+          fi
+          echo "Using sdkmanager: $SDKMANAGER (SDK root: $SDK_ROOT)"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          set +o pipefail
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses > /dev/null || true
+          set -o pipefail
+          "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
+      # This project currently ships gradle-wrapper.properties but not the wrapper JAR/scripts.
+      # Provision a fixed Gradle version in CI rather than invoking a missing or untrusted wrapper.
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Prepare optional Android release signing
+        if: ${{ env.SITEGUARD_SIGNING_CONFIGURED == 'true' }}
+        env:
+          KEYSTORE_B64: ${{ secrets.SITEGUARD_KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.SITEGUARD_KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.SITEGUARD_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.SITEGUARD_KEY_PASSWORD }}
+        run: |
+          set +x
+          KS="$RUNNER_TEMP/siteguard-release.jks"
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$KS"
+          chmod 600 "$KS"
+          {
+            echo "SITEGUARD_KEYSTORE_PATH=$KS"
+            echo "SITEGUARD_KEY_ALIAS=$KEY_ALIAS"
+            echo "SITEGUARD_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "SITEGUARD_KEY_PASSWORD=$KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Validate source and selected offline modules
+        run: |
+          # Browser uploads to GitHub drop the executable bit, so restore it and call via bash.
+          chmod +x tools/*.sh
+          bash tools/check-no-hosted-ai.sh
+          bash tools/final-release-gate.sh
+          # The standalone smoke harness needs kotlinc; the Gradle unit tests below cover the same modules.
+          if command -v kotlinc >/dev/null 2>&1; then
+            bash tools/run-advanced-smoke-tests.sh
+          else
+            echo "kotlinc not available on runner: skipping standalone smoke harness (Gradle unit tests run next)."
+          fi
+
+      - name: Run Android unit tests, lint and create APK/AAB
+        run: |
+          gradle --version
+          gradle --no-daemon --stacktrace \
+            :app:testDebugUnitTest \
+            :app:lintDebug \
+            :app:lintRelease \
+            :app:assembleDebug \
+            :app:assembleRelease \
+            :app:bundleRelease
+
+      - name: Verify generated APK and AAB
+        env:
+          SIGNING_CONFIGURED: ${{ env.SITEGUARD_SIGNING_CONFIGURED }}
+        run: |
+          set -euo pipefail
+          test -s app/build/outputs/bundle/release/app-release.aab
+          APK="$(find app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' | head -n 1)"
+          test -n "$APK" && test -s "$APK"
+          if [ "$SIGNING_CONFIGURED" = "true" ]; then
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
+            jarsigner -verify -certs -verbose app/build/outputs/bundle/release/app-release.aab >/dev/null
+            echo "Release APK and AAB are signed and signature-verified."
+          else
+            echo "Release APK/AAB are unsigned: configure all four SITEGUARD signing secrets for Play-ready signed artifacts."
+          fi
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -E "^package:|^sdkVersion:|^targetSdkVersion:"
+
+      - name: Save resolved dependency report and artifact checksums
+        run: |
+          gradle --no-daemon :app:dependencies --configuration releaseRuntimeClasspath > resolved-dependencies.txt
+          find app/build/outputs/apk app/build/outputs/bundle -type f \( -name '*.apk' -o -name '*.aab' \) -print0 \
+            | sort -z | xargs -0 sha256sum > siteguard-artifact-sha256.txt
+          test -s siteguard-artifact-sha256.txt
+          cat siteguard-artifact-sha256.txt
+
+      - name: Remove signing material from runner
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP/siteguard-release.jks"
+
+      - name: Upload APK, AAB, mapping and verification reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: siteguard-android-v0.14.0-apk-aab
+          path: |
+            app/build/outputs/apk/**/*.apk
+            app/build/outputs/bundle/**/*.aab
+            app/build/outputs/mapping/release/mapping.txt
+            siteguard-artifact-sha256.txt
+            resolved-dependencies.txt
+            LOCAL_TEST_RUNS_v0.14.0.txt
+          if-no-files-found: error
+          retention-days: 21
