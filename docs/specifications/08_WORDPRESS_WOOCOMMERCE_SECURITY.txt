@@ -1,0 +1,36 @@
+WORDPRESS AND WOOCOMMERCE SECURITY
+
+Coverage
+
+-   WordPress core, PHP version, themes, plugins, must-use plugins.
+-   Plugin/theme version and known advisory matching.
+-   User roles, capabilities, administrator exposure, dormant accounts.
+-   REST API permissions, XML-RPC exposure, application passwords.
+-   File editing, uploads, media handling, backup exposure.
+-   wp-config and filesystem permissions where authorized access exists.
+-   Database privilege and backup security.
+-   WooCommerce checkout, customer data access, order permissions,
+    webhooks, payment integration configuration.
+-   Cron, debug mode, security headers, HTTPS, cache, and update policy.
+-   Page builders and custom code: inspect without destructive
+    rewriting.
+
+Method
+
+Use authenticated read-only inspection when possible. Match exact
+component versions against trusted advisories. Use safe endpoint tests
+and synthetic accounts. Never modify orders, payments, customers,
+inventory, or production settings during assessment.
+
+Remediation
+
+For each finding provide exact component, version, file/hook/setting if
+known, recommended patched version, safe configuration, backup plan,
+rollback, and retest. Avoid generic “install a security plugin” advice
+as the only fix.
+
+Acceptance
+
+Test on a disposable WordPress/WooCommerce lab with known vulnerable and
+secure configurations. Verify least privilege and ensure customer/order
+data is not exposed during testing.

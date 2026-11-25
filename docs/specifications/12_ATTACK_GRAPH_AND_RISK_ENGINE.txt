@@ -1,0 +1,43 @@
+ATTACK GRAPH AND RISK ENGINE
+
+Objective
+
+Correlate independently supported findings into explainable attack paths
+and prioritize remediation by real-world risk.
+
+Graph entities
+
+Asset, hostname, IP, endpoint, identity, role, software component,
+vulnerability, configuration, trust relationship, evidence, control,
+remediation, and business process.
+
+Edge requirements
+
+Every relationship must include source evidence, timestamp, confidence,
+provenance, and validity. Inferred edges must be visibly distinguished
+from observed edges.
+
+Path analysis
+
+-   Build candidate paths only from supported edges.
+-   Identify prerequisites, trust boundaries, exposed interfaces, and
+    required privileges.
+-   Calculate path confidence from evidence quality; do not multiply
+    arbitrary scores without documented calibration.
+-   Highlight weakest links and controls that break the path.
+-   Never label a path “exploitable” solely because multiple findings
+    coexist.
+-   Do not perform lateral movement; report and safely validate
+    configuration relationships.
+
+Risk model
+
+Use CVSS where applicable, but supplement with asset criticality,
+exposure, exploit prerequisites, CISA KEV status, compensating controls,
+data sensitivity, and business impact. Show each factor and its source.
+Avoid false precision.
+
+Outputs
+
+Risk register, attack graph, remediation priority, path explanation,
+confidence, assumptions, and retest status.

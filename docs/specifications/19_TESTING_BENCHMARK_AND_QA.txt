@@ -1,0 +1,36 @@
+TESTING, BENCHMARK AND QUALITY ASSURANCE
+
+Required test layers
+
+-   Unit tests for rules, parsers, scoring, scope enforcement, and
+    migrations.
+-   Integration tests for adapters, job orchestration, evidence storage,
+    and reporting.
+-   Security tests for IPC, storage, update verification, permissions,
+    and sandboxing.
+-   Regression tests for every fixed finding and false-positive case.
+-   Compatibility tests across Android API levels and ABIs.
+-   Offline tests with network disabled.
+-   Resource tests for RAM, CPU, storage, thermal behavior, and battery.
+-   Recovery tests for process death, cancellation, low storage, and
+    corrupted updates.
+-   Lab tests against vulnerable and secure fixtures.
+
+Metrics
+
+Detection precision, recall on labeled fixtures, false-positive rate,
+test coverage, execution time, resource use, crash rate, scope-violation
+tests, and remediation success rate. Define dataset limitations and
+avoid extrapolating lab performance to all real systems.
+
+Release gates
+
+No critical unresolved app vulnerabilities; dependency and license
+review complete; reproducible build where feasible; SBOM generated;
+signatures/hashes verified; test evidence attached; known limitations
+documented.
+
+Honest status
+
+Use Implemented, Tested, Partially Supported, Planned, Unsupported, and
+Blocked. “Implemented” is not “verified.” Never fabricate test output.

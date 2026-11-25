@@ -1,0 +1,37 @@
+CLOUD, IDENTITY, CONTAINER AND KUBERNETES SECURITY
+
+Coverage
+
+AWS, Azure, Google Cloud, IAM, object storage, network policy, container
+images, registries, Kubernetes, secrets, CI/CD, and
+infrastructure-as-code.
+
+Assessment
+
+-   Public storage exposure and overly broad access policies.
+-   IAM least privilege, role trust, stale credentials, MFA and
+    federation.
+-   Network exposure, security groups, firewall rules, private
+    endpoints.
+-   Container image vulnerabilities, provenance, base-image age, root
+    execution.
+-   Kubernetes RBAC, service accounts, admission controls, network
+    policies, secrets, API server exposure.
+-   IaC misconfiguration in Terraform, Kubernetes YAML, Dockerfiles, and
+    pipeline definitions.
+-   CI/CD token permissions, untrusted workflow triggers, artifact
+    integrity.
+-   Logging, backup, encryption, and key management.
+
+Safety
+
+Use provider-native read-only roles and configuration exports. Do not
+attempt cloud account takeover, secret retrieval, privilege escalation,
+or live resource modification. Validate with policy analysis and
+isolated labs.
+
+Remediation
+
+Generate least-privilege policy suggestions, hardened manifests, image
+update recommendations, secret rotation plans, and safe rollout/rollback
+instructions. Require owner review before applying changes.

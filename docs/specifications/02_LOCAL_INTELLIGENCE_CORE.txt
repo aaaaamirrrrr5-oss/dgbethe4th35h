@@ -1,0 +1,52 @@
+LOCAL INTELLIGENCE CORE — NO AI API
+
+Objective
+
+Provide high-quality deterministic security analysis without hosted or
+local generative AI being a mandatory dependency.
+
+Components
+
+-   Rule engine: typed predicates, prerequisites, severity, confidence,
+    evidence requirements, remediation references.
+-   Signature engine: versioned patterns for known indicators;
+    signatures must not be treated as proof without validation.
+-   Static analysis adapters: parse source code and configuration using
+    language-aware parsers where available.
+-   Dynamic testing adapters: execute safe, bounded test cases against
+    authorized targets.
+-   Correlation engine: connect findings by asset, identity, component,
+    dependency, and verified preconditions.
+-   Knowledge retrieval: SQLite + FTS; optional local embeddings/vector
+    index only if independently useful and resource-safe.
+-   Knowledge graph: nodes for assets, endpoints, identities, software,
+    vulnerabilities, controls, evidence, and remediation.
+-   Decision engine: deterministic scoring and explainable rules.
+-   Template engine: produce remediation instructions from versioned,
+    reviewed templates.
+-   Verification engine: retest controls and compare before/after
+    evidence.
+
+Rule schema
+
+Each rule must define: rule_id, version, title, category, supported
+technologies, affected versions, prerequisites, safe test, evidence
+schema, confidence model, severity rationale, false-positive conditions,
+remediation IDs, references, expiry/review date, and tests.
+
+Quality controls
+
+-   Use positive and negative fixtures.
+-   Include regression cases for known false positives.
+-   Require evidence thresholds for Confirmed status.
+-   Track rule coverage and unsupported technologies.
+-   Use peer-reviewed rule changes and signed rule packs.
+-   Never let user feedback silently rewrite a security rule. Feedback
+    enters a review queue.
+-   Do not use an LLM/API fallback. If a rule cannot decide, return
+    “Needs manual review.”
+
+Output
+
+A deterministic, explainable assessment result with the rule IDs, exact
+evidence, limits, confidence rationale, and remediation mapping.

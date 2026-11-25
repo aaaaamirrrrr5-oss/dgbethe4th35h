@@ -1,0 +1,31 @@
+THREAT INTELLIGENCE AND DIGITAL FORENSICS
+
+Intelligence
+
+Collect public advisories, indicators, campaign reports, malware hashes,
+domain/IP indicators, vulnerability exploitation status, and defensive
+guidance from reputable sources.
+
+Provenance
+
+Record publisher, source URL, publication date, retrieval date,
+confidence, expiration/decay policy, and whether an indicator is
+confirmed or merely reported. Do not treat an indicator match as proof
+of compromise.
+
+Forensics
+
+-   Preserve original evidence and calculate hashes.
+-   Maintain chain-of-custody events.
+-   Normalize timestamps and record timezone.
+-   Build timelines from logs and artifacts.
+-   Parse only supported formats; quarantine suspicious files.
+-   Use read-only acquisition where possible.
+-   Separate observations, hypotheses, and conclusions.
+-   Avoid executing malware outside a disposable, isolated analysis lab.
+
+Outputs
+
+Incident timeline, evidence inventory, indicator matches, confidence,
+scope, defensive containment suggestions, and follow-up collection plan.
+Never modify original evidence.

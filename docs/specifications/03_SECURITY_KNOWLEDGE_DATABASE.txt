@@ -1,0 +1,53 @@
+SECURITY KNOWLEDGE DATABASE
+
+Objective
+
+Maintain a locally cached, source-attributed, versioned security
+knowledge base.
+
+Sources to evaluate
+
+CVE Program, MITRE CWE, NIST NVD, CISA KEV, GitHub Security Advisories,
+OWASP, vendor advisories, Android security bulletins,
+WordPress/WooCommerce advisories, cloud-provider security documentation,
+and reputable public research.
+
+Record types
+
+-   Vulnerability: identifiers, title, description, affected
+    products/versions, severity, exploitability context, references,
+    dates, status.
+-   Weakness: CWE mapping, root cause, code patterns, mitigations.
+-   Tool: repository, license, maintainer activity, release, hash,
+    dependencies, capabilities, supported platforms.
+-   Remediation: technology/version, root cause, secure pattern,
+    migration concerns, verification test.
+-   Threat technique: public defensive description, ATT&CK mapping,
+    detection guidance, safe lab scenario.
+-   Asset and finding: local project-specific records with provenance.
+
+Data integrity
+
+Store source URL, publisher, publication/update date, retrieval date,
+content hash, license/terms, parser version, confidence, and review
+status. Do not rely on search snippets alone. Preserve original source
+metadata and distinguish source claims from local analysis.
+
+Update workflow
+
+1.  User enables update and chooses sources.
+2.  Fetch only permitted public feeds/APIs and respect rate
+    limits/robots/terms.
+3.  Verify TLS, manifest signature where available, hashes, size,
+    schema, and source identity.
+4.  Parse into staging tables.
+5.  Detect conflicts, duplicates, and stale records.
+6.  Run schema and quality checks.
+7.  Commit transactionally; preserve prior snapshot for rollback.
+8.  Show update summary and provenance.
+
+Offline behavior
+
+Search, browse, correlate, and generate reports from cached data.
+Clearly show knowledge last-updated time. Do not imply stale data is
+current. Support export/import of signed knowledge bundles.

@@ -1,0 +1,41 @@
+ADVANCED ENTERPRISE RED TEAM INTELLIGENCE
+
+Purpose
+
+Provide advanced, evidence-led adversary emulation and defensive
+validation without unauthorized compromise or covert operations.
+
+Intelligence domains
+
+-   MITRE ATT&CK tactics, techniques, and mitigations.
+-   Public threat actor and campaign reporting.
+-   Identity and privilege-path assessment.
+-   Active Directory and cloud identity configuration.
+-   Attack-surface relationships and exposure chains.
+-   Lateral-movement detection coverage assessment.
+-   Kerberos and SSO configuration review.
+-   Container, CI/CD, and supply-chain risk.
+-   Detection engineering and threat hunting.
+-   Incident timeline and forensic evidence analysis.
+-   Purple-team exercises using benign simulations.
+
+Knowledge levels
+
+L1: public fundamentals. L2: specialist technical material. L3: advanced
+published research and defensive assessment. L4: isolated lab
+reproduction and controlled simulation. L5: sensitive defensive-only
+analysis; no stolen secrets, private exploit data, or instructions for
+unauthorized compromise.
+
+Required output
+
+For each technique: public source, ATT&CK mapping, prerequisites,
+defensive indicators, safe simulation design, expected telemetry,
+detection logic, mitigation, and validation steps.
+
+Prohibited execution
+
+No credential theft, stealth/evasion for real-world compromise,
+persistence, exfiltration, destructive payloads, malware deployment, or
+unauthorized lateral movement. Advanced behavior belongs in disposable
+isolated labs.

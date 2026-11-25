@@ -1,0 +1,37 @@
+ANDROID, LOCAL LINUX BUILD AND RELEASE
+
+Android
+
+Use a maintainable Kotlin architecture, pinned Gradle dependencies,
+reproducible configuration, strict permissions, secure local storage,
+and lifecycle-aware job handling. Build debug and release variants. Test
+install, upgrade, migration, uninstall, and restore.
+
+Local Linux component
+
+Keep it optional and independently buildable. Detect supported
+environment before offering installation. Verify checksums/signatures,
+license, ABI, and dependencies. Run with least privilege and isolated
+filesystem/network access.
+
+Packaging
+
+Do not bundle large toolchains or model files unnecessarily. Use modular
+downloads with resumable progress, storage preflight, hash validation,
+license acceptance, version pinning, and rollback.
+
+Release pipeline
+
+-   Clean build.
+-   Static analysis and dependency audit.
+-   Unit/integration/security tests.
+-   SBOM and license report.
+-   Artifact checksum and signing.
+-   Install/upgrade smoke tests.
+-   Release notes and known limitations.
+
+No hidden cloud dependency
+
+Inspect network traffic and dependency graph to prove there are no
+mandatory AI API calls, hosted inference endpoints, or required backend
+services.

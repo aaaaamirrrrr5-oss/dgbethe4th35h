@@ -1,0 +1,67 @@
+EXECUTION ORDER AND ACCEPTANCE
+
+Phase 0 — Repository audit
+
+Inventory code, modules, contracts, dependencies, build state, platform
+constraints, and existing features. Deliver an audit before modifying
+anything.
+
+Phase 1 — Foundation
+
+Implement domain models, authorization/scope engine, local database,
+audit log, job orchestration, and report schema.
+
+Phase 2 — Core engines
+
+Implement rule engine, knowledge ingestion, evidence store, risk model,
+and finding lifecycle.
+
+Phase 3 — Assessment coverage
+
+Add web/API, network, source/dependency, Android, WordPress/WooCommerce,
+and configuration assessment adapters in independently testable
+increments.
+
+Phase 4 — Correlation and remediation
+
+Implement attack graph, risk prioritization, remediation templates,
+patch preview, backup/rollback, and verification.
+
+Phase 5 — Tool ecosystem and lab
+
+Add repository intelligence, tool adapter framework, isolated lab
+scenarios, and tool health monitoring.
+
+Phase 6 — UX and reporting
+
+Complete dashboard, findings, attack graph visualization, reports,
+localization, accessibility, and export.
+
+Phase 7 — Hardening and release
+
+Run full QA, threat model review, offline tests, compatibility tests,
+SBOM/license checks, signing, packaging, and installation tests.
+
+Acceptance checklist
+
+-   ☐ No AI API, hosted inference, or mandatory backend dependency.
+-   ☐ Core supported workflows work offline.
+-   ☐ Scope authorization is enforced at execution time.
+-   ☐ Each finding has evidence, confidence, severity rationale, and
+    remediation.
+-   ☐ Attack paths distinguish observed from inferred relationships.
+-   ☐ Remediation changes require review and support rollback.
+-   ☐ Tools are provenance-, license-, and compatibility-reviewed.
+-   ☐ False-positive and regression fixtures exist.
+-   ☐ Resource usage and Android limitations are documented.
+-   ☐ Build and test results are real and reproducible.
+-   ☐ Unsupported capabilities are clearly disclosed.
+-   ☐ Final release includes source, APK, optional worker, SBOM,
+    checksums, docs, and test evidence where applicable.
+
+Final instruction
+
+Work incrementally. Do not skip phases, fabricate capabilities, or mark
+incomplete work as complete. If a feature cannot run on a target Android
+device, provide a truthful capability matrix and optional local
+execution alternative without introducing a mandatory cloud service.

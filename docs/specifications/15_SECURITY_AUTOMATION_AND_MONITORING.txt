@@ -1,0 +1,32 @@
+SECURITY AUTOMATION AND CONTINUOUS MONITORING
+
+Capabilities
+
+-   Scheduled authorized assessments.
+-   Asset and technology change detection.
+-   New vulnerability/advisory matching.
+-   Dependency and configuration drift alerts.
+-   Finding lifecycle and remediation tracking.
+-   Retest scheduling.
+-   Local notifications and exportable reports.
+-   Audit trail and job history.
+
+Reliability
+
+Use bounded queues, cancellation, retry policies, deduplication,
+idempotency keys, resource budgets, and crash recovery. Do not promise
+continuous monitoring while the app is suspended or device is offline.
+Clearly distinguish scheduled checks from always-on monitoring.
+
+Safety
+
+Every recurring job inherits a validated scope and expiry. Revalidate
+authorization before execution. Pause jobs when scope, certificate, DNS,
+target ownership, or authorization changes. Provide emergency stop and a
+visible activity indicator.
+
+Privacy
+
+Local-first storage. No target content upload. Export only on user
+action. Redact credentials, tokens, cookies, and personal data from logs
+and reports.

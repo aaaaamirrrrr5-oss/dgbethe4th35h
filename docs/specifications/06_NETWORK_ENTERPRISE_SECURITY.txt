@@ -1,0 +1,44 @@
+NETWORK AND ENTERPRISE SECURITY
+
+Scope
+
+Authorized network inventory, configuration review, exposure analysis,
+identity security, directory services, and defensive adversary
+emulation.
+
+Network checks
+
+-   Host/service inventory within explicit ranges.
+-   Open ports and service/version identification using rate-limited
+    probes.
+-   TLS certificates, protocol versions, cipher configuration.
+-   DNS records and zone configuration where authorized.
+-   Firewall and network segmentation review.
+-   Exposed management interfaces and insecure protocols.
+-   Device configuration and patch posture where accessible.
+-   Logging, monitoring, and time synchronization.
+
+Enterprise identity checks
+
+-   Active Directory and Entra ID configuration review.
+-   Excessive privileges and stale accounts.
+-   Group membership and delegation review.
+-   Kerberos configuration weaknesses, policy review, and safe lab
+    validation.
+-   SSO/OAuth redirect, audience, issuer, token lifetime, and consent
+    configuration.
+-   MFA coverage and conditional access posture.
+-   Service-account ownership and secret rotation evidence.
+
+Safe adversary emulation
+
+Map public techniques to MITRE ATT&CK and validate defensive controls
+with benign simulations, test accounts, synthetic events, and isolated
+labs. Focus on detection coverage, control gaps, and remediation rather
+than covert compromise.
+
+Output
+
+Asset map, exposure findings, identity graph, segmentation observations,
+ATT&CK coverage matrix, evidence, severity, and prioritized defensive
+actions.

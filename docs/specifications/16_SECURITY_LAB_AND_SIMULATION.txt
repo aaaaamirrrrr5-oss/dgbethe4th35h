@@ -1,0 +1,37 @@
+SECURITY LAB AND ADVERSARY SIMULATION
+
+Objective
+
+Provide reproducible, isolated training and regression environments.
+
+Lab targets
+
+OWASP Juice Shop, WebGoat, DVWA, intentionally vulnerable Android apps,
+local API fixtures, vulnerable containers, and custom synthetic
+services. Review license and isolate each target.
+
+Isolation
+
+Use disposable containers/VMs where supported, private lab networking,
+no route to production networks, synthetic identities/data, resource
+caps, snapshots, and automatic teardown. Never bridge a lab to a real
+target by default.
+
+Scenarios
+
+-   Authentication and authorization failures.
+-   Injection resistance.
+-   XSS and output encoding.
+-   SSRF defenses using local canary endpoints.
+-   File handling and path traversal.
+-   API object-level authorization.
+-   TLS and security configuration.
+-   Dependency and secret scanning.
+-   Detection engineering and incident response.
+-   Patch verification and regression testing.
+
+Acceptance
+
+Every scenario has setup, expected finding, expected evidence, safe
+test, expected remediation, and post-fix pass condition. Lab resets must
+be deterministic.

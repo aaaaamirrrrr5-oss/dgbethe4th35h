@@ -1,0 +1,77 @@
+SYSTEM ARCHITECTURE
+
+Goal
+
+Design an offline-first, serverless cybersecurity platform with Android
+as the primary control plane and optional local Linux execution for
+tools that cannot run safely or efficiently on Android.
+
+Layers
+
+1.  Android presentation: accessible dashboard, project/asset
+    management, scan workflow, findings, remediation, reports, settings.
+2.  Application domain: projects, authorization scopes, jobs, findings,
+    evidence, policies, remediation plans.
+3.  Orchestration: job queue, dependency graph, capability scheduler,
+    cancellation, retries, resource budgets.
+4.  Security engines: discovery, web/API, network, source analysis,
+    mobile, cloud configuration, dependency analysis, correlation, risk,
+    remediation, verification.
+5.  Tool adapters: versioned interfaces for approved third-party tools.
+6.  Local data: SQLite, FTS, structured JSON records, evidence files,
+    optional vector index, knowledge graph.
+7.  Update subsystem: signed manifests, hash verification, resumable
+    downloads, license checks, rollback.
+8.  Optional local Linux worker: isolated environment, no mandatory
+    remote service, narrow IPC contract.
+
+Design requirements
+
+-   Use clean architecture or equivalent separation; UI must not contain
+    scanning logic.
+-   Define versioned interfaces for ScannerAdapter, EvidenceProvider,
+    KnowledgeProvider, RemediationProvider, and ReportExporter.
+-   Each job must be resumable where safe, cancellable, idempotent where
+    possible, and auditable.
+-   Use capability detection before installing or executing tools. Check
+    ABI, OS, permissions, disk, RAM, thermal state, and tool
+    dependencies.
+-   Separate control plane from execution plane. IPC must authenticate
+    local peers and validate every message.
+-   Store secrets in platform secure storage where available. Never
+    embed credentials or signing private keys in the APK.
+-   Encrypt sensitive local records where practical; provide explicit
+    retention and deletion controls.
+-   Use database migrations, schema versioning, integrity checks, and
+    backup/restore tests.
+-   Offline mode must not silently attempt cloud inference or upload
+    target content.
+-   Optional internet update functions must be disabled or clearly
+    controlled by the user.
+
+Android implementation
+
+Prefer Kotlin, structured concurrency, WorkManager only for appropriate
+durable background jobs, Room/SQLite, Android Keystore, and scoped
+storage. Avoid claiming continuous background execution when Android
+lifecycle restrictions prevent it. Provide foreground execution and
+clear interruption/recovery behavior for long-running assessments.
+
+Local Linux execution
+
+Use a dedicated, isolated local runtime only when supported. Restrict
+filesystem mounts, network egress, process capabilities, CPU, memory,
+and execution time. Do not grant broad root access by default. Verify
+tool signatures/hashes and licenses. Provide a clean uninstall path.
+
+Architecture acceptance tests
+
+-   App builds independently.
+-   Optional worker builds independently.
+-   Core inventory and report viewing work offline.
+-   Job cancellation and recovery work.
+-   Scope enforcement survives redirects, DNS changes, and discovered
+    assets.
+-   Database migration and rollback are tested.
+-   No hidden network calls or AI API dependencies exist.
+-   Low-memory devices degrade gracefully.

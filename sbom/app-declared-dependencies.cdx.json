@@ -1,0 +1,150 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:8e9b3b74-40d9-45cb-8fd9-8d852b8b2b40",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "SiteGuard Android",
+      "version": "0.5.1"
+    },
+    "properties": [
+      {
+        "name": "siteguard:sbom-completeness",
+        "value": "declared-direct-dependencies-only"
+      },
+      {
+        "name": "siteguard:license-verification",
+        "value": "pending"
+      },
+      {
+        "name": "siteguard:gradle-resolution",
+        "value": "not-run-in-preparation-environment"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "com.android.application",
+      "version": "8.7.3",
+      "purl": "pkg:maven/com.android.tools.build/gradle@8.7.3"
+    },
+    {
+      "type": "library",
+      "name": "org.jetbrains.kotlin.android",
+      "version": "2.0.21",
+      "purl": "pkg:maven/org.jetbrains.kotlin.android/org.jetbrains.kotlin.android.gradle.plugin@2.0.21"
+    },
+    {
+      "type": "library",
+      "name": "org.jetbrains.kotlin.plugin.compose",
+      "version": "2.0.21",
+      "purl": "pkg:maven/org.jetbrains.kotlin.plugin.compose/org.jetbrains.kotlin.plugin.compose.gradle.plugin@2.0.21"
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose:compose-bom",
+      "version": "2024.12.01",
+      "purl": "pkg:maven/androidx.compose/compose-bom@2024.12.01"
+    },
+    {
+      "type": "library",
+      "name": "androidx.activity:activity-compose",
+      "version": "1.10.0",
+      "purl": "pkg:maven/androidx.activity/activity-compose@1.10.0"
+    },
+    {
+      "type": "library",
+      "name": "androidx.lifecycle:lifecycle-runtime-ktx",
+      "version": "2.8.7",
+      "purl": "pkg:maven/androidx.lifecycle/lifecycle-runtime-ktx@2.8.7"
+    },
+    {
+      "type": "library",
+      "name": "org.jetbrains.kotlinx:kotlinx-coroutines-android",
+      "version": "1.9.0",
+      "purl": "pkg:maven/org.jetbrains.kotlinx/kotlinx-coroutines-android@1.9.0"
+    },
+    {
+      "type": "library",
+      "name": "junit:junit",
+      "version": "4.13.2",
+      "purl": "pkg:maven/junit/junit@4.13.2",
+      "scope": "optional"
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose.ui:ui",
+      "purl": "pkg:maven/androidx.compose.ui/ui",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "siteguard:version-source",
+          "value": "Managed by androidx.compose:compose-bom:2024.12.01; exact resolved artifact version unavailable in this environment."
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose.ui:ui-graphics",
+      "purl": "pkg:maven/androidx.compose.ui/ui-graphics",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "siteguard:version-source",
+          "value": "Managed by androidx.compose:compose-bom:2024.12.01; exact resolved artifact version unavailable in this environment."
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose.ui:ui-tooling-preview",
+      "purl": "pkg:maven/androidx.compose.ui/ui-tooling-preview",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "siteguard:version-source",
+          "value": "Managed by androidx.compose:compose-bom:2024.12.01; exact resolved artifact version unavailable in this environment."
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose.material3:material3",
+      "purl": "pkg:maven/androidx.compose.material3/material3",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "siteguard:version-source",
+          "value": "Managed by androidx.compose:compose-bom:2024.12.01; exact resolved artifact version unavailable in this environment."
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose.material:material-icons-extended",
+      "purl": "pkg:maven/androidx.compose.material/material-icons-extended",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "siteguard:version-source",
+          "value": "Managed by androidx.compose:compose-bom:2024.12.01; exact resolved artifact version unavailable in this environment."
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "androidx.compose.ui:ui-tooling",
+      "purl": "pkg:maven/androidx.compose.ui/ui-tooling",
+      "scope": "optional",
+      "properties": [
+        {
+          "name": "siteguard:version-source",
+          "value": "Managed by androidx.compose:compose-bom:2024.12.01; exact resolved artifact version unavailable in this environment."
+        }
+      ]
+    }
+  ]
+}

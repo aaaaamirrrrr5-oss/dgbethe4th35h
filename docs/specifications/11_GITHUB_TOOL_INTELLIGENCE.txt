@@ -1,0 +1,47 @@
+GITHUB CYBER TOOL INTELLIGENCE
+
+Objective
+
+Discover, evaluate, catalog, and safely integrate public cybersecurity
+tools without blindly downloading or executing repositories.
+
+Discovery
+
+Search by capability and domain. Track repository URL, owner, license,
+release, commit, maintenance activity, issue history, security
+advisories, dependencies, supported OS/ABI, and documentation.
+
+Trust and supply-chain review
+
+-   Verify repository identity and release provenance.
+-   Inspect install scripts, build scripts, binary downloads,
+    permissions, network behavior, and dependency tree.
+-   Check license compatibility and redistribution rights.
+-   Check known vulnerabilities and suspicious behavior.
+-   Pin versions and record hashes; verify signatures when available.
+-   Do not execute unreviewed code.
+-   Sandbox builds and tests with minimal privileges and no secrets.
+
+Integration
+
+Use adapter contracts. Integrate only required capabilities, not entire
+frameworks unnecessarily. Record resource requirements, supported
+platforms, command contract, input/output schema, exit codes, logs,
+cancellation behavior, and safety limits.
+
+Tool lifecycle
+
+Discovered → Reviewed → Lab Tested → Approved → Installed → Monitored →
+Deprecated/Removed.
+
+Example candidates
+
+Nmap, OWASP ZAP, Nuclei, Amass, Subfinder, Semgrep, CodeQL, MobSF,
+Trivy, OSV-Scanner, Gitleaks, and forensic utilities. Every candidate
+requires current review; examples are not blanket endorsements.
+
+Acceptance
+
+Demonstrate repository review, license validation, hash verification,
+sandbox test, adapter integration, version pinning, update rollback, and
+removal.

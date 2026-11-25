@@ -1,0 +1,36 @@
+ANDROID AND MOBILE SECURITY
+
+Assessment areas
+
+-   APK/AAB metadata, signing, package identity, permissions, exported
+    components.
+-   AndroidManifest and network security configuration.
+-   Local storage, databases, shared preferences, logs, backups,
+    clipboard.
+-   Keystore usage and cryptographic implementation.
+-   TLS validation and certificate handling.
+-   Deep links, intents, content providers, broadcast receivers, IPC.
+-   WebView settings and JavaScript bridges.
+-   Authentication, session/token storage, logout behavior.
+-   Root/debug detection only as a defensive design review; do not build
+    stealth/evasion tooling.
+-   Third-party SDKs, dependencies, secrets, and outdated components.
+-   Privacy and data minimization.
+
+Tool integration
+
+Evaluate MobSF and other reputable mobile-analysis tools for license,
+platform compatibility, provenance, and resource requirements. Do not
+assume desktop tools run natively on Android.
+
+Remediation
+
+Provide Android/Kotlin-specific secure storage patterns,
+exported-component restrictions, intent validation, network security
+configuration, dependency updates, and regression tests. Do not
+fabricate exact source locations when source code is unavailable.
+
+Acceptance
+
+Analyze a known-vulnerable training APK and a secure fixture; report
+expected findings and avoid false positives on secure controls.

@@ -1,0 +1,40 @@
+DASHBOARD, UX AND REPORTING
+
+UX principles
+
+Professional, uncluttered, accessible, Android-first, Persian RTL and
+English LTR support, clear status and no fake metrics. Keep dangerous
+actions visually distinct and require confirmation.
+
+Main sections
+
+Dashboard, Projects, Authorization & Scope, Asset Inventory, Scan
+Center, Test Catalog, Findings, Attack Graph, Remediation, Retesting,
+Knowledge Base, Tool Registry, Threat Intelligence, Lab, Evidence Vault,
+Reports, Audit Log, Backup & Recovery, Settings.
+
+Dashboard metrics
+
+Show only measured values: active job, progress, assets assessed, tests
+executed/skipped, findings by severity/status, last knowledge update,
+storage use, memory use, tool health, and recent changes. Label stale or
+partial data.
+
+Finding detail screen
+
+Summary, severity rationale, affected asset, evidence, safe
+reproduction, attack-path context, remediation, patch preview,
+verification, references, history, and export.
+
+Reports
+
+Generate technical and executive reports in PDF/HTML/JSON where
+supported. Include scope, authorization, dates, methodology,
+limitations, test coverage, findings, evidence references, remediation,
+and retest. Sanitize secrets and personal data.
+
+Accessibility
+
+Support screen readers, scalable text, keyboard navigation, high
+contrast, localization, and explicit confirmation for destructive or
+high-impact actions.

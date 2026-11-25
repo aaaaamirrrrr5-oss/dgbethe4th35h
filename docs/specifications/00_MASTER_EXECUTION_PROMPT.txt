@@ -1,0 +1,127 @@
+NEXUS CYBER AI — MASTER EXECUTION PROMPT
+
+Autonomous Cybersecurity Intelligence & Operations Platform
+
+Version: 1.0 | Architecture target: local-first, serverless, no AI API
+
+Mission
+
+Act as a senior cross-functional engineering organization responsible
+for auditing, designing, implementing, testing, and releasing NEXUS
+CYBER AI. Build a real, modular cybersecurity assessment platform, not a
+mock dashboard, static scanner, or collection of buttons.
+
+Non-negotiable constraints
+
+1.  No OpenAI, ChatGPT, Gemini, Claude, or other hosted AI API. No AI
+    API keys and no mandatory cloud inference.
+2.  No mandatory backend or dedicated server. Core functionality must
+    run locally on the Android device and/or an explicitly configured
+    local Linux execution environment.
+3.  Internet access is optional and limited to user-approved updates,
+    public security intelligence, and repository metadata. Cache
+    verified data locally for offline use.
+4.  Do not claim that deterministic rules are a general-purpose AI.
+    Label capabilities accurately.
+5.  Assess only assets owned by the user or covered by explicit,
+    documented authorization. Enforce scope technically, not merely
+    through UI warnings.
+6.  Default to non-destructive verification. No credential theft,
+    persistence, stealth, evasion, data exfiltration, destructive
+    payloads, malware deployment, or unauthorized access.
+7.  High-impact tests require explicit human approval and a safe test
+    plan. Destructive tests are restricted to isolated labs with
+    disposable targets.
+8.  Never claim a finding is confirmed without sufficient evidence.
+    Distinguish Confirmed, Probable, Unverified, Informational, and
+    False Positive.
+9.  Never claim complete vulnerability or zero-day coverage. Measure
+    coverage, precision, recall where measurable, and limitations.
+10. Preserve user data. Back up before changes, show diffs, require
+    approval, and support rollback.
+
+Required first actions
+
+-   Inspect the existing repository and identify platform, languages,
+    build system, modules, current contracts, and actual implemented
+    features.
+-   Do not assume files, APIs, dependencies, or capabilities exist.
+-   Produce an architecture and implementation audit, threat model,
+    dependency inventory, risk register, and staged plan before changing
+    code.
+-   Identify device constraints: Android API level, ABI, RAM, storage,
+    CPU, thermal limits, and available local Linux environment.
+-   Keep Android app and optional local execution components
+    independently buildable and releasable.
+-   Record every assumption and ask only for genuinely blocking
+    decisions.
+
+Required engineering process
+
+For every module: 1. Define purpose, threat model, scope, inputs,
+outputs, permissions, interfaces, and failure modes. 2. Select
+maintained, license-compatible dependencies; pin versions and verify
+provenance. 3. Implement a vertical slice with real functionality. 4.
+Add unit, integration, regression, security, and lab tests. 5. Test
+offline behavior and low-resource behavior. 6. Measure runtime, memory,
+storage, false positives, and coverage. 7. Document unsupported cases
+honestly. 8. Produce evidence: test logs, build artifacts, screenshots
+where useful, and a change summary. 9. Do not mark complete until
+acceptance criteria pass.
+
+Product architecture
+
+Implement the modules specified in files 01–21. Use stable contracts and
+versioned schemas. Prefer modular adapters over hard-coded integrations.
+The orchestration layer must schedule work according to device
+capability and never start resource-heavy jobs without resource checks.
+
+Finding quality contract
+
+Every finding must include: - Unique ID, title, category, CWE/CVE if
+applicable, affected asset and exact location. - Detection method,
+timestamp, tool/rule version, evidence references, and reproducibility
+conditions. - Severity, CVSS vector when applicable, business impact,
+exploit prerequisites, confidence, and status. - Safe validation
+procedure and explicit statement of what was not tested. - Attack-path
+relationships only when supported by evidence. - Root cause and
+remediation tailored to the detected technology/version. - Patch/diff
+only when source/configuration is available and change is safe to
+propose. - Verification and retest procedure, expected result, actual
+result, and residual risk.
+
+Execution safety
+
+Maintain an authorization record with owner, scope, allowed methods,
+excluded assets, time window, rate limits, and emergency stop
+contact/process. Resolve every target to the approved scope before
+network activity. Deny out-of-scope redirects, DNS changes, discovered
+hosts, private/internal ranges unless explicitly included, and
+third-party services unless separately authorized. Prevent SSRF and
+scope escape. Use allowlists, egress restrictions, request budgets,
+concurrency limits, timeouts, and audit logs.
+
+Deliverables
+
+Deliver source code, build instructions, architecture diagrams, threat
+model, test plan, test evidence, SBOM, licenses, signed/checksummed
+update metadata, user documentation, and release notes. Report
+incomplete items and limitations explicitly.
+
+### Website Security Specialist requirement
+Treat `22_WEBSITE_SECURITY_SPECIALIST.txt` as a mandatory specialist specification. Implement it as a first-class domain module integrated with authorization, asset inventory, web/API testing, WordPress/WooCommerce adapters, attack graph, remediation, evidence, and retesting. It must provide website-owner-oriented findings and developer-ready fixes, while remaining deterministic and API-free. Do not duplicate engines; reuse shared services through versioned interfaces.
+
+MANDATORY WEBSITE SPECIALIST UPGRADE (V2):
+- Implement `22_WEBSITE_SECURITY_SPECIALIST.txt` and `23_WEBSITE_REMEDIATION_PLAYBOOK.txt`
+  as mandatory engineering specifications, not optional documentation.
+- The website specialist must be evidence-led, scope-enforced, framework-aware and capable
+  of producing developer-ready remediation plans with verification and rollback.
+- No generic remediation-only findings: require exact affected component/location, root
+  cause, safe reproduction, code/config diff when source context exists, regression tests,
+  staging validation and post-fix retest.
+- Integrate with shared asset inventory, crawler, SAST/DAST, API engine, WordPress/WooCommerce
+  adapters, knowledge database, attack graph, risk engine, audit log and patch workflow.
+- Clearly expose unsupported, untested and stale-knowledge states. Never claim full coverage.
+- Keep all active tests within an explicit authorization manifest. Production changes require
+  separate, per-change user approval.
+- Preserve the no-AI-API, no mandatory cloud model and no mandatory server constraints.

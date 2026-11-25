@@ -1,0 +1,40 @@
+SECURITY POLICY, AUTHORIZATION AND PERMISSIONS
+
+Authorization object
+
+Store owner/authorizer, organization, assets, domains, IP ranges,
+excluded targets, allowed test classes, prohibited methods, time window,
+rate limits, contacts, proof/notes, and expiry.
+
+Enforcement
+
+-   No network test without active authorization.
+-   Check scope at every redirect, DNS resolution, IP, endpoint, and
+    discovered asset.
+-   Deny third-party SaaS, CDN, payment processors, and shared
+    infrastructure unless explicitly included.
+-   Prevent private/internal address scanning unless specifically
+    authorized.
+-   Validate DNS rebinding and redirect behavior.
+-   Apply request budgets, concurrency caps, timeouts, and egress
+    allowlists.
+-   Record user, tool, version, target, time, action, and result.
+-   Emergency stop cancels active jobs and blocks queued jobs.
+
+Approval tiers
+
+Low-risk read-only checks may run in approved autonomous-safe mode.
+Higher-impact tests require per-test approval. Destructive or
+exploit-like tests are lab-only and require disposable targets.
+
+Data protection
+
+Redact secrets, cookies, tokens, passwords, personal data, and customer
+records. Encrypt sensitive local data where possible. Define retention,
+export, deletion, and backup controls.
+
+Threat model
+
+Protect against malicious repositories, compromised updates, prompt/data
+injection in imported content, SSRF, path traversal, privilege abuse,
+local IPC spoofing, database tampering, and report leakage.

@@ -1,0 +1,264 @@
+# NEXUS — WEBSITE REMEDIATION PLAYBOOK
+## Framework-aware remediation patterns and verification recipes
+Version 1.0 | Companion to 22_WEBSITE_SECURITY_SPECIALIST.txt
+
+IMPORTANT
+نمونه‌های زیر الگو هستند، نه patch آماده برای هر سایت. قبل از استفاده باید نسخه،
+framework، ساختار پروژه، رفتار مورد انتظار و محل واقعی کد بررسی شود. روی staging
+و داده آزمایشی اجرا کنید. تغییر production فقط با تأیید صریح مالک مجاز است.
+
+------------------------------------------------------------------------------
+1. BROKEN ACCESS CONTROL / IDOR / BOLA
+------------------------------------------------------------------------------
+نشانه:
+کاربر A با تغییر شناسه یک resource می‌تواند داده متعلق به کاربر/tenant B را مشاهده
+یا تغییر دهد.
+
+علت رایج:
+- اعتماد به مخفی بودن دکمه در UI
+- بررسی login بدون بررسی مالکیت resource
+- استفاده از شناسه قابل حدس بدون authorization server-side
+- query بدون tenant/user constraint
+
+راهکار دقیق:
+1) نقطه دریافت resource را پیدا کن.
+2) مشخص کن مالک واقعی resource کدام فیلد/رابطه است.
+3) بررسی مجوز را در service/controller/repository سمت سرور اعمال کن.
+4) query را به principal/tenant محدود کن؛ صرفاً پس از fetch کردن، اعتماد به UI نکن.
+5) برای update/delete نیز همین کنترل را اعمال کن.
+6) برای privileged cross-tenant access مسیر جداگانه و audit شده تعریف کن.
+7) تست منفی با دو synthetic tenant بنویس.
+
+Acceptance:
+- tenant A فقط resourceهای خودش را می‌بیند.
+- tenant B فقط resourceهای خودش را می‌بیند.
+- تغییر ID در URL/body باعث افشای داده نمی‌شود.
+- مدیر فقط طبق policy مصوب دسترسی دارد.
+- تست‌ها در سطح API/service و UI اجرا شده‌اند.
+
+------------------------------------------------------------------------------
+2. SQL INJECTION
+------------------------------------------------------------------------------
+راهکار:
+- تمام مقدارهای داده‌ای را bind parameter کن.
+- برای نام ستون/ترتیب/جهت sort از allowlist ثابت استفاده کن؛ پارامتر bind جایگزین
+  identifier نمی‌شود.
+- از query builder/ORM امن framework استفاده کن، اما raw query را جداگانه audit کن.
+- حساب DB را least-privilege کن.
+- خطاهای SQL را به کاربر نمایش نده و جزئیات را در log امن ثبت کن.
+- ورودی را فقط برای business validation validate کن؛ validation جایگزین parameterization نیست.
+
+Verification:
+- تست fixture با ورودی‌های کنترل‌شده و بی‌خطر.
+- بررسی query construction و پارامترهای bind شده.
+- اطمینان از عدم تغییر داده خارج از fixture.
+- تست regression برای endpointهای مشابه.
+
+------------------------------------------------------------------------------
+3. XSS
+------------------------------------------------------------------------------
+راهکار:
+- output encoding متناسب با context: HTML، attribute، URL، JavaScript، CSS.
+- از template auto-escaping استفاده کن و آن را بی‌دلیل خاموش نکن.
+- برای rich HTML از sanitizer معتبر با allowlist محدود استفاده کن.
+- داده untrusted را به innerHTML/equivalent نده.
+- CSP را به‌عنوان لایه دفاعی تکمیلی تنظیم کن؛ جایگزین encoding نیست.
+- در DOM، source/sinkها و مسیرهای داده را بررسی کن.
+
+Verification:
+- harmless marker در فیلدهای آزمایشی.
+- بررسی HTML output و DOM behavior.
+- تست stored/reflected/DOM contexts جداگانه.
+- اطمینان از عدم اجرای script و حفظ rendering مورد انتظار.
+
+------------------------------------------------------------------------------
+4. CSRF
+------------------------------------------------------------------------------
+راهکار:
+- برای عملیات state-changing از CSRF token معتبر و server-side validation استفاده کن.
+- SameSite cookie را متناسب با جریان ورود و SSO تنظیم کن.
+- Origin/Referer validation را دفاع تکمیلی قرار بده.
+- GET را برای تغییر وضعیت استفاده نکن.
+- برای APIهای token-based، مدل تهدید واقعی token storage و browser credentials را بررسی کن.
+
+Verification:
+- درخواست بدون token رد شود.
+- token نامعتبر/منقضی رد شود.
+- درخواست معتبر کاربر آزمایشی کار کند.
+- عملیات واقعی/پرداختی در sandbox انجام شود.
+
+------------------------------------------------------------------------------
+5. CORS
+------------------------------------------------------------------------------
+راهکار:
+- originهای دقیق و موردنیاز را allowlist کن.
+- از بازتاب هر Origin دریافتی اجتناب کن.
+- wildcard را همراه credentials فعال نکن.
+- متدها و headerها را حداقلی کن.
+- preflight و پاسخ واقعی را هر دو بررسی کن.
+
+Verification:
+- origin مجاز موفق.
+- origin غیرمجاز رد یا فاقد CORS permission.
+- credentials فقط برای originهای مشخص.
+- رفتار CDN/cache با Vary: Origin سازگار باشد.
+
+------------------------------------------------------------------------------
+6. SECURITY HEADERS AND CSP
+------------------------------------------------------------------------------
+راهکار:
+- ابتدا منابع واقعی script/style/image/font/connect را inventory کن.
+- CSP را در staging با Report-Only آغاز کن.
+- violationها را تحلیل و allowlist را محدود کن.
+- nonce/hash را به روش framework پیاده کن؛ nonce ثابت یا قابل پیش‌بینی ممنوع.
+- frame-ancestors، object-src، base-uri و form-action را بر اساس نیاز تعیین کن.
+- HSTS را پس از بررسی HTTPS همه subdomainهای مشمول فعال کن؛ preload تصمیم جداگانه است.
+
+Verification:
+- صفحات اصلی و flowهای ورود/پرداخت sandbox بدون regression.
+- CSP violationهای غیرمنتظره رفع شوند.
+- header در همه مسیرهای لازم اعمال شود؛ فقط صفحه اصلی کافی نیست.
+
+------------------------------------------------------------------------------
+7. AUTHENTICATION, SESSION AND RESET
+------------------------------------------------------------------------------
+راهکار:
+- session ID پس از login و تغییر privilege rotate شود.
+- logout و reset باعث invalidation سمت سرور شوند.
+- cookieها Secure/HttpOnly و SameSite مناسب داشته باشند.
+- reset token تصادفی، یک‌بارمصرف، محدودزمان و به‌صورت امن ذخیره شود.
+- MFA برای نقش‌های حساس enforce شود.
+- پیام خطا از account enumeration جلوگیری کند بدون آسیب به usability.
+
+Verification:
+- session قبلی پس از rotation کار نکند.
+- reset token دومرتبه مصرف نشود.
+- logout session سمت سرور را بی‌اعتبار کند.
+- تست recovery با حساب synthetic انجام شود.
+
+------------------------------------------------------------------------------
+8. FILE UPLOAD AND DOWNLOAD
+------------------------------------------------------------------------------
+راهکار:
+- extension، MIME و file signature را با هم ارزیابی کن.
+- نام فایل را normalize و server-generated کن.
+- فایل را خارج از webroot یا در object storage خصوصی نگهداری کن.
+- download را از مسیر authorization-controlled عبور بده.
+- محدودیت حجم، تعداد، نرخ و نوع فایل اعمال کن.
+- archive extraction را در برابر path traversal محدود کن.
+- فایل اجرایی و active content را در production test آپلود نکن.
+
+Verification:
+- فایل مجاز synthetic پذیرفته شود.
+- نوع/پسوند ناسازگار رد شود.
+- کاربر غیرمجاز نتواند فایل خصوصی را دریافت کند.
+- فایل خارج از مسیر مجاز قابل دسترسی نباشد.
+
+------------------------------------------------------------------------------
+9. SSRF
+------------------------------------------------------------------------------
+راهکار:
+- مقصد outbound را با allowlist محدود کن.
+- پس از DNS resolution، IP مقصد را validate کن.
+- redirect را غیرفعال یا در هر hop مجدداً validate کن.
+- loopback، link-local، private و metadata ranges را block کن مگر lab مجاز.
+- egress firewall و timeout/response-size limit اعمال کن.
+- URL parser استاندارد استفاده کن؛ regex ساده کافی نیست.
+
+Verification:
+- فقط controlled canary endpoint قابل دسترسی باشد.
+- redirect به مقصد ممنوع مسدود شود.
+- DNS rebinding fixture شناسایی شود.
+- هیچ درخواست به metadata یا شبکه داخلی ارسال نشود.
+
+------------------------------------------------------------------------------
+10. WORDPRESS HARDENING
+------------------------------------------------------------------------------
+راهکار مرحله‌ای:
+1) backup معتبر از فایل و DB بگیر و restore را در staging امتحان کن.
+2) core/plugin/theme inventory و advisory matching انجام بده.
+3) نسخه‌ها را با سازگاری PHP/WP و افزونه‌های وابسته بررسی کن.
+4) افزونه بلااستفاده را پس از بررسی وابستگی و تأیید مالک حذف کن.
+5) نقش‌ها و capabilityها را حداقلی کن.
+6) custom REST/AJAX handlers را برای nonce + capability + ownership بررسی کن.
+7) debug display را در production خاموش و log را امن کن.
+8) دسترسی فایل/دایرکتوری و backup را محدود کن.
+9) application passwordها و integration tokens را بازبینی و در صورت نیاز rotate کن.
+10) پس از هر تغییر، login، editor، builder، REST، فرم‌ها و checkout sandbox را تست کن.
+
+نکته:
+- Nonce به‌تنهایی authorization نیست.
+- عدم نمایش دکمه در admin UI کنترل دسترسی نیست.
+- تغییر مستقیم دیتابیس یا serialized page-builder data بدون migration plan ممنوع است.
+
+------------------------------------------------------------------------------
+11. WOOCOMMERCE HARDENING
+------------------------------------------------------------------------------
+راهکار:
+- endpointهای order/customer را برای ownership و capability بررسی کن.
+- برای داده‌های محصول/سفارش از CRUD API پشتیبانی‌شده استفاده کن.
+- payment callback را با signature verification و idempotency کنترل کن.
+- webhook secret را امن نگه‌دار، rotation و replay protection داشته باش.
+- قیمت، تخفیف، مالیات، موجودی و وضعیت سفارش را سمت سرور محاسبه/اعتبارسنجی کن.
+- نقش‌های shop manager و integration account را least-privilege کن.
+- در تست از sandbox gateway و synthetic order استفاده کن.
+
+Verification:
+- customer A نتواند order مشتری B را بخواند.
+- webhook تکراری دوباره عملیات مالی ایجاد نکند.
+- callback جعلی رد شود.
+- تست checkout فقط در sandbox انجام شود.
+
+------------------------------------------------------------------------------
+12. API RATE LIMITING AND RESOURCE CONTROL
+------------------------------------------------------------------------------
+راهکار:
+- limit بر اساس user/client/token/route و حساسیت endpoint تعریف کن.
+- burst و sustained rate را جداگانه کنترل کن.
+- پاسخ 429 و Retry-After استاندارد بده.
+- pagination و max page size اعمال کن.
+- GraphQL depth/complexity و query timeout تنظیم کن.
+- محدودیت در edge به‌تنهایی کافی نیست؛ backend نیز باید محافظت شود.
+
+Verification:
+- آزمون bounded روی staging.
+- درخواست‌های مجاز موفق بمانند.
+- الگوی بیش از حد کنترل شود.
+- منابع CPU/memory/DB در محدوده تعیین‌شده بمانند.
+
+------------------------------------------------------------------------------
+13. SECRETS AND DEPENDENCIES
+------------------------------------------------------------------------------
+راهکار:
+- secret را از source code خارج کن و secret manager/environment امن به‌کار ببر.
+- اگر secret افشا شده، صرف حذف از commit کافی نیست؛ revoke/rotate لازم است.
+- log و artifact را برای secret scanning بررسی کن.
+- dependency را با lockfile، SBOM و advisory دقیق نسخه‌ای ارزیابی کن.
+- update را ابتدا در staging و با regression suite انجام بده.
+
+Verification:
+- secret فعال قبلی دیگر معتبر نباشد.
+- secret در repository history و artifactهای منتشرشده بررسی شود.
+- نسخه dependency و advisory range دقیقاً match شوند.
+- build و test پس از update موفق باشند.
+
+------------------------------------------------------------------------------
+14. PATCH ACCEPTANCE TEMPLATE
+------------------------------------------------------------------------------
+برای هر Patch این موارد اجباری است:
+- مسئله و Finding ID
+- فایل/کلاس/تابع واقعی
+- diff قبل/بعد
+- دلیل فنی تغییر
+- سازگاری نسخه و وابستگی
+- ریسک migration و downtime
+- backup و rollback
+- unit/integration/security tests
+- تست عملکردهای حیاتی سایت
+- تأیید مالک
+- نتیجه staging
+- تأیید production جداگانه
+- پایش پس از انتشار و معیار rollback
+
+اگر فایل یا نسخه واقعی در دسترس نیست، Patch را به‌عنوان نمونه مفهومی برچسب بزن؛
+هرگز آن را اصلاح آماده و قابل‌اعمال معرفی نکن.

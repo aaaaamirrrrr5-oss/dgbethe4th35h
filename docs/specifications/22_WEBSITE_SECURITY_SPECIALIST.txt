@@ -1,0 +1,539 @@
+# NEXUS CYBER AI — WEBSITE SECURITY SPECIALIST
+## Professional Engineering Specification
+Version: 2.0 | Local-first | Deterministic | No AI API | No mandatory cloud/server
+
+===============================================================================
+0. PRODUCT PROMISE, LIMITS AND ENGINEERING RULES
+===============================================================================
+
+این ماژول باید NEXUS را به یک متخصص واقعی ارزیابی امنیت وب‌سایت تبدیل کند؛ نه یک چت‌بات، نه مجموعه‌ای از توصیه‌های کلی و نه اسکنری که صرفاً خروجی ابزارها را نمایش می‌دهد.
+
+تعریف «هوشمندی» در این نسخه:
+- تحلیل ساختاریافته با Rule Engine، parser، AST، data-flow، signature، test harness،
+  correlation، knowledge graph و پایگاه دانش محلی.
+- استدلال قابل‌ردیابی: هر نتیجه باید به rule، نسخه rule، شواهد و روش آزمون متصل باشد.
+- یادگیری کنترل‌شده از false-positive/false-negative با تأیید انسانی و regression test.
+- اگر مدل زبانی محلی بعداً افزوده شد، باید اختیاری، جداشدنی و بدون ارسال داده به بیرون باشد.
+- هرجا داده یا قابلیت لازم وجود ندارد، وضعیت دقیق «Not assessed»، «Unsupported» یا
+  «Needs manual review» ثبت شود؛ هرگز نتیجه منفی قطعی از نبود ابزار صادر نشود.
+
+ممنوع:
+- تضمین کشف همه آسیب‌پذیری‌ها یا Zero-Day.
+- جعل نتیجه، نسخه، مسیر فایل، CVE، CVSS، تست موفق یا شواهد.
+- اسکن خارج از محدوده، دور زدن مجوز، سرقت اعتبارنامه، استخراج داده، تخریب، persistence،
+  stealth/evasion برای نفوذ، نصب بدافزار یا دستکاری سامانه زنده بدون تأیید صریح.
+- اجرای کورکورانه دستورات اصلاح یا کد تولیدشده روی production.
+
+===============================================================================
+1. SPECIALIST IDENTITY AND RESPONSIBILITIES
+===============================================================================
+
+نام ماژول: Website Security Specialist
+شناسه داخلی پیشنهادی: website_security_specialist
+مسئولیت‌ها:
+1) مالکیت، مجوز و Scope Gate
+2) Asset & Technology Discovery
+3) Web Architecture Mapping
+4) Passive Configuration Review
+5) Safe Active Web Testing
+6) API Security Assessment
+7) WordPress/WooCommerce Assessment
+8) Source Code & Dependency Review
+9) Business Logic Security Review
+10) Risk Analysis & Attack-Path Correlation
+11) Developer-grade Remediation
+12) Patch Preview, Approval, Backup and Rollback
+13) Retesting and Closure
+14) Evidence, Audit Trail and Reporting
+
+این ماژول نباید موتورهای عمومی شبکه، crawler، SAST، DAST، knowledge DB یا risk engine
+را کپی کند. باید از قراردادهای versioned مشترک استفاده کند و خروجی خود را به آن‌ها بدهد.
+
+===============================================================================
+2. ENGAGEMENT INTAKE AND SCOPE GATE
+===============================================================================
+
+پیش از هر درخواست فعال، این اطلاعات را دریافت و ثبت کن:
+- نام پروژه/سایت و شناسه مشتری
+- مالک دارایی یا فرد مجازکننده
+- روش تأیید مجوز: تأیید کتبی/تیکت/قرارداد/مالکیت فنی
+- دامنه‌های مجاز دقیق و فهرست دامنه‌های خارج از محدوده
+- IPها و محدوده CIDR فقط در صورت تأیید صریح
+- مسیرها، APIها، محیط‌ها و subdomainهای مجاز
+- زمان مجاز، timezone، نرخ درخواست و سقف concurrency
+- نوع آزمون: passive، safe active، authenticated، source review، staging
+- حساب‌های آزمایشی و سطح دسترسی مجاز
+- ممنوعیت‌های تجاری: checkout، پرداخت، سفارش، مشتری، ایمیل، پیامک، تولید
+- نقطه تماس اضطراری و روش توقف
+
+قواعد Scope:
+- allowlist صریح بر denylist ضمنی مقدم است.
+- redirect، canonical، CNAME، DNS، subdomain کشف‌شده یا لینک خروجی به‌تنهایی مجوز ایجاد نمی‌کند.
+- قبل از هر اتصال، مقصد نهایی و resolved IP با scope بررسی شود.
+- جلوگیری از SSRF در خود ابزار: block loopback، link-local، metadata endpoints،
+  private ranges مگر آنکه صریحاً در lab scope تعریف شده باشند.
+- DNS rebinding و تغییر IP در طول آزمون کنترل شود.
+- در هر redirect خارج از scope، توقف و ثبت رویداد.
+- هر ابزار فرزند باید scope token محدود و زمان‌دار دریافت کند.
+- توقف اضطراری باید همه jobهای فعال را cancel کند.
+- نبود مدرک مجوز یعنی فقط آموزش، بررسی فایل‌های محلی یا passive analysis مجاز است.
+
+خروجی intake:
+EngagementManifest با نسخه، امضای محلی/هش، زمان ایجاد، مجوزها، scope allowlist،
+rate limit، excluded actions، حساب‌های آزمایشی و تاریخ انقضا.
+
+===============================================================================
+3. ASSET DISCOVERY AND ARCHITECTURE MODEL
+===============================================================================
+
+کشف مرحله‌ای:
+A. دامنه و DNS: A/AAAA/CNAME/MX/TXT/CAA/NS، TLS و زنجیره گواهی.
+B. HTTP: redirect chain، status، header، cookie، cache، robots/sitemap.
+C. مسیرهای عمومی: crawl محدود، sitemap، لینک‌های داخلی و صفحات نمونه.
+D. API: OpenAPI/Swagger، Postman collection، GraphQL schema فقط اگر مجاز و در دسترس.
+E. Stack fingerprint: CMS، framework، runtime، server، CDN/WAF، database فقط با
+   شواهد چندگانه.
+F. فایل/کد: manifest، lockfile، composer/npm/pip/gradle، IaC، Dockerfile و CI.
+G. WordPress: core، plugin، theme، multisite، REST namespaces و builderها.
+H. WooCommerce: نسخه، gateway integration، webhookها و جریان‌های تجاری بدون لمس
+   سفارش/پرداخت واقعی.
+
+برای هر asset:
+- asset_id پایدار
+- نوع، hostname، URL پایه، IP مشاهده‌شده (در صورت نیاز)
+- مالک/محیط (prod/staging/dev/lab)
+- شواهد کشف و timestamp
+- confidence و روش fingerprint
+- scope status و دلیل
+- وابستگی‌ها و ارتباطات
+- آخرین زمان مشاهده و freshness
+
+معماری باید به‌صورت گراف قابل‌نمایش باشد:
+Browser → CDN/WAF → Reverse Proxy → Web Server → Application → Cache/DB/Storage
+و همچنین Identity Provider، Payment Provider، Email/SMS، Webhook و third-party API.
+ارتباطات مشاهده‌شده از ارتباطات استنباطی جدا باشند.
+
+===============================================================================
+4. TEST PLANNING AND COVERAGE MODEL
+===============================================================================
+
+برای هر asset یک TestPlan بساز:
+- کنترل امنیتی
+- روش آزمون و ابزار/نسخه
+- پیش‌نیاز
+- ریسک آزمون
+- حداکثر نرخ و تعداد درخواست
+- نوع evidence
+- معیار Pass/Fail/Unknown
+- وضعیت پشتیبانی
+- نیاز به حساب آزمایشی
+- مجوز لازم
+
+اولویت تست:
+1) ریسک بالا + آزمون کم‌خطر + شواهد قوی
+2) پیکربندی‌های قابل بررسی passive
+3) کنترل‌های احراز هویت و مجوز با حساب synthetic
+4) آزمون‌های ورودی و parser روی staging/lab
+5) تست‌های سنگین یا مبهم فقط با تأیید مجزا
+
+Coverage matrix باید برای هر کنترل یکی از این وضعیت‌ها را نشان دهد:
+Pass / Fail / Not Tested / Not Applicable / Unsupported / Needs Manual Review.
+«یافت نشد» معادل «ایمن است» نیست.
+
+===============================================================================
+5. TECHNICAL TEST CATALOG
+===============================================================================
+
+5.1 Transport, DNS and Edge
+- TLS version/cipher/certificate expiry/hostname chain
+- HTTP→HTTPS redirect and mixed content
+- HSTS suitability (با توجه به subdomain/preload risk)
+- Security headers: CSP، frame-ancestors، X-Content-Type-Options،
+  Referrer-Policy، Permissions-Policy
+- Cookie Secure/HttpOnly/SameSite/Path/Domain
+- Cache-Control برای پاسخ‌های حساس و cache key isolation
+- CORS origin/credentials/method/header policy
+- CDN/WAF exposure و origin leakage فقط در حد شواهد مجاز
+- DNS misconfiguration و dangling record فقط با روش safe validation
+- اطلاعات حساس در DNS TXT یا public config
+
+5.2 Authentication and Session
+- MFA availability and enforcement for privileged roles
+- Password policy and reset flow review
+- Account enumeration signals
+- Session rotation after login/privilege change
+- Logout invalidation and expiry
+- Cookie scope and flags
+- Token storage, expiry, audience, issuer, signature validation
+- Recovery token entropy and one-time use (در staging/test account)
+- Brute-force protection با آزمون محدود و غیرقفل‌کننده
+- OAuth/OIDC redirect URI and state/nonce validation
+
+5.3 Authorization
+- Object-level authorization (BOLA/IDOR)
+- Function-level authorization
+- Tenant isolation
+- Role/capability enforcement
+- Admin route protection
+- Mass assignment
+- Direct object reference exposure
+- Server-side enforcement vs UI-only hiding
+
+روش امن:
+از دو یا چند حساب synthetic با داده‌های ساختگی و کم‌خطر استفاده کن. شناسه‌ها را فقط
+در داده آزمایشی جابه‌جا کن. هیچ رکورد واقعی مشتری/سفارش خوانده یا تغییر داده نشود.
+
+5.4 Input, Output and Injection
+- SQL/NoSQL injection indicators
+- OS command injection indicators
+- Template injection indicators
+- LDAP/XML/XPath injection where relevant
+- HTML/JS output encoding and XSS contexts
+- Path traversal and file inclusion
+- Deserialization risk review
+- Header injection and CRLF
+- SSRF: فقط canary controlled endpoint، egress allowlist و no internal probing
+- ReDoS/resource exhaustion: bounded input/time on staging
+- Parser differential and content-type confusion
+
+هر payload باید harmless، محدود، قابل پاک‌سازی و متناسب با test fixture باشد. از payload
+تخریبی، استخراج داده یا اجرای فرمان روی هدف واقعی استفاده نکن.
+
+5.5 Browser, CSRF, CORS and Cache
+- CSRF token and SameSite behavior
+- Origin/Referer validation as defense-in-depth
+- CORS wildcard + credentials conflict
+- postMessage origin validation
+- clickjacking controls
+- open redirect allowlist
+- DOM-based sink/source review
+- CSP quality and report-only vs enforced state
+- shared-cache poisoning indicators using non-sensitive synthetic responses
+- cache isolation across user/session boundaries
+
+5.6 File Handling
+- Extension/MIME/signature validation
+- Filename normalization and path traversal defense
+- Storage outside webroot or protected object store
+- Malware scanning integration status (configuration review only)
+- Image/document parser attack surface
+- Download authorization and content disposition
+- Archive extraction path safety
+- Upload size/count/rate limits
+- No executable upload in production tests
+
+5.7 API
+- OpenAPI inventory and undocumented route discovery only within scope
+- Authentication and authorization per operation
+- BOLA/BFLA
+- Excessive data exposure
+- Mass assignment
+- Rate/resource limits
+- Pagination/filter abuse using bounded synthetic data
+- GraphQL depth/complexity/introspection policy
+- Webhook signature, timestamp, replay protection and secret rotation
+- API version/deprecation behavior
+- Error consistency and sensitive debug leakage
+- JWT/JWS validation configuration
+- Caching of authenticated responses
+
+5.8 Business Logic and Commerce
+- Cart/discount/tax/shipping validation at server side
+- Price and inventory trust boundaries
+- Coupon stacking and replay controls
+- Order state transition authorization
+- Refund/cancel permissions
+- Payment callback signature and idempotency
+- Webhook replay and duplicate processing
+- Checkout CSRF and session binding
+- Customer account isolation
+- No live charge, refund, order modification or inventory mutation
+- Use sandbox gateway and synthetic product/customer/order fixtures only
+
+5.9 Server and Deployment
+- Debug mode and verbose errors
+- Directory listing and sensitive file exposure
+- Default credentials/config review (never attempt real credential guessing)
+- File and directory permissions
+- Least privilege for app/database/service accounts
+- Secrets in source, environment, logs and artifacts
+- Backup encryption/access/restore test in staging
+- Admin interface exposure
+- Security update cadence
+- Container and orchestration configuration
+- CI/CD token permissions and branch protection
+- Log integrity and sensitive-data redaction
+
+===============================================================================
+6. WORDPRESS AND WOOCOMMERCE SPECIALIST PLAYBOOK
+===============================================================================
+
+Discovery:
+- WordPress core version from reliable authenticated/local evidence when possible.
+- Plugin/theme slug, version, source, active/inactive status, update status.
+- Must-use plugins, drop-ins, custom snippets, multisite and page builder adapters.
+- WooCommerce version, payment/shipping extensions and webhook inventory.
+
+Review:
+- Roles/capabilities and administrator hygiene.
+- REST API permission_callback for custom routes.
+- Custom AJAX handlers and nonce/capability checks.
+- XML-RPC exposure and actual business need.
+- Application passwords and token lifecycle.
+- wp-config exposure, debug flags, salts handling (never print secrets).
+- File editor, filesystem method, upload restrictions.
+- Plugin/theme provenance, abandoned packages and advisory matching.
+- Database privilege boundaries and backup exposure.
+- WooCommerce order/customer endpoints and ownership checks.
+- Webhook signing, replay, delivery logs and secret rotation.
+- Checkout customizations and payment callback validation.
+- Multisite tenant isolation.
+- Builder-specific storage: do not overwrite serialized builder data or replace page content
+  with generic HTML.
+
+Remediation rules:
+- Prefer supported core/plugin/theme updates after compatibility and backup checks.
+- Never recommend deleting a plugin/theme before checking dependency and business impact.
+- For custom code, inspect the actual hook/route/callback before proposing a patch.
+- Never assume a nonce alone is authorization; require capability and object ownership checks.
+- For REST endpoints, verify permission_callback and object-level checks.
+- For WooCommerce, use supported CRUD APIs; do not directly mutate internal tables unless
+  a reviewed migration requires it.
+- Never touch real orders, customer PII, payment methods or inventory in a security test.
+
+===============================================================================
+7. SOURCE CODE AND DEPENDENCY INTELLIGENCE
+===============================================================================
+
+When source is provided:
+- Identify languages and frameworks with parser-backed confidence.
+- Parse AST where supported; do not rely only on regex.
+- Trace sources → transforms → sinks for user-controlled data.
+- Model trust boundaries, auth middleware, validation and output encoding.
+- Search secrets using entropy + context + allowlisted test fixtures.
+- Analyze dependency manifests and lockfiles.
+- Generate SBOM where supported.
+- Match advisories by exact package ecosystem/name/version and affected range.
+- Check reachability where static analysis permits.
+- Separate direct/transitive dependency and reachable/unreachable findings.
+- Pin tool, rule, database and advisory versions for reproducibility.
+
+Never state a dependency is vulnerable solely because a package name resembles an advisory.
+Require ecosystem, package identity, version range and source evidence.
+
+===============================================================================
+8. FINDING CONFIDENCE, SEVERITY AND RISK
+===============================================================================
+
+Finding status:
+- Confirmed: reproducible with safe evidence and exact affected asset.
+- Probable: strong indicators but validation incomplete.
+- Unverified: hypothesis requiring additional access/evidence.
+- Informational: hardening or observation without demonstrated vulnerability.
+- False Positive: disproven with documented reason.
+
+Confidence dimensions:
+- Detection reliability
+- Evidence quality
+- Reproducibility
+- Asset/version certainty
+- Exploit preconditions certainty
+
+Severity:
+- Critical / High / Medium / Low / Informational
+- CVSS only when a defensible vector can be assigned.
+- Add business context: internet exposure, data sensitivity, privilege required,
+  tenant count, compensating controls, exploit maturity and operational impact.
+- Do not inflate severity from a scanner label alone.
+- Record CVSS version, vector, assumptions and environmental adjustments.
+
+Risk priority formula must be transparent and configurable. Example dimensions:
+TechnicalSeverity × Exposure × AssetCriticality × EvidenceConfidence × Exploitability,
+with documented normalization and no hidden score. Keep technical severity separate from
+business priority.
+
+===============================================================================
+9. ATTACK-PATH GRAPH
+===============================================================================
+
+Graph nodes:
+Asset, Endpoint, Identity, Role, Vulnerability, SecretReference, Component, DataStore,
+ExternalIntegration, Control, Evidence, Remediation.
+
+Edges must be typed:
+Observed, Tested, Inferred, DependsOn, MitigatedBy, Exposes, AuthenticatesTo.
+Every edge includes source evidence, timestamp, confidence and provenance.
+
+Do not chain speculative weaknesses into a confirmed compromise narrative.
+Show prerequisites and breakpoints. Identify shortest remediation cuts: the smallest
+set of fixes that disconnects a risky path. Label all simulated paths as simulations.
+
+===============================================================================
+10. EXACT REMEDIATION ENGINE
+===============================================================================
+
+Every remediation must include:
+A. Finding ID and root cause.
+B. Exact affected component and version/config/code location.
+C. Immediate containment (if appropriate).
+D. Permanent fix with vendor/framework-specific steps.
+E. Before/after configuration or code diff.
+F. Compatibility and dependency checks.
+G. Backup and rollback instructions.
+H. Staging validation plan.
+I. Functional regression tests.
+J. Security retest and expected evidence.
+K. Deployment and monitoring steps.
+L. Residual risk and owner.
+
+Code fix quality:
+- Use the project's actual language/framework/version.
+- Use parameterized queries and framework-native APIs.
+- Enforce authorization server-side at every object boundary.
+- Validate allowlists and encode output for the correct context.
+- Use secure cookie/session/token patterns.
+- Keep secrets outside source control and redact logs.
+- Avoid invented function names or pseudocode presented as drop-in code.
+- Mark illustrative code clearly if the actual project context is unavailable.
+
+Patch lifecycle:
+Draft → Static checks → Unit tests → Security tests → Human approval → Backup →
+Staging apply → Functional validation → Security retest → Production approval →
+Deployment → Monitoring → Close/Rollback.
+Production write actions always require explicit per-change approval.
+
+===============================================================================
+11. EVIDENCE AND REPRODUCIBILITY
+===============================================================================
+
+Evidence record:
+- evidence_id, finding_id, asset_id
+- timestamp and timezone
+- source tool, exact version, rule ID/version
+- request/response with secrets and PII redacted
+- sanitized screenshot/log/code range/config snapshot
+- test account identity class (synthetic only)
+- request count, duration, rate and scope token
+- integrity hash
+- reproduction steps and cleanup status
+
+Evidence must be sufficient for another engineer to reproduce safely.
+Do not store raw passwords, access tokens, payment data, customer PII or private keys.
+Use redaction at collection time, not only in report rendering.
+
+===============================================================================
+12. CONTINUOUS WEBSITE SECURITY
+===============================================================================
+
+Optional scheduled checks:
+- certificate expiry and TLS posture
+- DNS and domain drift
+- new routes and API schema changes
+- newly installed/updated plugins and packages
+- advisory changes for installed versions
+- security header and cookie drift
+- exposed backup/debug artifacts
+- new admin accounts/role changes when authorized integration exists
+- CI/CD and dependency drift
+- remediation regression
+
+Use local scheduler or user-launched jobs; no always-on cloud server requirement.
+On Android, disclose that jobs may pause when the OS stops the app. Do not promise
+continuous monitoring while the device is offline or the app is suspended.
+Deduplicate alerts and group related changes into incidents.
+
+===============================================================================
+13. LOCAL KNOWLEDGE AND UPDATE POLICY
+===============================================================================
+
+Local database should contain:
+- OWASP ASVS/WSTG/Cheat Sheets references where licensing permits
+- CWE/CVE/CVSS metadata
+- vendor advisories
+- WordPress and WooCommerce security advisories
+- framework secure coding references
+- rule packs, test fixtures and remediation templates
+- source URL, publisher, publication/update/retrieval dates, license and checksum
+
+Internet updates are optional. Verify signatures/checksums where available.
+Store data freshness. Offline mode must clearly identify stale advisories.
+Never copy proprietary scanner signatures or restricted content without license review.
+
+===============================================================================
+14. DASHBOARD AND REPORTS
+===============================================================================
+
+Dashboard:
+- authorized assets and scope status
+- assessment coverage by control family
+- confirmed/probable/unverified findings
+- severity and business priority
+- evidence completeness
+- remediation SLA and overdue issues
+- regression and drift alerts
+- unsupported/not-tested areas
+- last successful retest
+
+Reports:
+1. Executive report: business impact, top risks, priority actions, limitations.
+2. Technical report: evidence, reproduction, root cause, exact remediation.
+3. Developer tickets: component, code location, acceptance criteria, test plan.
+4. WordPress/WooCommerce hardening report.
+5. Retest and closure report.
+6. Scope, method, tool versions and coverage appendix.
+
+Never hide limitations or convert Not Tested into Passed.
+
+===============================================================================
+15. REQUIRED ACCEPTANCE TESTS
+===============================================================================
+
+Use intentionally vulnerable local fixtures and secure comparison fixtures.
+Test at minimum:
+- broken access control across synthetic tenants
+- reflected/stored XSS using harmless markers
+- SQL injection detection using safe test harness, not destructive payloads
+- CSRF and cookie configuration
+- CORS misconfiguration
+- insecure file upload policy in lab
+- SSRF defense using controlled canary only
+- API excessive data exposure with synthetic records
+- webhook replay protection in sandbox
+- WordPress REST permission callback and capability checks
+- WooCommerce order ownership using synthetic orders
+- dependency advisory exact-version matching
+- false-positive suppression with regression fixture
+- scope escape through redirect/DNS change
+- patch preview/approval/backup/rollback
+- evidence redaction and audit log integrity
+- offline behavior and stale knowledge warning
+
+Release gate:
+- zero unauthorized out-of-scope requests in test suite
+- zero production mutation without explicit approval
+- every confirmed finding has evidence and reproducible steps
+- every proposed patch has regression and rollback plan
+- all untested/unsupported controls are disclosed
+- no AI API, AI API key, cloud model or mandatory server dependency
+- all claims match implemented and tested capability
+
+===============================================================================
+16. FINAL RESPONSE FORMAT FOR THE SPECIALIST
+===============================================================================
+
+For each assessment, return in this order:
+1. Scope and authorization summary
+2. Asset and technology inventory
+3. Assessment coverage and exclusions
+4. Executive risk summary
+5. Findings ordered by business priority
+6. For each finding: evidence, root cause, safe reproduction, impact,
+   exact remediation, patch/diff, rollback and retest criteria
+7. Attack-path graph with observed/inferred labels
+8. Not tested / unsupported / needs manual review
+9. Immediate next actions with owner and priority
+10. Tool/rule/advisory versions and report timestamp
+
+Be precise, conservative, evidence-led and actionable. The objective is not to produce
+the longest report; it is to give the website owner and developer the shortest safe path
+from verified weakness to verified repair.

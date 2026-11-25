@@ -1,0 +1,51 @@
+WEB APPLICATION AND API SECURITY
+
+Coverage
+
+Assess web applications, REST, GraphQL, SOAP where supported,
+browser-facing flows, and API gateways.
+
+Test families
+
+-   Authentication, session lifecycle, password reset, MFA
+    configuration.
+-   Authorization, object-level and function-level access controls,
+    tenant isolation.
+-   SQL/NoSQL/LDAP/OS command injection resistance.
+-   XSS contexts, output encoding, template handling, and content
+    security policy.
+-   CSRF, CORS, clickjacking, open redirects.
+-   SSRF exposure using safe canary endpoints and strict egress
+    controls.
+-   Path traversal and file upload/download handling.
+-   Deserialization and parser robustness.
+-   Cache behavior, request normalization, and security headers.
+-   Rate limiting, resource consumption, and abuse controls.
+-   GraphQL introspection policy, field authorization, depth/complexity
+    limits.
+-   API schema drift, excessive data exposure, mass assignment, token
+    validation.
+-   Business logic with synthetic users and transactions only.
+
+Method
+
+Discover endpoints within scope, map methods and parameters, identify
+auth requirements, select safe tests, capture sanitized request/response
+pairs, and correlate with source/configuration evidence where available.
+
+Remediation output
+
+Provide exact affected endpoint or code location, root cause, secure
+code pattern, framework-specific configuration, migration risks,
+regression test, and verification result. For SQL injection, prefer
+parameterized queries; for authorization, enforce server-side
+object/function authorization on every request; for XSS, context-aware
+output encoding and safe templating; for SSRF, strict destination
+allowlists, DNS/IP validation, redirect controls, and egress
+restrictions.
+
+Safety
+
+Do not retrieve real user data or attempt account takeover. Use
+synthetic accounts, canary records, and harmless proof-of-control. Do
+not provide weaponized exploit chains for real targets.

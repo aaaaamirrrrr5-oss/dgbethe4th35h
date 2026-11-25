@@ -1,0 +1,64 @@
+UNIVERSAL PENETRATION TESTING ENGINE
+
+Mission
+
+Coordinate authorized, scoped, predominantly non-destructive security
+assessments across web, API, network, mobile, source, identity, cloud,
+and infrastructure domains.
+
+Assessment lifecycle
+
+1.  Authorization and scope verification.
+2.  Asset inventory and technology identification.
+3.  Test-plan generation from approved test catalog.
+4.  Risk and impact review.
+5.  Safe discovery and non-destructive validation.
+6.  Evidence collection and correlation.
+7.  Findings review and confidence assignment.
+8.  Remediation planning.
+9.  Retest and closure.
+
+Test catalog categories
+
+-   Reconnaissance and attack-surface inventory.
+-   TLS and security-header configuration.
+-   Authentication and session management.
+-   Authorization and tenant isolation.
+-   Input validation and injection resistance.
+-   File handling and path safety.
+-   API schema, authorization, rate limiting, and data minimization.
+-   Business-logic controls using synthetic test data.
+-   Dependency and exposed-secret review.
+-   Network service configuration and segmentation.
+-   Mobile storage, permissions, IPC, and transport configuration.
+-   Cloud identity and storage configuration review.
+-   WordPress core, plugins, themes, and WooCommerce configuration.
+-   Source-code and infrastructure-as-code analysis.
+
+Execution modes
+
+Manual: user selects each test. Assisted: system proposes a plan; user
+approves. Autonomous-safe: runs only allowlisted non-destructive tests
+within the approved scope and budget. Lab: advanced exploit-behavior
+simulations only against isolated, disposable training targets.
+
+Safety gates
+
+-   Require an authorization object before any target interaction.
+-   Scope-check every hostname, IP, redirect, endpoint, and discovered
+    asset.
+-   Respect excluded paths, time windows, request rates, concurrency,
+    and stop conditions.
+-   No brute-force credential attacks against real accounts. Use
+    synthetic accounts and explicitly authorized rate-limit checks.
+-   No data extraction; use canary/synthetic records for proof.
+-   No persistence, stealth, evasion, destructive actions, or payloads
+    intended to compromise third parties.
+-   High-impact tests require human approval and documented rollback.
+-   Provide a global emergency stop.
+
+Completion
+
+Report executed, skipped, blocked, and failed tests separately. Include
+coverage denominator and reasons tests were not run. Never equate “no
+findings” with “secure.”
